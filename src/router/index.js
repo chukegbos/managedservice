@@ -1,7 +1,8 @@
 import { createRouter, createWebHistory } from "vue-router";
 
 export const isLoggedIn = () => {
-	return localStorage.getItem("token");
+	// return localStorage.getItem("token");
+	return true;
 };
 
 const routes = [

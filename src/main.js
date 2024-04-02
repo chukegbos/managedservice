@@ -1,4 +1,6 @@
 import { createApp } from "vue";
+window.$ = window.jQuery = import('jquery');
+import $ from 'jquery'
 import "./style.css";
 import App from "./App.vue";
 import router from "./router";

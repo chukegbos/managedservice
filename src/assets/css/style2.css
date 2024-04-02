@@ -1,0 +1,160 @@
+.account-page .main-wrapper .account-content {
+  padding: 20px 0
+}
+
+.account-page .main-wrapper .account-content .account-logo {
+  margin-bottom: 30px;
+  text-align: center
+}
+
+.account-page .main-wrapper .account-content .account-logo img {
+  width: 100px
+}
+
+@media(max-width:575px) {
+  .account-page .main-wrapper .account-content .account-logo img {
+    width: 70px
+  }
+}
+
+.account-page .main-wrapper .account-content .account-box {
+  background-color: #fff;
+  border: 1px solid #e9e9ea;
+  box-shadow: 0 1px 1px 0 rgba(0, 0, 0, .2);
+  margin: 0 auto;
+  overflow: hidden;
+  width: 480px;
+  border-radius: 4px
+}
+
+@media(max-width:991px) {
+  .account-page .main-wrapper .account-content .account-box {
+    width: 100%;
+    margin: 0 0 20px
+  }
+}
+
+.account-page .main-wrapper .account-content .account-box .input-block {
+  margin-bottom: 25px
+}
+
+.account-page .main-wrapper .account-content .account-box label {
+  color: #212529;
+  font-size: 16px;
+  font-weight: 400
+}
+
+.account-page .main-wrapper .account-content .account-box .form-control {
+  background-color: #f9f9f9;
+  border: 1px solid #e2e4e6;
+  height: 46px;
+  border-radius: 4px
+}
+
+.account-page .main-wrapper .account-content .account-box #toggle-password {
+  cursor: pointer;
+  margin-right: 1px;
+  position: absolute;
+  top: 15px;
+  right: 10px
+}
+
+.account-page .main-wrapper .account-content .account-box .account-btn {
+  background: #ff902f;
+  background: linear-gradient(to right, #FF902F 0%, #FC6075 100%);
+  border: 0;
+  display: block;
+  font-size: 22px;
+  width: 100%;
+  border-radius: 4px;
+  padding: 10px 26px
+}
+
+.account-page .main-wrapper .account-content .account-box .account-wrapper {
+  padding: 30px
+}
+
+.account-page .main-wrapper .account-content .account-box .account-wrapper .account-footer {
+  text-align: center
+}
+
+.account-page .main-wrapper .account-content .account-box .account-wrapper .account-title {
+  font-size: 26px;
+  font-weight: 500;
+  margin-bottom: 5px;
+  text-align: center
+}
+
+.account-page .main-wrapper .account-content .account-box .account-wrapper .account-subtitle {
+  color: #7a7c7f;
+  font-size: 18px;
+  text-align: center;
+  margin: 0 0 30px
+}
+
+.account-page .main-wrapper .account-content .account-box .account-wrapper .account-box .input-block {
+  margin: 0 0 25px
+}
+
+.account-page .main-wrapper .account-content .account-box .account-wrapper .account-box .input-block label {
+  color: #212529;
+  font-size: 16px;
+  font-weight: 400;
+  margin-bottom: 5px
+}
+
+.account-page .main-wrapper .account-content .account-box .account-wrapper .account-box .input-block .form-control {
+  background-color: #f9f9f9;
+  border: 1px solid #e2e4e6;
+  height: 46px;
+  border-radius: 4px
+}
+
+.account-page .main-wrapper .account-content .account-box .otp-wrap {
+  margin-bottom: 30px;
+  text-align: center
+}
+
+.account-page .main-wrapper .account-content .account-box .otp-wrap .otp-input {
+  background-color: #fff;
+  border: 1px solid #e2e4e6;
+  display: inline-block;
+  font-size: 24px;
+  font-weight: 500;
+  height: 70px;
+  line-height: 29px;
+  margin-right: 15px;
+  text-align: center;
+  width: 70px;
+  border-radius: 4px
+}
+
+@media(max-width:575px) {
+  .account-page .main-wrapper .account-content .account-box .otp-wrap .otp-input {
+    height: 50px;
+    width: 52px;
+    margin: 10px
+  }
+}
+
+.account-page .main-wrapper .account-content .account-box .lock-user {
+  margin-bottom: 20px;
+  text-align: center
+}
+
+.account-page .main-wrapper .account-content .account-box .lock-user img {
+  margin-bottom: 15px;
+  width: 100px
+}
+
+#loader-wrapper {
+  background-color: #fff;
+  height: 100%;
+  width: 100%;
+  z-index: 9999;
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0
+}
