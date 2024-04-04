@@ -1,5 +1,6 @@
 <template>
   <div class="header">
+    <div class="sidebar-overlay"></div>
 
     <div class="header-left">
       <router-link to="#" class="logo">
@@ -25,7 +26,8 @@
       <h3>Admin Dashboard</h3>
     </div>
 
-    <a id="mobile_btn" class="mobile_btn d-block" href="#sidebar"><i class="fa-solid fa-bars"></i></a>
+    <a @click="toggleMobile()" id="mobile_btn" class="mobile_btn d-block" href="#sidebar"><i
+        class="fa-solid fa-bars"></i></a>
 
     <ul class="nav user-menu">
       <li class="nav-item">
@@ -270,8 +272,10 @@
     </ul>
 
     <div class="dropdown mobile-user-menu">
-      <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false"><i
-          class="fa-solid fa-ellipsis-vertical"></i></a>
+      <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false"
+        @click="toggleDropdownMobile()">
+        <i class="fa-solid fa-ellipsis-vertical"></i>
+      </a>
       <div class="dropdown-menu dropdown-menu-right">
         <a class="dropdown-item" href="#">My Profile</a>
         <a class="dropdown-item" href="#">Settings</a>
@@ -287,10 +291,15 @@ const element = ref();
 const element2 = ref()
 
 const toggleSidebar = () => {
-  if (!document.querySelectorAll(".body")[0].classList.contains("mini-sidebar"))
+  if (!document.querySelectorAll(".body")[0].classList.contains("mini-sidebar")) {
     document.querySelectorAll(".body")[0].classList.add("mini-sidebar")
-  else
+    if (window.innerWidth <= 1000)
+      document.querySelectorAll(".page-wrapper")[0].style.width = "95vw"
+  } else {
     document.querySelectorAll(".body")[0].className = "body"
+    if (window.innerWidth <= 1000)
+      document.querySelectorAll(".page-wrapper")[0].style.width = "75vw"
+  }
 }
 
 const toggleDropdown = () => {
@@ -303,6 +312,25 @@ const toggleDropdown = () => {
 
     element2[num].classList.add("show")
     element2[num].style.cssText = "position: absolute; inset: 0px auto auto 0px; margin: 0px; transform: translate(10px, 42px); overflow: hidden;";
+  } else {
+    element.value[num].setAttribute("aria-expanded", "false");
+    element.value[num].classList.remove("show")
+
+    element2[num].classList.remove("show")
+    element2[num].style.cssText = ""
+  }
+}
+
+const toggleDropdownMobile = () => {
+  const num = 1
+  const element2 = document.querySelectorAll(".dropdown-menu.dropdown-menu-right");
+
+  if (!element.value[num].classList.contains("show")) {
+    element.value[num].setAttribute("aria-expanded", "true");
+    element.value[num].classList.add("show")
+
+    element2[num].classList.add("show")
+    element2[num].style.cssText = "position: absolute; inset: 0px auto auto 0px; margin: 0px; transform: translate(-110px, 42px); overflow: hidden;";
   } else {
     element.value[num].setAttribute("aria-expanded", "false");
     element.value[num].classList.remove("show")
@@ -334,8 +362,25 @@ const toggleProfile = () => {
 const toggler = (index, num) => {
   let translate
 
-  if (num == 0)
+  if (num == 0) {
     translate = "-150px"
+    switch (window.innerWidth) {
+      case window.innerWidth <= 768:
+      case window.innerWidth <= 896:
+        a = -240;
+        break;
+      case window.innerWidth <= 1024:
+        a = -170;
+        break;
+      case window.innerWidth > 1200: // Handle cases greater than 1200 (corrected logic)
+        a = -175;
+        break;
+      default:
+        // Handle cases where vw doesn't fall into any of the specified ranges
+        // console.warn("Viewport width (vw) doesn't match any defined ranges. Consider adding more cases or a default value for a.");
+        break;
+    }
+  }
   else
     translate = "-200px"
 
@@ -351,6 +396,16 @@ const toggler = (index, num) => {
 
     element2.value[num].classList.remove("show");
     element2.value[num].style.cssText = "";
+  }
+}
+
+const toggleMobile = () => {
+  if (!document.querySelectorAll(".main-wrapper")[0].classList.contains("slide-nav")) {
+    document.querySelectorAll(".main-wrapper")[0].classList.add("slide-nav")
+    document.querySelectorAll(".sidebar-overlay")[0].classList.add("opened")
+  } else {
+    document.querySelectorAll(".main-wrapper")[0].classList.remove("slide-nav")
+    document.querySelectorAll(".sidebar-overlay")[0].classList.remove("opened")
   }
 }
 

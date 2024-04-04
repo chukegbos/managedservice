@@ -7230,7 +7230,7 @@ li.previous {
   }
 }
 
-.page-wrapper .content .page-header {
+.page-wrapper .content {
   margin-bottom: 24px
 }
 
@@ -8146,7 +8146,7 @@ input[type=file].form-control {
   -webkit-transition: all .2s ease;
   -ms-transition: all .2s ease;
   transition: all .2s ease;
-  width: 250px;
+  width: 20vw;
   z-index: 1001
 }
 
