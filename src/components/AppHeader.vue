@@ -25,7 +25,8 @@
       <h3>Admin Dashboard</h3>
     </div>
 
-    <a id="mobile_btn" class="mobile_btn d-block" href="#sidebar"><i class="fa-solid fa-bars"></i></a>
+    <a id="mobile_btn" class="mobile_btn d-block" href="#sidebar" @click="toggleSidebar()"><i class="fa-solid fa-bars"></i></a>
+  
 
     <ul class="nav user-menu">
       <li class="nav-item">
