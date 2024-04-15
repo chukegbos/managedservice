@@ -26,13 +26,8 @@
       <h3>Admin Dashboard</h3>
     </div>
 
-<<<<<<< HEAD
-    <a id="mobile_btn" class="mobile_btn d-block" href="#sidebar" @click="toggleSidebar()"><i class="fa-solid fa-bars"></i></a>
-  
-=======
     <a @click="toggleMobile()" id="mobile_btn" class="mobile_btn d-block" href="#sidebar"><i
         class="fa-solid fa-bars"></i></a>
->>>>>>> 738da84e45a4596f909ff62b4fc93e6be7e84b66
 
     <ul class="nav user-menu">
       <li class="nav-item">

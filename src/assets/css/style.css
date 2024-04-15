@@ -7206,11 +7206,12 @@ li.previous {
 }
 
 .page-wrapper {
+  /* min-height: 500px; */
   left: 0;
   position: relative;
   transition: all .2s ease-in-out;
   margin: 0 0 0 250px;
-  padding: 60px 0 0
+  /* padding: 60px 0 0 */
 }
 
 @media(max-width:991px) {

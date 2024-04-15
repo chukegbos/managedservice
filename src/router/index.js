@@ -1,8 +1,7 @@
 import { createRouter, createWebHistory } from "vue-router";
 
 export const isLoggedIn = () => {
-	// return localStorage.getItem("token");
-	return true;
+	return localStorage.getItem("token");
 };
 
 const routes = [
@@ -27,8 +26,53 @@ const routes = [
 			{
 				path: "/",
 				name: "DashBoard",
-				component: () =>
-					import("@/views/private/pages/DashboardPage.vue"),
+				component: () => import("@/views/private/pages/DashboardPage.vue"),
+				beforeEnter(to, from, next) {
+					if (isLoggedIn()) {
+						next();
+					} else {
+						next("/login");
+					}
+				},
+			},
+
+			{
+				path: "/members",
+				name: "Members",
+				component: () => import("@/views/private/pages/members/Index.vue"),
+				beforeEnter(to, from, next) {
+					if (isLoggedIn()) {
+						next();
+					} else {
+						next("/login");
+					}
+				},
+			},
+
+			{
+				path: "/members/sections",
+				name: "Sections",
+				component: () => import("@/views/private/pages/members/Section.vue"),
+				beforeEnter(to, from, next) {
+					if (isLoggedIn()) {
+						next();
+					} else {
+						next("/login");
+					}
+				},
+			},
+			
+			{
+				path: "/members/types",
+				name: "Types",
+				component: () => import("@/views/private/pages/members/Type.vue"),
+				beforeEnter(to, from, next) {
+					if (isLoggedIn()) {
+						next();
+					} else {
+						next("/login");
+					}
+				},
 			},
 		],
 	},

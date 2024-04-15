@@ -15,9 +15,8 @@
 
               <form @submit.prevent="onSubmit()">
                 <div class="input-block mb-4">
-                  <label class="col-form-label">Email Address</label>
-                  <input class="form-control" type="text" v-model="form.username"
-                    placeholder="admin@template.com">
+                  <label class="col-form-label">Username</label>
+                  <input class="form-control" type="text" v-model="form.username">
                 </div>
                 <div class="input-block mb-4">
                   <div class="row align-items-center">
@@ -59,7 +58,7 @@
 <script setup>
 import { ref, reactive, onMounted } from 'vue';
 import { useAuthStore } from '@/store/authStore';
-import { loginAxios } from "@/env";
+import { axiosUrl } from "@/env";
 import Swal from 'sweetalert2'
 
 const loading = ref(false);
@@ -82,17 +81,16 @@ const onSubmit = async () => {
       "warning"
     );
   } else {
-    await loginAxios
-      .post("login", {
-        email: form.username,
+    await axiosUrl
+      .post("auth/login", {
+        username: form.username,
         password: form.password,
       })
       .then((response) => {
-        // console.log(response.data.data)
-        localStorage.setItem("token", response.data.data.token);
+        localStorage.setItem("token", response.data.data.access_token);
         user.value = response.data.data
         authStore.getCurrentUser(user.value.user);
-        authStore.getUserToken(user.value.token);
+        authStore.getUserToken(user.value.access_token);
         authStore.getUserTokenExpiresAt(user.value.token_expires_at);
         let path = '/'
         window.location.href = path;

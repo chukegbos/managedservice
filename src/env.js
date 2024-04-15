@@ -1,7 +1,8 @@
 import axios from "axios";
 
-const loginAxios = axios.create({
-	baseURL: "https://api.schoolxie.com/public/api/",
+const axiosUrl = axios.create({
+	baseURL: "http://127.0.0.1:8000/api/",
+	// baseURL: "https://api.schoolxie.com/public/api/",
 	headers: {
 		Authorization: `Bearer ${localStorage.getItem("token")}`,
 		accept: "application/json",
@@ -9,4 +10,4 @@ const loginAxios = axios.create({
 	},
 });
 
-export { loginAxios };
+export { axiosUrl };

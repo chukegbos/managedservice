@@ -373,26 +373,12 @@
 </template>
 
 <script setup>
+import { onMounted } from "vue"
 
-  import { ref, reactive, onMounted } from 'vue';
-  import { useAuthStore } from '@/store/authStore';
-  import { axiosUrl } from "@/env";
-  import Swal from 'sweetalert2'
-  
-  const loading = ref(false);
-  const user = ref("");
-  const authStore = useAuthStore();
-  const token = authStore.token
-  onMounted(() => {
-    if (window.innerWidth >= 1100)
-      document.querySelectorAll('.page-header')[0].style.width = "1000px"
-
-      if (!token) {
-        window.location.href = "/login";
-      }
-    });
-
- 
+onMounted(() => {
+  if (window.innerWidth >= 1100)
+    document.querySelectorAll('.page-header')[0].style.width = "1000px"
+})
 </script>
 
 <style scoped></style>

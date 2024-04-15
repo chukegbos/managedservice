@@ -6,27 +6,74 @@
           <li class="menu-title">
             <span>Main</span>
           </li>
+          <li>
+            <router-link to="/"><i class="la la-dashcube"></i> <span>Dashboard</span></router-link>
+          </li>
+
           <li class="submenu dropdown-sidebar" @click="toggleSidebar(0)">
-            <a href="#"><i class="la la-dashcube"></i> <span> Dashboard</span> <span class="menu-arrow"></span></a>
+            <a href="#"><i class="la la-users"></i> <span> Membership</span> <span class="menu-arrow"></span></a>
             <ul>
-              <li><router-link to="#" class="active">Lorem, ipsum.</router-link></li>
-              <li><router-link to="#">Lorem, ipsum.</router-link></li>
-              <li><router-link to="#">Lorem, ipsum.</router-link></li>
-              <li><router-link to="#">Lorem, ipsum.</router-link></li>
+              <li><router-link to="/members">Members</router-link></li>
+              <li><router-link to="/members/types">Member Type</router-link></li>
+              <li><router-link to="/members/sections">Member Sections</router-link></li>
             </ul>
           </li>
+          
           <li class="submenu dropdown-sidebar" @click="toggleSidebar(sidebarBtnNum - 4)">
-            <a href="#"><i class="la la-cube"></i> <span> Dashboard 2</span> <span class="menu-arrow"></span></a>
+            <a href="#"><i class="la la-money"></i> <span> Payments</span> <span class="menu-arrow"></span></a>
             <ul>
-              <li><router-link to="#" class="active">Lorem, ipsum.</router-link></li>
-              <li><router-link to="#">Lorem, ipsum.</router-link></li>
-              <li><router-link to="#">Lorem, ipsum.</router-link></li>
-              <li><router-link to="#">Lorem, ipsum.</router-link></li>
+              <li>
+                <router-link to="/payment/products">
+                  Payments
+                </router-link>
+              </li>
+
+              <li>
+                <router-link to="/payment/products">
+                  Payment Products
+                </router-link>
+              </li>
+              
+              <li>
+                <router-link to="/payment/debits">
+                  Payment Debits
+                </router-link>
+              </li>
+              
+              <li>
+                <router-link to="/payment/channels">
+                  Payment Channels
+                </router-link>
+              </li>
+
+              <li>
+                <router-link to="/payment/banks">
+                  Payment Banks
+                </router-link>
+              </li>
+
+              <li>
+                <router-link to="/payment/pos">
+                  Payment POS
+                </router-link>
+              </li>
+              <li>
+                <router-link to="/admin/customers/fund-history">
+                  Funding History
+                </router-link>
+              </li>
+              <li>
+                <router-link to="/admin/customers/fund">
+                  Fund Member's Account
+                </router-link>
+              </li>
             </ul>
           </li>
+
           <li class="menu-title">
             <span>Sub Pages</span>
           </li>
+
           <li class="submenu dropdown-sidebar" @click="toggleSidebar(sidebarBtnNum - 3)">
             <a href="#" class="noti-dot"><i class="la la-user"></i> <span> One</span> <span
                 class="menu-arrow"></span></a>
@@ -37,9 +84,11 @@
               <li><router-link to="#">Lorem, ipsum.</router-link></li>
             </ul>
           </li>
+
           <li>
             <a href="#"><i class="la la-users"></i> <span>Two</span></a>
           </li>
+
           <li class="submenu dropdown-sidebar" @click="toggleSidebar(sidebarBtnNum - 2)">
             <a href="#"><i class="la la-rocket"></i> <span> Three</span> <span class="menu-arrow"></span></a>
             <ul>
@@ -48,6 +97,7 @@
               <li><router-link to="#">Lorem, ipsum.</router-link></li>
             </ul>
           </li>
+
           <li class="submenu dropdown-sidebar" @click="toggleSidebar(sidebarBtnNum - 1)">
             <a href="#"><i class="la la-ticket"></i> <span>Four</span><span class="menu-arrow"></span></a>
             <ul>
