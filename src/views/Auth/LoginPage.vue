@@ -12,6 +12,7 @@
             <div class="account-wrapper">
               <h3 class="account-title">Login</h3>
               <p class="account-subtitle">Access to our dashboard</p>
+             
 
               <form @submit.prevent="onSubmit()">
                 <div class="input-block mb-4">
@@ -88,10 +89,10 @@ const onSubmit = async () => {
       })
       .then((response) => {
         localStorage.setItem("token", response.data.data.access_token);
-        user.value = response.data.data
-        authStore.getCurrentUser(user.value.user);
-        authStore.getUserToken(user.value.access_token);
-        authStore.getUserTokenExpiresAt(user.value.token_expires_at);
+        authStore.getCurrentUser(response.data.data.user);
+        authStore.getCurrentClub(response.data.data.club);
+        authStore.getUserToken(response.data.data.access_token);
+        // authStore.getUserTokenExpiresAt(user.value.token_expires_at);
         let path = '/'
         window.location.href = path;
       })

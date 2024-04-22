@@ -23803,3 +23803,21 @@ textarea.form-control {
 #leadpiechart .apexcharts-canvas {
   width: auto !important
 }
+
+
+
+
+.content-wrapper {
+  margin-top: 100px;
+  margin-left: 280px;
+  min-height: 513px;
+  height: 100%;
+  background-color: #f4f6f9;
+}
+
+@media (max-width: 991.98px) {
+  .content-wrapper{
+    min-height: 788px;
+    margin-left: 0;
+  }
+}
