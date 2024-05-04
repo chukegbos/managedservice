@@ -5,4 +5,30 @@
 <script setup>
 </script>
 
-<style scoped></style>
+<style>
+.my-input {
+  width: 100%;
+  display: block;
+}
+
+.modal-header {
+  border: none;
+  padding: 8px 16px;
+}
+
+.modal-header__title {
+  font-size: 18px;
+  font-weight: 700;
+  color: #fb7500;
+}
+
+.modal-visible {
+  height: 250px !important;
+}
+
+@media only screen and (min-width: 768px) {
+  .my-input {
+    width: 350px;
+  }
+}
+</style>

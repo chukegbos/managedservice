@@ -5,6 +5,11 @@ import router from "./router";
 import { createPinia } from "pinia";
 import piniaPluginPersistedstate from "pinia-plugin-persistedstate";
 
+import Loading from "vue-loading-overlay";
+// Import stylesheet
+import "vue-loading-overlay/dist/css/index.css";
+import "@dimsog/vue-modal/dist/style.css";
+
 import {LoadingPlugin} from 'vue-loading-overlay';
 import 'vue-loading-overlay/dist/css/index.css';
 import PrimeVue from 'primevue/config';
@@ -33,6 +38,7 @@ createApp(App)
     .use(PrimeVue)
 
     .directive("tooltip", Tooltip)
+    .component("Loading", Loading)
     .component("DataTable", DataTable)
     .component("Calendar", Calendar)
     .component("Column", Column)
