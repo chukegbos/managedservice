@@ -5,7 +5,7 @@
     <div class="container">
       <div class="">
         <div class="d-flex justify-content-between align-items-center">
-          <h2>Member Sections</h2>
+          <h2>POS Payments</h2>
 
           <div class="d-flex">
             <div class="me-3">
@@ -22,10 +22,10 @@
                 @click="onSubmit('delete')"
                 class="btn add-btn px-4"
               >
-                <i class="fa-solid fa-minus"></i> Delete Section
+                <i class="fa-solid fa-minus"></i> Delete POS
               </button>
               <button @click="openModal('add')" class="btn add-btn me-2 px-4">
-                <i class="fa-solid fa-plus"></i> Add Section
+                <i class="fa-solid fa-plus"></i> Add POS
               </button>
             </div>
           </div>
@@ -90,14 +90,14 @@
         <div v-else>
           <div class="card card-body">
             <div class="alert alert-warning" role="alert">
-              <p class="text-center">No section available</p>
+              <p class="text-center">No POS available</p>
             </div>
           </div>
         </div>
       </div>
     </div>
 
-    <Modal name="section-modal" :title="modalParams.title">
+    <Modal name="pos-modal" :title="modalParams.title">
       <ModalContent>
         <form @submit.prevent="onSubmit(modalParams.title, currentEditID)">
           <div class="input-block mb-4 mx-3">
@@ -126,7 +126,7 @@ import { axiosUrl } from "@/env";
 import { ref, reactive, onMounted } from "vue";
 import { FilterMatchMode } from "primevue/api";
 import { useAuthStore } from "@/store/authStore";
-import { formatDate } from "@/components/myHelperFunction";
+import { formatDate, swalErrorHandle } from "@/components/myHelperFunction";
 import { Modal, ModalContent, open, close } from "@dimsog/vue-modal";
 
 const isLoading = ref(false);
@@ -148,14 +148,14 @@ const modalForm = reactive({
 });
 
 const openModal = (type, id, name) => {
-  if (type === "add") modalParams.title = "Add Section";
+  if (type === "add") modalParams.title = "Add POS";
   else if (type === "edit") {
-    modalParams.title = "Edit Section";
+    modalParams.title = "Edit POS";
     modalForm.name = name;
     currentEditID.value = id;
   }
 
-  open("section-modal");
+  open("pos-modal");
 };
 
 const toggleAll = () => {
@@ -165,37 +165,38 @@ const toggleAll = () => {
   else selected.value = [];
 };
 
-const getSection = async () => {
+const getPOS = async () => {
   isLoading.value = true;
 
   await axiosUrl
-    .get("/sections")
+    .get("/payments/pos")
     .then((response) => {
       items.value = response.data.data;
       isLoading.value = false;
     })
     .catch((error) => {
       isLoading.value = false;
+      swalErrorHandle(error);
     });
 };
 
 const onSubmit = async (type, id) => {
   let url = "";
   let payload = {};
-  if (type === "Add Section") {
-    url = "sections/create";
+  if (type === "Add POS") {
+    url = "payments/pos";
     payload = modalForm;
   } else if (type === "delete") {
-    url = "sections/delete";
+    url = "payments/pos";
     payload = {
       payload: selected.value,
     };
-  } else if (type === "Edit Section") {
-    url = "sections/edit/" + id;
+  } else if (type === "Edit POS") {
+    url = "payments/pos/" + id;
     payload = modalForm;
   } else return;
 
-  close("section-modal");
+  close("pos-modal");
   isLoading.value = true;
 
   await axiosUrl
@@ -203,7 +204,7 @@ const onSubmit = async (type, id) => {
     .then(() => {
       isLoading.value = false;
 
-      if (type === "Add Section" || type === "Edit Section") {
+      if (type === "Add POS" || type === "Edit POS") {
         modalForm.name = "";
         modalParams.title = "";
       } else if (type === "delete") {
@@ -211,7 +212,7 @@ const onSubmit = async (type, id) => {
         selectAll.value = false;
       }
 
-      getSection();
+      getPOS();
     })
     .catch((error) => {
       isLoading.value = false;
@@ -220,7 +221,7 @@ const onSubmit = async (type, id) => {
 };
 
 onMounted(() => {
-  getSection();
+  getPOS();
 });
 </script>
 

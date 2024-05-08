@@ -26,7 +26,8 @@ const routes = [
 			{
 				path: "/",
 				name: "DashBoard",
-				component: () => import("@/views/private/pages/DashboardPage.vue"),
+				component: () =>
+					import("@/views/private/pages/DashboardPage.vue"),
 				beforeEnter(to, from, next) {
 					if (isLoggedIn()) {
 						next();
@@ -39,7 +40,8 @@ const routes = [
 			{
 				path: "/members",
 				name: "Members",
-				component: () => import("@/views/private/pages/members/Index.vue"),
+				component: () =>
+					import("@/views/private/pages/members/Index.vue"),
 				beforeEnter(to, from, next) {
 					if (isLoggedIn()) {
 						next();
@@ -52,7 +54,8 @@ const routes = [
 			{
 				path: "/members/sections",
 				name: "Sections",
-				component: () => import("@/views/private/pages/members/Section.vue"),
+				component: () =>
+					import("@/views/private/pages/members/Section.vue"),
 				beforeEnter(to, from, next) {
 					if (isLoggedIn()) {
 						next();
@@ -61,11 +64,40 @@ const routes = [
 					}
 				},
 			},
-			
+
 			{
 				path: "/members/types",
 				name: "Types",
-				component: () => import("@/views/private/pages/members/Type.vue"),
+				component: () =>
+					import("@/views/private/pages/members/Type.vue"),
+				beforeEnter(to, from, next) {
+					if (isLoggedIn()) {
+						next();
+					} else {
+						next("/login");
+					}
+				},
+			},
+
+			{
+				path: "/payment/banks",
+				name: "PaymentBanks",
+				component: () =>
+					import("@/views/private/pages/payment/Banks.vue"),
+				beforeEnter(to, from, next) {
+					if (isLoggedIn()) {
+						next();
+					} else {
+						next("/login");
+					}
+				},
+			},
+
+			{
+				path: "/payment/pos",
+				name: "PaymentPOS",
+				component: () =>
+					import("@/views/private/pages/payment/POS.vue"),
 				beforeEnter(to, from, next) {
 					if (isLoggedIn()) {
 						next();

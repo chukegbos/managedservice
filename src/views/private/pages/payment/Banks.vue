@@ -5,7 +5,7 @@
     <div class="container">
       <div class="">
         <div class="d-flex justify-content-between align-items-center">
-          <h2>Member Sections</h2>
+          <h2>Bank Payments</h2>
 
           <div class="d-flex">
             <div class="me-3">
@@ -22,10 +22,10 @@
                 @click="onSubmit('delete')"
                 class="btn add-btn px-4"
               >
-                <i class="fa-solid fa-minus"></i> Delete Section
+                <i class="fa-solid fa-minus"></i> Delete Bank
               </button>
               <button @click="openModal('add')" class="btn add-btn me-2 px-4">
-                <i class="fa-solid fa-plus"></i> Add Section
+                <i class="fa-solid fa-plus"></i> Add Bank
               </button>
             </div>
           </div>
@@ -90,14 +90,14 @@
         <div v-else>
           <div class="card card-body">
             <div class="alert alert-warning" role="alert">
-              <p class="text-center">No section available</p>
+              <p class="text-center">No Bank available</p>
             </div>
           </div>
         </div>
       </div>
     </div>
 
-    <Modal name="section-modal" :title="modalParams.title">
+    <Modal name="bank-modal" :title="modalParams.title">
       <ModalContent>
         <form @submit.prevent="onSubmit(modalParams.title, currentEditID)">
           <div class="input-block mb-4 mx-3">
@@ -126,7 +126,7 @@ import { axiosUrl } from "@/env";
 import { ref, reactive, onMounted } from "vue";
 import { FilterMatchMode } from "primevue/api";
 import { useAuthStore } from "@/store/authStore";
-import { formatDate } from "@/components/myHelperFunction";
+import { formatDate, swalErrorHandle } from "@/components/myHelperFunction";
 import { Modal, ModalContent, open, close } from "@dimsog/vue-modal";
 
 const isLoading = ref(false);
@@ -148,14 +148,14 @@ const modalForm = reactive({
 });
 
 const openModal = (type, id, name) => {
-  if (type === "add") modalParams.title = "Add Section";
+  if (type === "add") modalParams.title = "Add Bank";
   else if (type === "edit") {
-    modalParams.title = "Edit Section";
+    modalParams.title = "Edit Bank";
     modalForm.name = name;
     currentEditID.value = id;
   }
 
-  open("section-modal");
+  open("bank-modal");
 };
 
 const toggleAll = () => {
@@ -165,37 +165,38 @@ const toggleAll = () => {
   else selected.value = [];
 };
 
-const getSection = async () => {
+const getBank = async () => {
   isLoading.value = true;
 
   await axiosUrl
-    .get("/sections")
+    .get("/payments/bank")
     .then((response) => {
       items.value = response.data.data;
       isLoading.value = false;
     })
     .catch((error) => {
       isLoading.value = false;
+      swalErrorHandle(error)
     });
 };
 
 const onSubmit = async (type, id) => {
   let url = "";
   let payload = {};
-  if (type === "Add Section") {
-    url = "sections/create";
+  if (type === "Add Bank") {
+    url = "payments/bank";
     payload = modalForm;
   } else if (type === "delete") {
-    url = "sections/delete";
+    url = "payments/bank";
     payload = {
       payload: selected.value,
     };
-  } else if (type === "Edit Section") {
-    url = "sections/edit/" + id;
+  } else if (type === "Edit Bank") {
+    url = "payments/bank/" + id;
     payload = modalForm;
   } else return;
 
-  close("section-modal");
+  close("bank-modal");
   isLoading.value = true;
 
   await axiosUrl
@@ -203,7 +204,7 @@ const onSubmit = async (type, id) => {
     .then(() => {
       isLoading.value = false;
 
-      if (type === "Add Section" || type === "Edit Section") {
+      if (type === "Add Bank" || type === "Edit Bank") {
         modalForm.name = "";
         modalParams.title = "";
       } else if (type === "delete") {
@@ -211,16 +212,16 @@ const onSubmit = async (type, id) => {
         selectAll.value = false;
       }
 
-      getSection();
+      getBank();
     })
     .catch((error) => {
       isLoading.value = false;
-      swalErrorHandle(error);
+      swalErrorHandle(error)
     });
 };
 
 onMounted(() => {
-  getSection();
+  getBank();
 });
 </script>
 
