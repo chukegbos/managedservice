@@ -106,6 +106,20 @@ const routes = [
 					}
 				},
 			},
+
+			{
+				path: "/payment/products",
+				name: "PaymentPOS",
+				component: () =>
+					import("@/views/private/pages/payment/Products.vue"),
+				beforeEnter(to, from, next) {
+					if (isLoggedIn()) {
+						next();
+					} else {
+						next("/login");
+					}
+				},
+			},
 		],
 	},
 ];
