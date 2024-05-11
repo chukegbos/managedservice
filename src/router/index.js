@@ -50,6 +50,32 @@ const routes = [
 			},
 
 			{
+				path: "/members",
+				name: "Members",
+				component: () => import("@/views/private/pages/members/Members.vue"),
+				beforeEnter(to, from, next) {
+					if (isLoggedIn()) {
+						next();
+					} else {
+						next("/login");
+					}
+				},
+			},
+
+			{
+				path: "/members/create",
+				name: "MembersCreate",
+				component: () => import("@/views/private/pages/members/MembersCreate.vue"),
+				beforeEnter(to, from, next) {
+					if (isLoggedIn()) {
+						next();
+					} else {
+						next("/login");
+					}
+				},
+			},
+
+			{
 				path: "/members/sections",
 				name: "Sections",
 				component: () => import("@/views/private/pages/members/Section.vue"),
