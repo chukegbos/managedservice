@@ -176,6 +176,7 @@ const getSection = async () => {
     })
     .catch((error) => {
       isLoading.value = false;
+      swalErrorHandle(error);
     });
 };
 
@@ -213,8 +214,9 @@ const onSubmit = async (type, id) => {
 
       getSection();
     })
-    .catch(() => {
+    .catch((error) => {
       isLoading.value = false;
+      swalErrorHandle(error);
     });
 };
 

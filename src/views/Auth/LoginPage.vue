@@ -1,6 +1,65 @@
 <template>
   <div>
-    <div class="main-wrapper">
+    <div class="main-wrapper d-flex" style="height: 100vh">
+      <div class="w-50 h-100" style="background-color: #014aac">
+        <img
+          src="../../assets/img/lindsay-henwood-7_kRuX1hSXM-unsplash.jpg"
+          alt=""
+          style="width: 100%; height: 100%"
+        />
+      </div>
+      <div
+        class="w-50 h-100 d-flex justify-content-center align-items-center flex-column"
+      >
+        <form @submit.prevent="onSubmit()" class="w-75">
+          <div class="d-flex justify-content-center mb-3">
+            <img
+              src="../../assets/img/Black_and_Beige_Fitness_Sports_Club_Logo-removebg-preview.png"
+              alt=""
+            />
+          </div>
+          <div class="input-block mb-4">
+            <label class="col-form-label">Username</label>
+            <input class="form-control" type="text" v-model="form.username" />
+          </div>
+          <div class="input-block mb-4">
+            <div class="row align-items-center">
+              <div class="col">
+                <label class="col-form-label">Password</label>
+              </div>
+            </div>
+            <div class="position-relative">
+              <input
+                class="form-control"
+                type="password"
+                v-model="form.password"
+                id="password"
+              />
+            </div>
+          </div>
+          <div class="input-block mb-4 text-center">
+            <button
+              class="btn account-btn text-white w-100"
+              type="submit"
+              :disabled="loading"
+            >
+              Login
+              <svg v-if="loading" class="spinner" viewBox="0 0 50 50">
+                <circle
+                  class="path"
+                  cx="25"
+                  cy="25"
+                  r="20"
+                  fill="none"
+                  stroke-width="5"
+                ></circle>
+              </svg>
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+    <!-- <div class="main-wrapper">
       <div class="account-content">
         <div class="container">
           <div class="account-logo">
@@ -70,7 +129,7 @@
           </div>
         </div>
       </div>
-    </div>
+    </div> -->
   </div>
 </template>
 
@@ -127,4 +186,12 @@ onMounted(() => {
 });
 </script>
 
-<style scoped></style>
+<style scoped>
+button {
+  background-color: #014aac;
+}
+
+button:hover {
+  background-color: #014bacb7 !important;
+}
+</style>
