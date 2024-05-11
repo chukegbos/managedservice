@@ -28,6 +28,8 @@ import RadioButton from "primevue/radiobutton";
 //in main.js
 import "primevue/resources/themes/lara-light-indigo/theme.css";
 import "primevue/resources/primevue.min.css";
+import Vue3FormWizard from 'vue3-form-wizard'
+import 'vue3-form-wizard/dist/style.css'
 
 const pinia = createPinia();
 pinia.use(piniaPluginPersistedstate);
@@ -36,7 +38,7 @@ createApp(App)
     .use(router)
     .use(LoadingPlugin)
     .use(PrimeVue)
-
+    .use(Vue3FormWizard)
     .directive("tooltip", Tooltip)
     .component("Loading", Loading)
     .component("DataTable", DataTable)

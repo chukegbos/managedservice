@@ -62,9 +62,9 @@
                 />
               </template>
             </Column>
-            <Column field="name" header="Name" style="width: 40%">
+            <Column field="title" header="Name" style="width: 40%">
               <template #body="slotProps">
-                {{ slotProps.data.name ? slotProps.data.name : "N/A" }}
+                {{ slotProps.data.title ? slotProps.data.title : "N/A" }}
               </template>
             </Column>
             <Column header="Date Created" style="width: 35%">
@@ -76,7 +76,7 @@
               <template #body="slotProps">
                 <button
                   @click="
-                    openModal('edit', slotProps.data.id, slotProps.data.name)
+                    openModal('edit', slotProps.data.id, slotProps.data.title)
                   "
                   class="btn btn-warning btn-sm m-1 text-white px-4"
                 >
@@ -90,7 +90,7 @@
         <div v-else>
           <div class="card card-body">
             <div class="alert alert-warning" role="alert">
-              <p class="text-center">No section available</p>
+              <p class="text-center">No member type available</p>
             </div>
           </div>
         </div>
@@ -101,11 +101,11 @@
       <ModalContent>
         <form @submit.prevent="onSubmit(modalParams.title, currentEditID)">
           <div class="input-block mb-4 mx-3">
-            <label class="col-form-label fs-6">Name</label>
+            <label class="col-form-label fs-6">Title</label>
             <input
               class="form-control"
               type="text"
-              v-model="modalForm.name"
+              v-model="modalForm.title"
               required
             />
           </div>
@@ -143,15 +143,15 @@ const modalParams = reactive({
   title: "",
 });
 const modalForm = reactive({
-  name: "",
+  title: "",
   club_code: loggedInUser.club_code,
 });
 
-const openModal = (type, id, name) => {
+const openModal = (type, id, title) => {
   if (type === "add") modalParams.title = "Add Section";
   else if (type === "edit") {
     modalParams.title = "Edit Section";
-    modalForm.name = name;
+    modalForm.title = title;
     currentEditID.value = id;
   }
 
@@ -205,7 +205,7 @@ const onSubmit = async (type, id) => {
       isLoading.value = false;
 
       if (type === "Add Section" || type === "Edit Section") {
-        modalForm.name = "";
+        modalForm.title = "";
         modalParams.title = "";
       } else if (type === "delete") {
         selected.value = [];
