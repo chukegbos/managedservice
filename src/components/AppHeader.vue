@@ -36,7 +36,7 @@
     ></a>
 
     <ul class="nav user-menu">
-      <li class="nav-item">
+      <!-- <li class="nav-item">
         <div class="top-nav-search">
           <a href="javascript:void(0);" class="responsive-search">
             <i class="fa-solid fa-magnifying-glass"></i>
@@ -48,9 +48,9 @@
             </button>
           </form>
         </div>
-      </li>
+      </li> -->
 
-      <li class="nav-item dropdown has-arrow flag-nav">
+      <!-- <li class="nav-item dropdown has-arrow flag-nav">
         <a
           class="nav-link dropdown-toggle"
           data-bs-toggle="dropdown"
@@ -220,9 +220,9 @@
             <a href="#">View all Notifications</a>
           </div>
         </div>
-      </li>
+      </li> -->
 
-      <li class="nav-item dropdown">
+      <!-- <li class="nav-item dropdown">
         <a
           href="#"
           class="dropdown-toggle nav-link"
@@ -360,7 +360,7 @@
             <a href="#">View all Messages</a>
           </div>
         </div>
-      </li>
+      </li> -->
 
       <li class="nav-item dropdown has-arrow main-drop">
         <a

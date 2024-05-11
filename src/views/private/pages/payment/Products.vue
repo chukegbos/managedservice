@@ -22,10 +22,16 @@
                 @click="onSubmit('delete')"
                 class="btn add-btn px-4"
               >
-                <i class="fa-solid fa-minus"></i> Delete Product
+                <i class="fa-solid fa-minus"></i> Delete
               </button>
-              <button @click="openModal('add')" class="btn add-btn me-2 px-4">
-                <i class="fa-solid fa-plus"></i> Add Product
+              <button
+                v-else
+                class="btn add-btn px-4"
+              >
+                <i class="fa-solid fa-minus"></i> Delete
+              </button>
+              <button @click="visible = true" class="btn add-btn me-2 px-4">
+                <i class="fa-solid fa-plus"></i> Add 
               </button>
             </div>
           </div>
@@ -62,13 +68,37 @@
                 />
               </template>
             </Column>
-            <Column field="name" header="Name" style="width: 40%">
+            <Column header="Name" style="width: 20%">
               <template #body="slotProps">
-                {{ slotProps.data.name ? slotProps.data.name : "N/A" }}
+                {{ slotProps.data.payment_name }}<br><b>Code:</b> #{{ slotProps.data.product_id }}
               </template>
             </Column>
-            <Column header="Date Created" style="width: 35%">
+            <Column header="Amount" style="width: 20%">
               <template #body="slotProps">
+                <span v-html="nairaSign"></span>{{ formatPrice(slotProps.data.amount) }}<br>
+                <b>Grace Period:</b>  {{ slotProps.data.grace_period }}days
+              </template>
+            </Column>
+            <Column header="Status" style="width: 25%">
+              <template #body="slotProps">
+                <span>
+                  <b>Door Access:</b>  
+                  <span v-if="slotProps.data.door_access==1"> Yes </span>
+                  <span v-else> No </span>
+                </span>
+                <br>
+               
+                <span>
+                  <b>Type of product:</b>  
+                  <span v-if="slotProps.data.type==1"> Monthly </span>
+                  <span v-else> One Off </span>
+                 <span v-if="slotProps.data.type==1"> <b>Reoccuring Day:</b>  {{ slotProps.data.reoccuring_day }} date</span>
+                </span>
+              </template>
+            </Column>
+            <Column header="Creator" style="width: 15%">
+              <template #body="slotProps">
+                {{ slotProps.data.creator }}<br>
                 {{ formatDate(slotProps.data.created_at) }}
               </template>
             </Column>
@@ -82,6 +112,7 @@
                 >
                   Edit
                 </button> -->
+                
                 <Dropdown
                   v-model="actionValue"
                   optionLabel="name"
@@ -104,11 +135,10 @@
       </div>
     </div>
 
-    <Modal name="Product-modal" :title="modalParams.title">
-      <ModalContent>
+    <Dialog v-model:addVisible="visible" modal header="Add Product" :style="{ width: '25rem' }">
         <form @submit.prevent="onSubmit(modalParams.title, currentEditID)">
-          <div class="d-flex">
-            <div class="input-block mb-4 mx-3 w-50">
+          <div class="row">
+            <div class="col-md-6 mb-3">
               <label class="col-form-label fs-6">Product Name</label>
               <input
                 class="form-control"
@@ -117,7 +147,7 @@
                 required
               />
             </div>
-            <div class="input-block mb-4 mx-3 w-50">
+            <div class="col-md-6 mb-3">
               <label class="col-form-label fs-6">Amount</label>
               <input
                 class="form-control"
@@ -126,28 +156,44 @@
                 required
               />
             </div>
+            <div class="col-md-6 mb-3">
+              <label class="col-form-label fs-6">Door Access</label>
+              <select v-model="addProductData.door_access" class="form-control" required>
+                  <option value=null> -- Select Type-- </option>
+                  <option value='1'>Yes</option>
+                  <option value='0'>No</option>
+              </select>
+            </div>
+            <div class="col-md-6 mb-3">
+              <label class="col-form-label fs-6">Grace Period</label>
+              <input
+                class="form-control"
+                type="number"
+                v-model="addProductData.grace_period"
+                required
+              />
+            </div>
           </div>
-
-          <div class="mx-3">
-            <button class="btn btn-primary account-btn w-100" type="submit">
-              Submit
-            </button>
+          <div class="flex justify-content-end gap-2">
+            <Button type="button" label="Cancel" severity="secondary" @click="addVisible = false"></Button>
+            <Button type="button" label="Save" @click="addVisible = false"></Button>
           </div>
         </form>
-      </ModalContent>
-    </Modal>
+    </Dialog>
   </div>
 </template>
 
 <script setup>
 import { axiosUrl } from "@/env";
-import { ref, reactive, onMounted } from "vue";
+import { ref, reactive, onMounted, computed } from "vue";
 import { FilterMatchMode } from "primevue/api";
 import { useAuthStore } from "@/store/authStore";
-import { formatDate, swalErrorHandle } from "@/components/myHelperFunction";
+import { formatDate, formatPrice, swalErrorHandle } from "@/components/myHelperFunction";
 import { Modal, ModalContent, open, close } from "@dimsog/vue-modal";
 
+
 const isLoading = ref(false);
+const nairaSign = "&#x20A6;";
 const authStore = useAuthStore();
 const loggedInUser = authStore.loggedInUser;
 const items = ref([]);
@@ -155,6 +201,7 @@ const selected = ref([]);
 const selectAll = ref("");
 const actionValue = ref("");
 const currentEditID = ref();
+const addVisible = ref(false);
 const addProductData = reactive({
   payment_name: "",
   amount: null,
@@ -163,6 +210,8 @@ const addProductData = reactive({
   type: null,
   reoccuring_day: null,
 });
+
+
 const options = [
   {
     id: "1",
