@@ -120,8 +120,8 @@ const sidebarDropdown = ref([])
 const sidebarLinks = ref([])
 
 const toggleSidebar = (num) => {
-  console.log(sidebarLinks.value[num])
-  console.log(sidebarDropdown.value[num])
+  // console.log(sidebarLinks.value[num])
+  // console.log(sidebarDropdown.value[num])
 
   if (!sidebarLinks.value[num].classList.contains("active", "subdrop")) {
     for (let i = 0; i < sidebarBtnNum.value; i++) {

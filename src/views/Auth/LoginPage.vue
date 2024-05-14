@@ -3,7 +3,7 @@
     <div class="main-wrapper d-flex" style="height: 100vh">
       <div class="w-50 h-100" style="background-color: #014aac">
         <img
-          src="../../assets/img/lindsay-henwood-7_kRuX1hSXM-unsplash.jpg"
+          src="@/assets/img/lindsay-henwood-7_kRuX1hSXM-unsplash.jpg"
           alt=""
           style="width: 100%; height: 100%"
         />
@@ -14,7 +14,7 @@
         <form @submit.prevent="onSubmit()" class="w-75">
           <div class="d-flex justify-content-center mb-3">
             <img
-              src="../../assets/img/Black_and_Beige_Fitness_Sports_Club_Logo-removebg-preview.png"
+              src="@/assets/img/Black_and_Beige_Fitness_Sports_Club_Logo-removebg-preview.png"
               alt=""
             />
           </div>
@@ -39,21 +39,19 @@
           </div>
           <div class="input-block mb-4 text-center">
             <button
-              class="btn account-btn text-white w-100"
+              class="btn account-btn text-white w-100 d-flex justify-content-center align-items-center"
               type="submit"
               :disabled="loading"
             >
-              Login
-              <svg v-if="loading" class="spinner" viewBox="0 0 50 50">
-                <circle
-                  class="path"
-                  cx="25"
-                  cy="25"
-                  r="20"
-                  fill="none"
-                  stroke-width="5"
-                ></circle>
-              </svg>
+              login
+              <div
+                v-if="loading"
+                class="spinner-border ms-2"
+                role="status"
+                style="height: 18px; width: 18px"
+              >
+                <span class="visually-hidden">Loading...</span>
+              </div>
             </button>
           </div>
         </form>
@@ -191,7 +189,7 @@ button {
   background-color: #014aac;
 }
 
-button:hover {
+button:hover, button:disabled {
   background-color: #014bacb7 !important;
 }
 </style>

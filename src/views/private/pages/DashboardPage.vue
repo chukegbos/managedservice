@@ -18,7 +18,9 @@
             <div class="col-md-6 col-sm-12 col-lg-6 col-xl-3 mb-3 mb-xl-0">
               <div class="card dash-widget border-0 shadow-sm">
                 <div class="card-body">
-                  <span class="dash-widget-icon"><i class="fa-solid fa-cubes"></i></span>
+                  <span class="dash-widget-icon"
+                    ><i class="fa-solid fa-cubes"></i
+                  ></span>
                   <div class="dash-widget-info">
                     <h3>112</h3>
                     <span>Projects</span>
@@ -29,7 +31,9 @@
             <div class="col-sm-12 col-md-6 col-lg-6 col-xl-3 mb-3 mb-xl-0">
               <div class="card dash-widget border-0 shadow-sm">
                 <div class="card-body">
-                  <span class="dash-widget-icon"><i class="fa-solid fa-dollar-sign"></i></span>
+                  <span class="dash-widget-icon"
+                    ><i class="fa-solid fa-dollar-sign"></i
+                  ></span>
                   <div class="dash-widget-info">
                     <h3>44</h3>
                     <span>Clients</span>
@@ -40,7 +44,9 @@
             <div class="col-sm-12 col-md-6 col-lg-6 col-xl-3 mb-3 mb-xl-0">
               <div class="card dash-widget border-0 shadow-sm">
                 <div class="card-body">
-                  <span class="dash-widget-icon"><i class="fa-regular fa-gem"></i></span>
+                  <span class="dash-widget-icon"
+                    ><i class="fa-regular fa-gem"></i
+                  ></span>
                   <div class="dash-widget-info">
                     <h3>37</h3>
                     <span>Tasks</span>
@@ -51,7 +57,9 @@
             <div class="col-sm-12 col-md-6 col-lg-6 col-xl-3 mb-3 mb-xl-0">
               <div class="card dash-widget border-0 shadow-sm">
                 <div class="card-body">
-                  <span class="dash-widget-icon"><i class="fa-solid fa-user"></i></span>
+                  <span class="dash-widget-icon"
+                    ><i class="fa-solid fa-user"></i
+                  ></span>
                   <div class="dash-widget-info">
                     <h3>218</h3>
                     <span>Employees</span>
@@ -76,8 +84,13 @@
                     </div>
                     <h3 class="mb-3">10</h3>
                     <div class="progress height-five mb-2">
-                      <div class="progress-bar bg-primary w-70" role="progressbar" aria-valuenow="40" aria-valuemin="0"
-                        aria-valuemax="100"></div>
+                      <div
+                        class="progress-bar bg-primary w-70"
+                        role="progressbar"
+                        aria-valuenow="40"
+                        aria-valuemin="0"
+                        aria-valuemax="100"
+                      ></div>
                     </div>
                     <p class="mb-0">Overall Employees 218</p>
                   </div>
@@ -94,10 +107,17 @@
                     </div>
                     <h3 class="mb-3">$1,42,300</h3>
                     <div class="progress height-five mb-2">
-                      <div class="progress-bar bg-primary w-70" role="progressbar" aria-valuenow="40" aria-valuemin="0"
-                        aria-valuemax="100"></div>
+                      <div
+                        class="progress-bar bg-primary w-70"
+                        role="progressbar"
+                        aria-valuenow="40"
+                        aria-valuemin="0"
+                        aria-valuemax="100"
+                      ></div>
                     </div>
-                    <p class="mb-0">Previous Month <span class="text-muted">$1,15,852</span></p>
+                    <p class="mb-0">
+                      Previous Month <span class="text-muted">$1,15,852</span>
+                    </p>
                   </div>
                 </div>
                 <div class="card border-0 shadow-sm">
@@ -112,10 +132,17 @@
                     </div>
                     <h3 class="mb-3">$8,500</h3>
                     <div class="progress height-five mb-2">
-                      <div class="progress-bar bg-primary w-70" role="progressbar" aria-valuenow="40" aria-valuemin="0"
-                        aria-valuemax="100"></div>
+                      <div
+                        class="progress-bar bg-primary w-70"
+                        role="progressbar"
+                        aria-valuenow="40"
+                        aria-valuemin="0"
+                        aria-valuemax="100"
+                      ></div>
                     </div>
-                    <p class="mb-0">Previous Month <span class="text-muted">$7,500</span></p>
+                    <p class="mb-0">
+                      Previous Month <span class="text-muted">$7,500</span>
+                    </p>
                   </div>
                 </div>
                 <div class="card border-0 shadow-sm">
@@ -130,10 +157,17 @@
                     </div>
                     <h3 class="mb-3">$1,12,000</h3>
                     <div class="progress height-five mb-2">
-                      <div class="progress-bar bg-primary w-70" role="progressbar" aria-valuenow="40" aria-valuemin="0"
-                        aria-valuemax="100"></div>
+                      <div
+                        class="progress-bar bg-primary w-70"
+                        role="progressbar"
+                        aria-valuenow="40"
+                        aria-valuemin="0"
+                        aria-valuemax="100"
+                      ></div>
                     </div>
-                    <p class="mb-0">Previous Month <span class="text-muted">$1,42,000</span></p>
+                    <p class="mb-0">
+                      Previous Month <span class="text-muted">$1,42,000</span>
+                    </p>
                   </div>
                 </div>
               </div>
@@ -147,38 +181,74 @@
                   <h5 class="card-title">Statistics</h5>
                   <div class="stats-list">
                     <div class="stats-info">
-                      <p>Today Leave <strong>4 <small>/ 65</small></strong></p>
+                      <p>
+                        Today Leave <strong>4 <small>/ 65</small></strong>
+                      </p>
                       <div class="progress">
-                        <div class="progress-bar bg-primary w-31" role="progressbar" aria-valuenow="31"
-                          aria-valuemin="0" aria-valuemax="100"></div>
+                        <div
+                          class="progress-bar bg-primary w-31"
+                          role="progressbar"
+                          aria-valuenow="31"
+                          aria-valuemin="0"
+                          aria-valuemax="100"
+                        ></div>
                       </div>
                     </div>
                     <div class="stats-info">
-                      <p>Pending Invoice <strong>15 <small>/ 92</small></strong></p>
+                      <p>
+                        Pending Invoice <strong>15 <small>/ 92</small></strong>
+                      </p>
                       <div class="progress">
-                        <div class="progress-bar bg-warning w-31" role="progressbar" aria-valuenow="31"
-                          aria-valuemin="0" aria-valuemax="100"></div>
+                        <div
+                          class="progress-bar bg-warning w-31"
+                          role="progressbar"
+                          aria-valuenow="31"
+                          aria-valuemin="0"
+                          aria-valuemax="100"
+                        ></div>
                       </div>
                     </div>
                     <div class="stats-info">
-                      <p>Completed Projects <strong>85 <small>/ 112</small></strong></p>
+                      <p>
+                        Completed Projects
+                        <strong>85 <small>/ 112</small></strong>
+                      </p>
                       <div class="progress">
-                        <div class="progress-bar bg-success w-62" role="progressbar" aria-valuenow="62"
-                          aria-valuemin="0" aria-valuemax="100"></div>
+                        <div
+                          class="progress-bar bg-success w-62"
+                          role="progressbar"
+                          aria-valuenow="62"
+                          aria-valuemin="0"
+                          aria-valuemax="100"
+                        ></div>
                       </div>
                     </div>
                     <div class="stats-info">
-                      <p>Open Tickets <strong>190 <small>/ 212</small></strong></p>
+                      <p>
+                        Open Tickets <strong>190 <small>/ 212</small></strong>
+                      </p>
                       <div class="progress">
-                        <div class="progress-bar bg-danger w-62" role="progressbar" aria-valuenow="62" aria-valuemin="0"
-                          aria-valuemax="100"></div>
+                        <div
+                          class="progress-bar bg-danger w-62"
+                          role="progressbar"
+                          aria-valuenow="62"
+                          aria-valuemin="0"
+                          aria-valuemax="100"
+                        ></div>
                       </div>
                     </div>
                     <div class="stats-info">
-                      <p>Closed Tickets <strong>22 <small>/ 212</small></strong></p>
+                      <p>
+                        Closed Tickets <strong>22 <small>/ 212</small></strong>
+                      </p>
                       <div class="progress">
-                        <div class="progress-bar bg-info w-22" role="progressbar" aria-valuenow="22" aria-valuemin="0"
-                          aria-valuemax="100"></div>
+                        <div
+                          class="progress-bar bg-info w-22"
+                          role="progressbar"
+                          aria-valuenow="22"
+                          aria-valuemin="0"
+                          aria-valuemax="100"
+                        ></div>
                       </div>
                     </div>
                   </div>
@@ -206,28 +276,73 @@
                     </div>
                   </div>
                   <div class="progress mb-4">
-                    <div class="progress-bar bg-purple w-30" role="progressbar" aria-valuenow="30" aria-valuemin="0"
-                      aria-valuemax="100">30%</div>
-                    <div class="progress-bar bg-warning w-22" role="progressbar" aria-valuenow="18" aria-valuemin="0"
-                      aria-valuemax="100">22%</div>
-                    <div class="progress-bar bg-success w-24" role="progressbar" aria-valuenow="12" aria-valuemin="0"
-                      aria-valuemax="100">24%</div>
-                    <div class="progress-bar bg-danger w-21" role="progressbar" aria-valuenow="14" aria-valuemin="0"
-                      aria-valuemax="100">21%</div>
-                    <div class="progress-bar bg-info w-10" role="progressbar" aria-valuenow="14" aria-valuemin="0"
-                      aria-valuemax="100">10%</div>
+                    <div
+                      class="progress-bar bg-purple w-30"
+                      role="progressbar"
+                      aria-valuenow="30"
+                      aria-valuemin="0"
+                      aria-valuemax="100"
+                    >
+                      30%
+                    </div>
+                    <div
+                      class="progress-bar bg-warning w-22"
+                      role="progressbar"
+                      aria-valuenow="18"
+                      aria-valuemin="0"
+                      aria-valuemax="100"
+                    >
+                      22%
+                    </div>
+                    <div
+                      class="progress-bar bg-success w-24"
+                      role="progressbar"
+                      aria-valuenow="12"
+                      aria-valuemin="0"
+                      aria-valuemax="100"
+                    >
+                      24%
+                    </div>
+                    <div
+                      class="progress-bar bg-danger w-21"
+                      role="progressbar"
+                      aria-valuenow="14"
+                      aria-valuemin="0"
+                      aria-valuemax="100"
+                    >
+                      21%
+                    </div>
+                    <div
+                      class="progress-bar bg-info w-10"
+                      role="progressbar"
+                      aria-valuenow="14"
+                      aria-valuemin="0"
+                      aria-valuemax="100"
+                    >
+                      10%
+                    </div>
                   </div>
                   <div>
-                    <p><i class="fa-regular fa-circle-dot text-purple me-2"></i>Completed Tasks <span
-                        class="float-end">166</span></p>
-                    <p><i class="fa-regular fa-circle-dot text-warning me-2"></i>Inprogress Tasks <span
-                        class="float-end">115</span></p>
-                    <p><i class="fa-regular fa-circle-dot text-success me-2"></i>On Hold Tasks <span
-                        class="float-end">31</span></p>
-                    <p><i class="fa-regular fa-circle-dot text-danger me-2"></i>Pending Tasks <span
-                        class="float-end">47</span></p>
-                    <p class="mb-0"><i class="fa-regular fa-circle-dot text-info me-2"></i>Review Tasks <span
-                        class="float-end">5</span></p>
+                    <p>
+                      <i class="fa-regular fa-circle-dot text-purple me-2"></i
+                      >Completed Tasks <span class="float-end">166</span>
+                    </p>
+                    <p>
+                      <i class="fa-regular fa-circle-dot text-warning me-2"></i
+                      >Inprogress Tasks <span class="float-end">115</span>
+                    </p>
+                    <p>
+                      <i class="fa-regular fa-circle-dot text-success me-2"></i
+                      >On Hold Tasks <span class="float-end">31</span>
+                    </p>
+                    <p>
+                      <i class="fa-regular fa-circle-dot text-danger me-2"></i
+                      >Pending Tasks <span class="float-end">47</span>
+                    </p>
+                    <p class="mb-0">
+                      <i class="fa-regular fa-circle-dot text-info me-2"></i
+                      >Review Tasks <span class="float-end">5</span>
+                    </p>
                   </div>
                 </div>
               </div>
@@ -235,10 +350,15 @@
             <div class="col-12 col-lg-6 col-xl-4 d-flex mb-2 mb-lg-4">
               <div class="card flex-fill border-0 shadow-sm">
                 <div class="card-body">
-                  <h4 class="card-title">Today Absent <span class="badge bg-inverse-danger ms-2">5</span></h4>
+                  <h4 class="card-title">
+                    Today Absent
+                    <span class="badge bg-inverse-danger ms-2">5</span>
+                  </h4>
                   <div class="leave-info-box">
                     <div class="media d-flex align-items-center">
-                      <a href="profile.html" class="avatar"><img src="@/assets/img/user.jpg" alt="User Image"></a>
+                      <a href="profile.html" class="avatar"
+                        ><img src="@/assets/img/user.jpg" alt="User Image"
+                      /></a>
                       <div class="media-body flex-grow-1">
                         <div class="text-sm my-0">Martin Lewis</div>
                       </div>
@@ -255,7 +375,9 @@
                   </div>
                   <div class="leave-info-box">
                     <div class="media d-flex align-items-center">
-                      <a href="profile.html" class="avatar"><img src="@/assets/img/user.jpg" alt="User Image"></a>
+                      <a href="profile.html" class="avatar"
+                        ><img src="@/assets/img/user.jpg" alt="User Image"
+                      /></a>
                       <div class="media-body flex-grow-1">
                         <div class="text-sm my-0">Martin Lewis</div>
                       </div>
@@ -271,7 +393,9 @@
                     </div>
                   </div>
                   <div class="load-more text-center">
-                    <a class="text-dark" href="javascript:void(0);">Load More</a>
+                    <a class="text-dark" href="javascript:void(0);"
+                      >Load More</a
+                    >
                   </div>
                 </div>
               </div>
@@ -373,26 +497,23 @@
 </template>
 
 <script setup>
+import { ref, reactive, onMounted } from "vue";
+import { useAuthStore } from "@/store/authStore";
+import { axiosUrl } from "@/env";
+import Swal from "sweetalert2";
 
-  import { ref, reactive, onMounted } from 'vue';
-  import { useAuthStore } from '@/store/authStore';
-  import { axiosUrl } from "@/env";
-  import Swal from 'sweetalert2'
-  
-  const loading = ref(false);
-  const user = ref("");
-  const authStore = useAuthStore();
-  const token = authStore.token
-  onMounted(() => {
-    if (window.innerWidth >= 1100)
-      document.querySelectorAll('.page-header')[0].style.width = "1000px"
+const loading = ref(false);
+const user = ref("");
+const authStore = useAuthStore();
+const token = authStore.token;
+onMounted(() => {
+  if (window.innerWidth >= 1100)
+    document.querySelectorAll(".page-header")[0].style.width = "1000px";
 
-      if (!token) {
-        window.location.href = "/login";
-      }
-    });
-
- 
+  // if (!token) {
+  //   window.location.href = "/login";
+  // }
+});
 </script>
 
 <style scoped></style>

@@ -23,7 +23,9 @@
             >
               <i class="fa-solid fa-minus"></i> Delete
             </button>
-            <router-link  class="btn add-btn me-2 px-4" to="/members/create">Add</router-link>
+            <router-link class="btn add-btn me-2 px-4" to="/members/create"
+              >Add</router-link
+            >
           </div>
         </div>
       </div>
@@ -60,31 +62,42 @@
             </Column> -->
             <Column field="image" header="Photo">
               <template #body="slotProps">
-                <img :src="slotProps.data.image" alt="" class="img-fluid" style="height:60px; width:90px">
+                <img
+                  :src="slotProps.data.image"
+                  alt=""
+                  class="img-fluid"
+                  style="height: 60px; width: 90px"
+                />
               </template>
             </Column>
 
-            <Column field="membership_id" header="Membership ID" style="width: 15%"></Column>
+            <Column
+              field="membership_id"
+              header="Membership ID"
+              style="width: 15%"
+            ></Column>
 
-            <Column field="name" header="Fullname" style="width: 20%">
+            <Column field="name" header="Fullname">
               <template #body="slotProps">
-                {{ slotProps.data.last_name }} {{ slotProps.data.first_name }} {{ slotProps.data.middle_name }}
+                {{ slotProps.data.last_name }} {{ slotProps.data.first_name }}
+                {{ slotProps.data.middle_name }}
               </template>
             </Column>
 
             <Column field="phone_1" header="Phone"> </Column>
 
-
             <Column header="Gender">
               <template #body="slotProps">
-                <span v-if="slotProps.data.gender=='male'">Male</span>
+                <span v-if="slotProps.data.gender == 'male'">Male</span>
                 <span v-else class="text-danger">Female</span>
               </template>
             </Column>
 
             <Column header="Status">
               <template #body="slotProps">
-                <span v-if="slotProps.data.status==1" class="text-success">Access</span>
+                <span v-if="slotProps.data.status == 1" class="text-success"
+                  >Access</span
+                >
                 <span v-else class="text-danger">No Access</span>
               </template>
             </Column>
@@ -95,11 +108,18 @@
               </template>
             </Column>
 
-
-            <Column header="Action" style="width: 20%">
-              <template #body="slotProps">
+            <Column header="Action">
+              <template #body="">
+                <Dropdown
+                  @change="checkSelectedAction(selectedAction)"
+                  v-model="selectedAction"
+                  :options="cities"
+                  optionLabel="label"
+                  optionValue="id"
+                  placeholder="Action"
+                />
                 <!-- Example single danger button -->
-                <div class="btn-group">
+                <!-- <div class="btn-group">
                   <button type="button" class="btn btn-danger dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
                     Action
                   </button>
@@ -112,7 +132,7 @@
                     <li><a class="dropdown-item" href="javascript:void(0)" @click="editModal(slotProps.data)">Edit</a></li>
                     <li><a class="dropdown-item" href="javascript:void(0)" @click="deleteUser(slotProps.data.id)">Delete</a></li>
                   </ul>
-                </div>
+                </div> -->
               </template>
             </Column>
           </DataTable>
@@ -127,55 +147,62 @@
         </div>
       </div>
     </div>
-
   </div>
 </template>
 
 <script setup>
-  import { axiosUrl } from "@/env";
-  import { ref, reactive, onMounted } from "vue";
-  import { FilterMatchMode } from "primevue/api";
-  import { useAuthStore } from "@/store/authStore";
-  import { formatDate } from "@/components/myHelperFunction";
+import { axiosUrl } from "@/env";
+import { ref, reactive, onMounted } from "vue";
+import { FilterMatchMode } from "primevue/api";
+import { useAuthStore } from "@/store/authStore";
+import { formatDate } from "@/components/myHelperFunction";
 
-  const isLoading = ref(false);
-  const authStore = useAuthStore();
-  const loggedInUser = authStore.loggedInUser;
-  const items = ref([]);
-  const selected = ref([]);
-  const selectAll = ref("");
-  const currentEditID = ref();
-  const filters = ref({
-    global: { value: null, matchMode: FilterMatchMode.CONTAINS },
-  });
+const isLoading = ref(false);
+const authStore = useAuthStore();
+const loggedInUser = authStore.loggedInUser;
+const items = ref([]);
+const selected = ref([]);
+const selectAll = ref("");
+const currentEditID = ref();
+const filters = ref({
+  global: { value: null, matchMode: FilterMatchMode.CONTAINS },
+});
+const selectedAction = ref();
+const cities = ref([
+  { label: "Edit", id: 1 },
+  { label: "Activate", id: 2 },
+  { label: "View", id: 3 },
+  { label: "Delete", id: 4 },
+]);
 
+const checkSelectedAction = (id) => {
+  
+}
 
+const toggleAll = () => {
+  if (selectAll.value)
+    for (let i = 0; i < items.value.length; i++)
+      selected.value.push(items.value[i].id);
+  else selected.value = [];
+};
 
-  const toggleAll = () => {
-    if (selectAll.value)
-      for (let i = 0; i < items.value.length; i++)
-        selected.value.push(items.value[i].id);
-    else selected.value = [];
-  };
+const getMembers = async () => {
+  isLoading.value = true;
 
-  const getMembers = async () => {
-    isLoading.value = true;
+  await axiosUrl
+    .get("/members")
+    .then((response) => {
+      items.value = response.data.data;
+      isLoading.value = false;
+    })
+    .catch((error) => {
+      isLoading.value = false;
+    });
+};
 
-    await axiosUrl
-      .get("/members")
-      .then((response) => {
-        items.value = response.data.data;
-        isLoading.value = false;
-      })
-      .catch((error) => {
-        isLoading.value = false;
-      });
-  };
-
-
-  onMounted(() => {
-    getMembers();
-  });
+onMounted(() => {
+  getMembers();
+});
 </script>
 
 <style scoped>
