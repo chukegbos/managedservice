@@ -24,14 +24,14 @@
               >
                 <i class="fa-solid fa-minus"></i> Delete
               </button>
-              <button
-                v-else
-                class="btn add-btn px-4"
-              >
+              <button v-else class="btn add-btn px-4">
                 <i class="fa-solid fa-minus"></i> Delete
               </button>
-              <button @click="visible = true" class="btn add-btn me-2 px-4">
-                <i class="fa-solid fa-plus"></i> Add 
+              <!-- <button @click="visible = true" class="btn add-btn me-2 px-4">
+                < Add
+              </button> -->
+              <button @click="openModal('add')" class="btn add-btn me-2 px-4">
+                <i class="fa-solid fa-plus"></i> Add
               </button>
             </div>
           </div>
@@ -70,55 +70,79 @@
             </Column>
             <Column header="Name" style="width: 20%">
               <template #body="slotProps">
-                {{ slotProps.data.payment_name }}<br><b>Code:</b> #{{ slotProps.data.product_id }}
+                {{
+                  slotProps.data.payment_name
+                    ? slotProps.data.payment_name
+                    : ""
+                }}<br />
+                <b>Code:</b> #{{
+                  slotProps.data.product_id ? slotProps.data.product_id : ""
+                }}
               </template>
             </Column>
             <Column header="Amount" style="width: 20%">
               <template #body="slotProps">
-                <span v-html="nairaSign"></span>{{ formatPrice(slotProps.data.amount) }}<br>
-                <b>Grace Period:</b>  {{ slotProps.data.grace_period }}days
+                <span v-html="nairaSign"></span
+                >{{ formatPrice(slotProps.data.amount) }}<br />
+                <b>Grace Period:</b>
+                {{
+                  slotProps.data.grace_period
+                    ? slotProps.data.grace_period
+                    : ""
+                }}days
               </template>
             </Column>
             <Column header="Status" style="width: 25%">
               <template #body="slotProps">
                 <span>
-                  <b>Door Access:</b>  
-                  <span v-if="slotProps.data.door_access==1"> Yes </span>
+                  <b>Door Access:</b>
+                  <span v-if="slotProps.data.door_access == 1"> Yes </span>
                   <span v-else> No </span>
                 </span>
-                <br>
-               
+                <br />
+
                 <span>
-                  <b>Type of product:</b>  
-                  <span v-if="slotProps.data.type==1"> Monthly </span>
+                  <b>Type of product:</b>
+                  <span v-if="slotProps.data.type == 1"> Monthly </span>
                   <span v-else> One Off </span>
-                 <span v-if="slotProps.data.type==1"> <b>Reoccuring Day:</b>  {{ slotProps.data.reoccuring_day }} date</span>
+                  <span>
+                    <b v-if="slotProps.data.reoccuring_day == 1"
+                      >Reoccurring Day: </b
+                    >
+                    <b v-else>Reoccurring Days: </b>
+                    <span v-if="slotProps.data.type == 1">
+                      {{
+                        slotProps.data.reoccuring_day
+                          ? slotProps.data.reoccuring_day
+                          : "N/A"
+                      }}
+                    </span>
+                    <span v-else>N/A</span>
+                  </span>
                 </span>
               </template>
             </Column>
             <Column header="Creator" style="width: 15%">
               <template #body="slotProps">
-                {{ slotProps.data.creator }}<br>
+                {{ slotProps.data.creator ? slotProps.data.creator : "" }}<br />
                 {{ formatDate(slotProps.data.created_at) }}
               </template>
             </Column>
-            <Column header="Action" style="width: 20%">
-              <template>
-                <!-- <button
-                  @click="
-                    openModal('edit', slotProps.data.id, slotProps.data.name)
-                  "
-                  class="btn btn-warning btn-sm m-1 text-white px-4"
-                >
-                  Edit
-                </button> -->
-                
+            <Column header="Action" style="width: 15%">
+              <template #body="slotProps">
                 <Dropdown
-                  v-model="actionValue"
+                  @change="
+                    checkSelectedAction(
+                      actionValue[slotProps.data.id],
+                      slotProps.data
+                    )
+                  "
+                  class="w-100"
+                  v-model="actionValue[slotProps.data.id]"
                   optionLabel="name"
                   optionValue="id"
-                  @change="checkSelectedAction(actionValue)"
                   :options="options"
+                  placeholder="Action"
                 />
               </template>
             </Column>
@@ -135,51 +159,95 @@
       </div>
     </div>
 
-    <Dialog v-model:addVisible="visible" modal header="Add Product" :style="{ width: '25rem' }">
-        <form @submit.prevent="onSubmit(modalParams.title, currentEditID)">
+    <!-- Modal -->
+    <Modal name="product-modal" :title="modalParams.title">
+      <ModalContent>
+        <form
+          @submit.prevent="onSubmit(modalParams.title, currentEditID)"
+          style="width: 95%; margin: 0 auto"
+        >
           <div class="row">
-            <div class="col-md-6 mb-3">
+            <div class="col-12 col-lg-6 mb-3">
               <label class="col-form-label fs-6">Product Name</label>
               <input
                 class="form-control"
                 type="text"
-                v-model="addProductData.payment_name"
+                v-model="productData.payment_name"
                 required
               />
             </div>
-            <div class="col-md-6 mb-3">
+            <div class="col-12 col-lg-6 mb-3">
               <label class="col-form-label fs-6">Amount</label>
               <input
                 class="form-control"
                 type="number"
-                v-model="addProductData.amount"
+                v-model="productData.amount"
                 required
               />
             </div>
-            <div class="col-md-6 mb-3">
+            <div class="col-12 col-lg-6 mb-3">
               <label class="col-form-label fs-6">Door Access</label>
-              <select v-model="addProductData.door_access" class="form-control" required>
-                  <option value=null> -- Select Type-- </option>
-                  <option value='1'>Yes</option>
-                  <option value='0'>No</option>
+              <select
+                v-model="productData.door_access"
+                class="form-control"
+                required
+              >
+                <option value="null">-- Select Type--</option>
+                <option value="1">Yes</option>
+                <option value="0">No</option>
               </select>
             </div>
-            <div class="col-md-6 mb-3">
+            <div class="col-12 col-lg-6 mb-3">
               <label class="col-form-label fs-6">Grace Period</label>
               <input
                 class="form-control"
                 type="number"
-                v-model="addProductData.grace_period"
+                v-model="productData.grace_period"
+                required
+              />
+            </div>
+            <div class="col-12 col-lg-6 mb-3">
+              <label class="col-form-label fs-6">Type</label>
+              <select v-model="productData.type" class="form-control" required>
+                <option value="null">-- Select Type--</option>
+                <option value="0">One Off</option>
+                <option value="1">Monthly</option>
+              </select>
+            </div>
+            <div
+              class="col-12 col-lg-6 mb-3"
+              v-if="productData.type === '1' || productData.type === 1"
+            >
+              <label class="col-form-label fs-6">Recurring Day</label>
+              <input
+                class="form-control"
+                type="number"
+                v-model="productData.reoccuring_day"
                 required
               />
             </div>
           </div>
-          <div class="flex justify-content-end gap-2">
-            <Button type="button" label="Cancel" severity="secondary" @click="addVisible = false"></Button>
-            <Button type="button" label="Save" @click="addVisible = false"></Button>
+          <!-- <div class="flex justify-content-end gap-2">
+            <Button
+              type="button"
+              label="Cancel"
+              severity="secondary"
+              @click="addVisible = false"
+            ></Button>
+            <Button
+              type="button"
+              label="Save"
+              @click="addVisible = false"
+            ></Button>
+          </div> -->
+          <div class="mt-1">
+            <button class="btn btn-primary account-btn w-100" type="submit">
+              Submit
+            </button>
           </div>
         </form>
-    </Dialog>
+      </ModalContent>
+    </Modal>
   </div>
 </template>
 
@@ -188,9 +256,12 @@ import { axiosUrl } from "@/env";
 import { ref, reactive, onMounted, computed } from "vue";
 import { FilterMatchMode } from "primevue/api";
 import { useAuthStore } from "@/store/authStore";
-import { formatDate, formatPrice, swalErrorHandle } from "@/components/myHelperFunction";
+import {
+  formatDate,
+  formatPrice,
+  swalErrorHandle,
+} from "@/components/myHelperFunction";
 import { Modal, ModalContent, open, close } from "@dimsog/vue-modal";
-
 
 const isLoading = ref(false);
 const nairaSign = "&#x20A6;";
@@ -199,10 +270,10 @@ const loggedInUser = authStore.loggedInUser;
 const items = ref([]);
 const selected = ref([]);
 const selectAll = ref("");
-const actionValue = ref("");
+const actionValue = ref([]);
 const currentEditID = ref();
 const addVisible = ref(false);
-const addProductData = reactive({
+const productData = reactive({
   payment_name: "",
   amount: null,
   door_access: null,
@@ -210,7 +281,6 @@ const addProductData = reactive({
   type: null,
   reoccuring_day: null,
 });
-
 
 const options = [
   {
@@ -232,14 +302,10 @@ const filters = ref({
 const modalParams = reactive({
   title: "",
 });
-const modalForm = reactive({
-  name: "",
-  club_code: loggedInUser.club_code,
-});
 
-const checkSelectedAction = (id) => {
+const checkSelectedAction = (id, data) => {
   if (id === "1") {
-    openModal("edit", id, "Edit Product");
+    openModal("edit", data);
   } else if (id === "2") {
     onSubmit("delete", id);
   } else if (id === "3") {
@@ -247,15 +313,20 @@ const checkSelectedAction = (id) => {
   }
 };
 
-const openModal = (type, id, name) => {
+const openModal = (type, data) => {
   if (type === "add") modalParams.title = "Add Product";
   else if (type === "edit") {
     modalParams.title = "Edit Product";
-    modalForm.name = name;
-    currentEditID.value = id;
+    productData.payment_name = data.payment_name;
+    productData.amount = data.amount;
+    productData.door_access = data.door_access;
+    productData.grace_period = data.grace_period;
+    productData.type = data.type;
+    productData.reoccuring_day = data.reoccuring_day;
+    currentEditID.value = data.id;
   }
 
-  open("Product-modal");
+  open("product-modal");
 };
 
 const toggleAll = () => {
@@ -284,8 +355,10 @@ const onSubmit = async (type, id) => {
   let url = "";
   let payload = {};
   if (type === "Add Product") {
+    if (productData.door_access === "null" || productData.type === "null")
+      return;
     url = "payments/products";
-    payload = modalForm;
+    payload = productData;
   } else if (type === "delete") {
     url = "payments/products";
     payload = {
@@ -293,9 +366,8 @@ const onSubmit = async (type, id) => {
     };
   } else if (type === "Edit Product") {
     url = "payments/products/" + id;
-    payload = modalForm;
+    payload = productData;
   } else return;
-  s;
 
   close("product-modal");
   isLoading.value = true;
@@ -306,7 +378,12 @@ const onSubmit = async (type, id) => {
       isLoading.value = false;
 
       if (type === "Add Product" || type === "Edit Product") {
-        modalForm.name = "";
+        productData.payment_name = "";
+        productData.amount = null;
+        productData.door_access = null;
+        productData.grace_period = null;
+        productData.type = null;
+        productData.reoccuring_day = null;
         modalParams.title = "";
       } else if (type === "delete") {
         selected.value = [];
@@ -326,5 +403,11 @@ onMounted(() => {
 });
 </script>
 
-<style scoped>
+<style>
+@media only screen and (min-width: 992px) {
+  .modal {
+    width: 750px !important;
+    height: 400px !important;
+  }
+}
 </style>
