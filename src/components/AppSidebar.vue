@@ -42,11 +42,11 @@
                 </router-link>
               </li>
               
-              <li>
+              <!-- <li>
                 <router-link to="/payment/channels">
                   Payment Channels
                 </router-link>
-              </li>
+              </li> -->
 
               <li>
                 <router-link to="/payment/banks">

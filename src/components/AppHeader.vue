@@ -5,13 +5,13 @@
 
     <div class="header-left">
       <router-link to="#" class="logo">
-        <img src="@/assets/img/logo.svg" alt="Logo" />
+        <img src="@/assets/img/Black_and_Beige_Fitness_Sports_Club_Logo-removebg-preview.png" alt="Logo" width="85" />
       </router-link>
       <router-link to="#" class="logo collapse-logo">
-        <img src="@/assets/img/collapse-logo.svg" alt="Logo" />
+        <img src="@/assets/img/Black_and_Beige_Fitness_Sports_Club_Logo-removebg-preview.png" alt="Logo" />
       </router-link>
       <router-link to="#" class="logo2">
-        <img src="@/assets/img/logo2.png" width="40" height="40" alt="Logo" />
+        <img src="@/assets/img/Black_and_Beige_Fitness_Sports_Club_Logo-removebg-preview.png" width="40" height="40" alt="Logo" />
       </router-link>
     </div>
 
@@ -24,16 +24,16 @@
     </a>
 
     <div class="page-title-box">
-      <h3>Admin Dashboard</h3>
+      <h3>{{ currentClub['name'] }}</h3>
     </div>
 
-    <a
+    <!-- <a
       @click="toggleMobile()"
       id="mobile_btn"
       class="mobile_btn d-block"
       href="#sidebar"
       ><i class="fa-solid fa-bars"></i
-    ></a>
+    ></a> -->
 
     <ul class="nav user-menu">
       <!-- <li class="nav-item">
@@ -373,7 +373,7 @@
             ><img src="@/assets/img/avatar/avatar-27.jpg" alt="User Image" />
             <span class="status online"></span
           ></span>
-          <span>Admin</span>
+          <span class="px-2">{{ loggedInUser['username'] }}</span>
         </a>
         <div class="dropdown-menu">
           <a class="dropdown-item" href="#">My Profile</a>
@@ -405,9 +405,13 @@
 <script setup>
 import { axiosUrl } from "@/env";
 import { onMounted, ref } from "vue";
+import { useAuthStore } from "@/store/authStore";
 const isLoading = ref(false);
 const element = ref();
 const element2 = ref();
+const authStore = useAuthStore();
+const loggedInUser = authStore.loggedInUser;
+const currentClub = authStore.currentClub;
 
 const logout = async () => {
   isLoading.value = true;

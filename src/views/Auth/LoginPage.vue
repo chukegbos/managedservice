@@ -135,6 +135,7 @@
 import { ref, reactive, onMounted } from "vue";
 import { useAuthStore } from "@/store/authStore";
 import { axiosUrl } from "@/env";
+import { swalErrorHandle } from "@/components/myHelperFunction";
 import Swal from "sweetalert2";
 
 const loading = ref(false);
@@ -173,6 +174,7 @@ const onSubmit = async () => {
       })
       .catch((error) => {
         loading.value = false;
+        swalErrorHandle(error);
       });
   }
 };
@@ -189,7 +191,8 @@ button {
   background-color: #014aac;
 }
 
-button:hover, button:disabled {
+button:hover,
+button:disabled {
   background-color: #014bacb7 !important;
 }
 </style>

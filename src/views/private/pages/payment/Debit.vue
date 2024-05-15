@@ -1,6 +1,6 @@
 <template>
   <div class="content-wrapper">
-    <loading :active="isLoading" />
+    <loading :active="isLoading && items.length === 0" />
 
     <div class="container">
       <div class="">
@@ -14,19 +14,6 @@
                 placeholder="Keyword Search"
                 class="form-control my-input"
               />
-            </div>
-
-            <div>
-              <button
-                v-if="selected.length > 0"
-                @click="onSubmit('delete')"
-                class="btn add-btn px-4"
-              >
-                <i class="fa-solid fa-minus"></i> Delete
-              </button>
-              <button v-else class="btn add-btn px-4">
-                <i class="fa-solid fa-minus"></i> Delete
-              </button>
             </div>
           </div>
         </div>
@@ -45,32 +32,24 @@
             :rowsPerPageOptions="[5, 10, 20, 50]"
             tableStyle="min-width: 50rem"
           >
-            <Column style="width: 5%">
-              <template #header="">
-                <input
-                  type="checkbox"
-                  v-model="selectAll"
-                  @change="toggleAll()"
-                />
-              </template>
-              <template #body="slotProps">
-                <input
-                  type="checkbox"
-                  v-model="selected"
-                  :value="slotProps.data.id"
-                  number
-                />
-              </template>
-            </Column>
-            <Column header="Name" style="width: 20%">
+            <Column header="Product Name" style="width: 20%">
               <template #body="slotProps">
                 {{
-                  slotProps.data.payment_name
-                    ? slotProps.data.payment_name
+                  slotProps.data.product_name
+                    ? slotProps.data.product_name
                     : ""
                 }}<br />
                 <b>Code:</b> #{{
                   slotProps.data.product_id ? slotProps.data.product_id : ""
+                }}
+              </template>
+            </Column>
+            <Column header="Member Name" style="width: 20%">
+              <template #body="slotProps">
+                {{ slotProps.data.member_name ? slotProps.data.member_name : ""
+                }}<br />
+                <b>Code:</b> #{{
+                  slotProps.data.member_code ? slotProps.data.member_code : ""
                 }}
               </template>
             </Column>
@@ -80,49 +59,24 @@
                 >{{ formatPrice(slotProps.data.amount) }}<br />
                 <b>Grace Period:</b>
                 {{
-                  slotProps.data.grace_period
-                    ? slotProps.data.grace_period
-                    : ""
-                }}days
+                  slotProps.data.grace_period ? slotProps.data.grace_period : ""
+                }}
               </template>
             </Column>
-            <Column header="Status" style="width: 25%">
+            <Column header="Creator" style="width: 20%">
               <template #body="slotProps">
+                {{ slotProps.data.created_by ? slotProps.data.created_by : "" }}
+                <br />
                 <span>
                   <b>Door Access:</b>
                   <span v-if="slotProps.data.door_access == 1"> Yes </span>
                   <span v-else> No </span>
                 </span>
                 <br />
-
-                <span>
-                  <b>Type of product:</b>
-                  <span v-if="slotProps.data.type == 1"> Monthly </span>
-                  <span v-else> One Off </span>
-                  <span>
-                    <b v-if="slotProps.data.reoccuring_day == 1"
-                      >Reoccurring Day:
-                    </b>
-                    <b v-else>Reoccurring Days: </b>
-                    <span v-if="slotProps.data.type == 1">
-                      {{
-                        slotProps.data.reoccuring_day
-                          ? slotProps.data.reoccuring_day
-                          : "N/A"
-                      }}
-                    </span>
-                    <span v-else>N/A</span>
-                  </span>
-                </span>
+                {{ formatDate(slotProps.data.date_created) }}
               </template>
             </Column>
-            <Column header="Creator" style="width: 15%">
-              <template #body="slotProps">
-                {{ slotProps.data.creator ? slotProps.data.creator : "" }}<br />
-                {{ formatDate(slotProps.data.created_at) }}
-              </template>
-            </Column>
-            <Column header="Action" style="width: 15%">
+            <Column header="Action" style="width: 20%">
               <template #body="slotProps">
                 <Dropdown
                   @change="
@@ -152,6 +106,63 @@
         </div>
       </div>
     </div>
+
+    <!-- Modal -->
+    <Modal name="pay-modal" :title="modalParams.title">
+      <ModalContent>
+        <form
+          @submit.prevent="onSubmit(modalParams.title, currentEditID)"
+          style="width: 90%; margin: 0 auto"
+        >
+          <div class="row">
+            <div class="col-12 mb-3">
+              <label class="col-form-label fs-6">Channel</label>
+              <select
+                v-model="payData.channel_id"
+                class="form-control"
+                required
+              >
+                <option value="null">-- Select Type--</option>
+                <option v-for="data in channels" :key="data" :value="data.id">
+                  {{ data["name"] }}
+                </option>
+              </select>
+            </div>
+            <div class="col-12 mb-3" v-if="payData.channel_id === 1">
+              <label class="col-form-label fs-6">POS</label>
+              <select
+                v-model="payData.process_id"
+                class="form-control"
+                required
+              >
+                <option value="null">-- Select Type--</option>
+                <option v-for="data in pos" :key="data" :value="data.id">
+                  {{ data["name"] }}
+                </option>
+              </select>
+            </div>
+            <div class="col-12 mb-3" v-if="payData.channel_id === 3">
+              <label class="col-form-label fs-6">Bank</label>
+              <select
+                v-model="payData.process_id"
+                class="form-control"
+                required
+              >
+                <option value="null">-- Select Type--</option>
+                <option v-for="data in banks" :key="data" :value="data.id">
+                  {{ data["name"] }}
+                </option>
+              </select>
+            </div>
+          </div>
+          <div class="mt-1">
+            <button class="btn btn-primary account-btn w-100" type="submit">
+              Submit
+            </button>
+          </div>
+        </form>
+      </ModalContent>
+    </Modal>
   </div>
 </template>
 
@@ -169,30 +180,42 @@ import {
 import { Modal, ModalContent, open, close } from "@dimsog/vue-modal";
 
 const isLoading = ref(false);
+const isLoading2 = ref(false);
+const isLoading3 = ref(false);
+const isLoading4 = ref(false);
 const nairaSign = "&#x20A6;";
 const authStore = useAuthStore();
 const loggedInUser = authStore.loggedInUser;
 const items = ref([]);
-const selected = ref([]);
-const selectAll = ref("");
 const actionValue = ref([]);
+const channels = ref([]);
+const banks = ref([]);
+const pos = ref([]);
+const payData = reactive({
+  membership_id: "",
+  transaction_code: "",
+  channel_id: null,
+  process_id: "",
+});
+const singleDeptData = reactive({
+  membership_id: "",
+  product_id: "",
+});
+const groupDeptData = reactive({
+  product_id: "",
+});
 
 const options = [
   {
     id: "1",
-    name: "Edit",
+    name: "Pay",
   },
   {
     id: "2",
-    name: "Delete",
+    name: "Single Debit",
   },
   {
     id: "3",
-    name: "Individual Debit",
-  },
-
-   {
-    id: "4",
     name: "Group Debit",
   },
 ];
@@ -205,38 +228,18 @@ const modalParams = reactive({
 
 const checkSelectedAction = (id, data) => {
   if (id === "1") {
-    openModal("edit", data);
+    modalParams.title = "Pay";
+    payData.membership_id = data.member_code;
+    payData.transaction_code = data.trans_id;
+    open("pay-modal");
   } else if (id === "2") {
-    onSubmit("delete", id);
+    singleDeptData.membership_id = data.member_code;
+    singleDeptData.product_id = data.process_id;
+    onSubmit("Single");
   } else if (id === "3") {
-    individualDebit(data);
-  } else if (id === "4") {
-    groupDebit(data);
+    groupDeptData.product_id = data.product_id;
+    onSubmit("Group");
   }
-};
-
-const openModal = (type, data) => {
-  if (type === "add") modalParams.title = "Add Product";
-  else if (type === "edit") {
-    modalParams.title = "Edit Product";
-    productData.payment_name = data.payment_name;
-    productData.amount = data.amount;
-    productData.door_access = data.door_access;
-    productData.grace_period = data.grace_period;
-    productData.type = data.type;
-    productData.reoccuring_day = data.reoccuring_day;
-    currentEditID.value = data.id;
-  }
-  
-
-  open("product-modal");
-};
-
-const toggleAll = () => {
-  if (selectAll.value)
-    for (let i = 0; i < items.value.length; i++)
-      selected.value.push(items.value[i].id);
-  else selected.value = [];
 };
 
 const getDebits = async () => {
@@ -246,6 +249,9 @@ const getDebits = async () => {
     .get("/payments/debit")
     .then((response) => {
       items.value = response.data.data;
+      for (let i = 0; i < items.value.length; i++) {
+        items.value[i]["id"] = i + 1;
+      }
       isLoading.value = false;
     })
     .catch((error) => {
@@ -254,17 +260,111 @@ const getDebits = async () => {
     });
 };
 
+const getChannel = async () => {
+  isLoading2.value = true;
+
+  await axiosUrl
+    .get("/payments/channels")
+    .then((response) => {
+      // console.log(response.data.data);
+      channels.value = response.data.data;
+      isLoading.value = false;
+    })
+    .catch((error) => {
+      isLoading.value = false;
+      swalErrorHandle(error);
+    });
+};
+
+const getBanks = async () => {
+  isLoading3.value = true;
+
+  await axiosUrl
+    .get("/payments/bank")
+    .then((response) => {
+      // console.log(response.data.data);
+      banks.value = response.data.data;
+      isLoading.value = false;
+    })
+    .catch((error) => {
+      isLoading.value = false;
+      swalErrorHandle(error);
+    });
+};
+
+const getPOS = async () => {
+  isLoading4.value = true;
+
+  await axiosUrl
+    .get("/payments/pos")
+    .then((response) => {
+      // console.log(response.data.data);
+      pos.value = response.data.data;
+      isLoading.value = false;
+    })
+    .catch((error) => {
+      isLoading.value = false;
+      swalErrorHandle(error);
+    });
+};
+
+const onSubmit = async (type, id) => {
+  let url = "";
+  let payload = {};
+  if (type === "Pay") {
+    url = "/payments/debit/pay";
+    if (payData.channel_id === 2) payData.process_id = null;
+    payload = payData;
+  } else if (type === "Single") {
+    url = "payments/dept";
+    payload = singleDeptData;
+  } else if (type === "Group") {
+    url = "payments/debit/pay";
+    payload = groupDeptData;
+  } else return;
+
+  close("pay-modal");
+  isLoading.value = true;
+
+  await axiosUrl
+    .post(url, payload)
+    .then(() => {
+      isLoading.value = false;
+
+      if (type === "Pay") {
+        payData.membership_id = "";
+        payData.transaction_code = "";
+        payData.channel_id = null;
+        payData.process_id = "";
+        modalParams.title = "";
+      } else if (type === "Single") {
+        singleDeptData.membership_id = "";
+        singleDeptData.product_id = "";
+      } else if (type === "Group") {
+        groupDeptData.product_id = "";
+      }
+
+      getProducts();
+    })
+    .catch((error) => {
+      isLoading.value = false;
+      swalErrorHandle(error);
+    });
+};
 
 onMounted(() => {
   getDebits();
+  getChannel();
+  getBanks();
+  getPOS();
 });
 </script>
 
 <style>
-@media only screen and (min-width: 992px) {
+@media only screen and (min-width: 720px) {
   .modal {
-    width: 750px !important;
-    height: 400px !important;
+    width: 600px !important;
+    height: 300px !important;
   }
 }
 </style>
