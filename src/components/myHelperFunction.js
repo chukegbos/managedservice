@@ -46,3 +46,20 @@ export const swalErrorHandle = (error) => {
 		});
 	}
 };
+
+export const swalSuccessHandle = (text) => {
+	
+	let icon = "success";
+	let color = "green";
+	let title = "Success!!!";
+	Swal.fire({
+		title: title,
+		text: text,
+		icon: icon,
+		confirmButtonColor: color,
+		confirmButtonText: "Ok!",
+		allowOutsideClick: false,
+		allowEscapeKey: false,
+		allowEnterKey: false,
+	});
+};

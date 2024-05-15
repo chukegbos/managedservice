@@ -73,9 +73,16 @@ const routes = [
 			},
 			{
 				path: "/payment/products",
-				name: "PaymentPOS",
+				name: "PaymentProducts",
 				component: () =>
 					import("@/views/private/pages/payment/Products.vue"),
+			},
+
+			{
+				path: "/payment/debits",
+				name: "PaymentDebit",
+				component: () =>
+					import("@/views/private/pages/payment/Debit.vue"),
 			},
 		],
 	},

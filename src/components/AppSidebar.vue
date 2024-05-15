@@ -22,11 +22,7 @@
           <li class="submenu dropdown-sidebar" @click="toggleSidebar(sidebarBtnNum - 4)">
             <a href="#"><i class="la la-money"></i> <span> Payments</span> <span class="menu-arrow"></span></a>
             <ul>
-              <li>
-                <router-link to="/payment/products">
-                  Payments
-                </router-link>
-              </li>
+             
 
               <li>
                 <router-link to="/payment/products">
@@ -37,6 +33,12 @@
               <li>
                 <router-link to="/payment/debits">
                   Payment Debits
+                </router-link>
+              </li>
+              
+               <li>
+                <router-link to="/payment/history">
+                  Payments History
                 </router-link>
               </li>
               
@@ -57,16 +59,7 @@
                   Payment POS
                 </router-link>
               </li>
-              <li>
-                <router-link to="/admin/customers/fund-history">
-                  Funding History
-                </router-link>
-              </li>
-              <li>
-                <router-link to="/admin/customers/fund">
-                  Fund Member's Account
-                </router-link>
-              </li>
+             
             </ul>
           </li>
 
