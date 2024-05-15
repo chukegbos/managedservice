@@ -248,6 +248,31 @@
         </form>
       </ModalContent>
     </Modal>
+
+    <Modal name="singleDebit" :title="modalParams.title">
+      <ModalContent>
+        <form
+          @submit.prevent="onSingleDebit()"
+          style="width: 95%; margin: 0 auto"
+        >
+          <div class="form-group mb-3">
+            <label class="col-form-label fs-6">Select Member</label>
+             <select v-model="singleDebit.membership_id" class="form-control" required>
+              <option value=null> -- Select Member-- </option>
+              <option v-for="option in members" :value="option.membership_id" :key="option.membership_id">
+                  {{ option.first_name }} {{ option.last_name }} ({{ option.membership_id }})
+              </option>
+            </select>
+          </div>
+        
+          <div class="mt-1">
+            <button class="btn btn-primary account-btn w-100" type="submit">
+              Submit
+            </button>
+          </div>
+        </form>
+      </ModalContent>
+    </Modal>
   </div>
 </template>
 
@@ -260,6 +285,7 @@ import {
   formatDate,
   formatPrice,
   swalErrorHandle,
+  swalSuccessHandle,
 } from "@/components/myHelperFunction";
 import { Modal, ModalContent, open, close } from "@dimsog/vue-modal";
 
@@ -268,6 +294,7 @@ const nairaSign = "&#x20A6;";
 const authStore = useAuthStore();
 const loggedInUser = authStore.loggedInUser;
 const items = ref([]);
+const members = ref([]);
 const selected = ref([]);
 const selectAll = ref("");
 const actionValue = ref([]);
@@ -282,6 +309,11 @@ const productData = reactive({
   reoccuring_day: null,
 });
 
+const singleDebit = reactive({
+  product_id: "",
+  membership_id: "",
+});
+
 const options = [
   {
     id: "1",
@@ -293,6 +325,11 @@ const options = [
   },
   {
     id: "3",
+    name: "Individual Debit",
+  },
+
+   {
+    id: "4",
     name: "Group Debit",
   },
 ];
@@ -309,7 +346,9 @@ const checkSelectedAction = (id, data) => {
   } else if (id === "2") {
     onSubmit("delete", id);
   } else if (id === "3") {
-    onSubmit("group debit", id);
+    individualDebit(data);
+  } else if (id === "4") {
+    groupDebit(data);
   }
 };
 
@@ -325,8 +364,59 @@ const openModal = (type, data) => {
     productData.reoccuring_day = data.reoccuring_day;
     currentEditID.value = data.id;
   }
+  
 
   open("product-modal");
+};
+
+const individualDebit = (data) => {
+  modalParams.title = "Single Debit";
+  singleDebit.product_id = data.product_id;
+  open("singleDebit");
+};
+
+const groupDebit = async (data) => {
+  let url = "";
+  let payload = {};
+  singleDebit.product_id = data.product_id;
+  payload = singleDebit;
+  url = "payments/debit/all";
+
+  isLoading.value = true;
+
+  await axiosUrl
+  .post(url, payload)
+  .then(() => {
+    isLoading.value = false
+    swalSuccessHandle('Members Debited Successfully.')
+    getProducts();
+  })
+  .catch((error) => {
+    isLoading.value = false;
+    swalErrorHandle(error);
+  });
+};
+
+const onSingleDebit = async () => {
+  let url = "";
+  let payload = {};
+  payload = singleDebit;
+  url = "payments/debit";
+
+  close("singleDebit");
+  isLoading.value = true;
+
+  await axiosUrl
+  .post(url, payload)
+  .then(() => {
+    isLoading.value = false
+    swalSuccessHandle('Member Debited Successfully.')
+    getProducts();
+  })
+  .catch((error) => {
+    isLoading.value = false;
+    swalErrorHandle(error);
+  });
 };
 
 const toggleAll = () => {
@@ -334,6 +424,16 @@ const toggleAll = () => {
     for (let i = 0; i < items.value.length; i++)
       selected.value.push(items.value[i].id);
   else selected.value = [];
+};
+
+const getMembers = async () => {
+  await axiosUrl
+    .get("/payload/members")
+    .then((response) => {
+      members.value = response.data.data;
+    })
+    .catch(() => {
+    });
 };
 
 const getProducts = async () => {
@@ -416,6 +516,7 @@ const onSubmit = async (type, id) => {
 
 onMounted(() => {
   getProducts();
+  getMembers();
 });
 </script>
 
