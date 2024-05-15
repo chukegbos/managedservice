@@ -107,8 +107,8 @@
                   <span v-else> One Off </span>
                   <span>
                     <b v-if="slotProps.data.reoccuring_day == 1"
-                      >Reoccurring Day: </b
-                    >
+                      >Reoccurring Day:
+                    </b>
                     <b v-else>Reoccurring Days: </b>
                     <span v-if="slotProps.data.type == 1">
                       {{
@@ -351,6 +351,21 @@ const getProducts = async () => {
     });
 };
 
+const loadFun = (type) => {
+  if (type === "Add Product" || type === "Edit Product") {
+    productData.payment_name = "";
+    productData.amount = null;
+    productData.door_access = null;
+    productData.grace_period = null;
+    productData.type = null;
+    productData.reoccuring_day = null;
+    modalParams.title = "";
+  } else if (type === "delete") {
+    selected.value = [];
+    selectAll.value = false;
+  }
+};
+
 const onSubmit = async (type, id) => {
   let url = "";
   let payload = {};
@@ -372,30 +387,31 @@ const onSubmit = async (type, id) => {
   close("product-modal");
   isLoading.value = true;
 
-  await axiosUrl
-    .post(url, payload)
-    .then(() => {
-      isLoading.value = false;
-
-      if (type === "Add Product" || type === "Edit Product") {
-        productData.payment_name = "";
-        productData.amount = null;
-        productData.door_access = null;
-        productData.grace_period = null;
-        productData.type = null;
-        productData.reoccuring_day = null;
-        modalParams.title = "";
-      } else if (type === "delete") {
-        selected.value = [];
-        selectAll.value = false;
-      }
-
-      getProducts();
-    })
-    .catch((error) => {
-      isLoading.value = false;
-      swalErrorHandle(error);
-    });
+  if (type === "Edit Product") {
+    await axiosUrl
+      .put(url, payload)
+      .then(() => {
+        isLoading.value = false;
+        loadFun(type);
+        getProducts();
+      })
+      .catch((error) => {
+        isLoading.value = false;
+        swalErrorHandle(error);
+      });
+  } else {
+    await axiosUrl
+      .post(url, payload)
+      .then(() => {
+        isLoading.value = false;
+        loadFun(type);
+        getProducts();
+      })
+      .catch((error) => {
+        isLoading.value = false;
+        swalErrorHandle(error);
+      });
+  }
 };
 
 onMounted(() => {
