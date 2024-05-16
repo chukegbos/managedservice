@@ -150,7 +150,7 @@
               >
                 <option value="null">-- Select Type--</option>
                 <option v-for="data in banks" :key="data" :value="data.id">
-                  {{ data["name"] }}
+                  {{ data["bank_name"] }} - {{ data["account_number"] }}
                 </option>
               </select>
             </div>
@@ -210,14 +210,7 @@ const options = [
     id: "1",
     name: "Pay",
   },
-  {
-    id: "2",
-    name: "Single Debit",
-  },
-  {
-    id: "3",
-    name: "Group Debit",
-  },
+
 ];
 const filters = ref({
   global: { value: null, matchMode: FilterMatchMode.CONTAINS },
@@ -232,13 +225,6 @@ const checkSelectedAction = (id, data) => {
     payData.membership_id = data.member_code;
     payData.transaction_code = data.trans_id;
     open("pay-modal");
-  } else if (id === "2") {
-    singleDeptData.membership_id = data.member_code;
-    singleDeptData.product_id = data.process_id;
-    onSubmit("Single");
-  } else if (id === "3") {
-    groupDeptData.product_id = data.product_id;
-    onSubmit("Group");
   }
 };
 
@@ -266,7 +252,6 @@ const getChannel = async () => {
   await axiosUrl
     .get("/payments/channels")
     .then((response) => {
-      // console.log(response.data.data);
       channels.value = response.data.data;
       isLoading.value = false;
     })
@@ -337,14 +322,12 @@ const onSubmit = async (type, id) => {
         payData.channel_id = null;
         payData.process_id = "";
         modalParams.title = "";
-      } else if (type === "Single") {
-        singleDeptData.membership_id = "";
-        singleDeptData.product_id = "";
-      } else if (type === "Group") {
-        groupDeptData.product_id = "";
-      }
-
-      getProducts();
+      } 
+      swalSuccessHandle('Payment Successful.')
+      getDebits();
+      getChannel();
+      getBanks();
+      getPOS();
     })
     .catch((error) => {
       isLoading.value = false;

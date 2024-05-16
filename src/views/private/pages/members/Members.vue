@@ -109,30 +109,15 @@
             </Column>
 
             <Column header="Action">
-              <template #body="">
+              <template #body="slotProps">
                 <Dropdown
-                  @change="checkSelectedAction(selectedAction)"
+                  @change="checkSelectedAction(selectedAction, slotProps.data.membership_id)"
                   v-model="selectedAction"
-                  :options="cities"
+                  :options="actions"
                   optionLabel="label"
                   optionValue="id"
                   placeholder="Action"
                 />
-                <!-- Example single danger button -->
-                <!-- <div class="btn-group">
-                  <button type="button" class="btn btn-danger dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
-                    Action
-                  </button>
-                  <ul class="dropdown-menu">
-                    <li><a class="dropdown-item" href="javascript:void(0)" @click="view(slotProps.data)">View</a></li>
-                    <li>
-                      <a class="dropdown-item" href="javascript:void(0)" @click="doorUser(slotProps.data)" v-if="slotProps.data.status==0">Activate Door</a>
-                      <a class="dropdown-item" href="javascript:void(0)" @click="doorUser(slotProps.data)" v-else >Deactivate Door</a>
-                    </li>
-                    <li><a class="dropdown-item" href="javascript:void(0)" @click="editModal(slotProps.data)">Edit</a></li>
-                    <li><a class="dropdown-item" href="javascript:void(0)" @click="deleteUser(slotProps.data.id)">Delete</a></li>
-                  </ul>
-                </div> -->
               </template>
             </Column>
           </DataTable>
@@ -156,6 +141,7 @@ import { ref, reactive, onMounted } from "vue";
 import { FilterMatchMode } from "primevue/api";
 import { useAuthStore } from "@/store/authStore";
 import { formatDate } from "@/components/myHelperFunction";
+import router from '@/router';
 
 const isLoading = ref(false);
 const authStore = useAuthStore();
@@ -168,15 +154,23 @@ const filters = ref({
   global: { value: null, matchMode: FilterMatchMode.CONTAINS },
 });
 const selectedAction = ref();
-const cities = ref([
+const actions = ref([
   { label: "Edit", id: 1 },
   { label: "Activate", id: 2 },
   { label: "View", id: 3 },
   { label: "Delete", id: 4 },
 ]);
 
-const checkSelectedAction = (id) => {
-  
+const checkSelectedAction = (id, data) => {
+  if (id === "1") {
+    openModal("edit", data);
+  } else if (id === "2") {
+    onSubmit("delete", id);
+  } else if (id == 3) {
+    router.push({ path: '/members/view/' + data });
+  } else if (id === "4") {
+    groupDebit(data);
+  }
 }
 
 const toggleAll = () => {

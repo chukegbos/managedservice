@@ -8137,7 +8137,7 @@ input[type=file].form-control {
 
 .sidebar,
 .two-col-bar {
-  background-color: #212529;
+  background-color: #024BAE;
   border-right: 1px solid transparent;
   margin-top: 0;
   position: fixed;
@@ -8316,7 +8316,7 @@ input[type=file].form-control {
 .two-col-bar .sidebar-menu ul li a {
   position: relative;
   font-size: 15px;
-  color: #909294;
+  color: #fff;
   height: auto;
   -webkit-transition: all .2s ease;
   -ms-transition: all .2s ease;

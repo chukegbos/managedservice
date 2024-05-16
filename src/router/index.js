@@ -33,13 +33,13 @@ const routes = [
 				path: "/members",
 				name: "Members",
 				component: () =>
-					import("@/views/private/pages/members/Index.vue"),
+					import("@/views/private/pages/members/Members.vue"),
 			},
 			{
-				path: "/members",
-				name: "Members",
+				path: "/members/view/:membershipID",
+				name: "MemberView",
 				component: () =>
-					import("@/views/private/pages/members/Members.vue"),
+					import("@/views/private/pages/members/MemberView.vue"),
 			},
 			{
 				path: "/members/create",

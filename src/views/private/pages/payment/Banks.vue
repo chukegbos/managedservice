@@ -62,12 +62,22 @@
                 />
               </template>
             </Column>
-            <Column field="name" header="Name" style="width: 40%">
+            <Column field="bank_name" header="Bank Name" style="width: 20%">
               <template #body="slotProps">
-                {{ slotProps.data.name ? slotProps.data.name : "N/A" }}
+                {{ slotProps.data.bank_name ? slotProps.data.bank_name : "N/A" }}
               </template>
             </Column>
-            <Column header="Date Created" style="width: 35%">
+            <Column field="account_name" header="Account Name" style="width: 20%">
+              <template #body="slotProps">
+                {{ slotProps.data.account_name ? slotProps.data.account_name : "N/A" }}
+              </template>
+            </Column>
+            <Column field="account_number" header="Account Number" style="width: 20%">
+              <template #body="slotProps">
+                {{ slotProps.data.account_number ? slotProps.data.account_number : "N/A" }}
+              </template>
+            </Column>
+            <Column header="Date Created" style="width: 20%">
               <template #body="slotProps">
                 {{ formatDate(slotProps.data.created_at) }}
               </template>
