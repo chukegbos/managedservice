@@ -16,6 +16,9 @@ import PrimeVue from 'primevue/config';
 import Tooltip from "primevue/tooltip";
 import DataTable from "primevue/datatable";
 import Column from "primevue/column";
+import TabView from 'primevue/tabview';
+import TabPanel from 'primevue/tabpanel';
+
 import Calendar from "primevue/calendar";
 // import Editor from "primevue/editor";
 import Dropdown from "primevue/dropdown";
@@ -42,6 +45,8 @@ createApp(App)
     .directive("tooltip", Tooltip)
     .component("Loading", Loading)
     .component("DataTable", DataTable)
+    .component("TabView", TabView)
+    .component("TabPanel", TabPanel)
     .component("Calendar", Calendar)
     .component("Column", Column)
     .component("Dropdown", Dropdown)
