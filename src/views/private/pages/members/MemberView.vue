@@ -98,26 +98,6 @@
                                     <td>{{ additional.kin_relationship }}</td>
                                 </tr>
                                 <tr>
-                                    <th class="mr-2">Beneficiary Name:</th>
-                                    <td>{{ additional.beneficiary_name }}</td>
-                                </tr>
-                                <tr>
-                                    <th class="mr-2">Beneficiary Address:</th>
-                                    <td>{{ additional.beneficiary_address }}</td>
-                                </tr>
-                                <tr>
-                                    <th class="mr-2">Beneficiary Phone 1:</th>
-                                    <td>{{ additional.beneficiary_phone_1 }}</td>
-                                </tr>
-                                <tr>
-                                    <th class="mr-2">Beneficiary Phone 2:</th>
-                                    <td>{{ additional.beneficiary_phone_2 }}</td>
-                                </tr>
-                                <tr>
-                                    <th class="mr-2">Beneficiary Relationship:</th>
-                                    <td>{{ additional.beneficiary_relationship }}</td>
-                                </tr>
-                                <tr>
                                     <th class="mr-2">Sponsor 1:</th>
                                     <td>{{ additional.sponsor_1 }}</td>
                                 </tr>
@@ -284,7 +264,7 @@
                 </div>
               </form>
             </ModalContent>
-          </Modal>
+        </Modal>
     </div>
 
   </div>
@@ -304,7 +284,7 @@
         swalErrorHandle,
         swalSuccessHandle,
     } from "@/components/myHelperFunction";
-
+    import { Modal, ModalContent, open, close } from "@dimsog/vue-modal";
     const isLoading = ref(false);
     const membership_id = ref();
     const nairaSign = "&#x20A6;";

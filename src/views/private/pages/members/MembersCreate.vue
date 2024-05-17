@@ -288,25 +288,31 @@
     import { ref, reactive, onMounted } from "vue";
     import { FilterMatchMode } from "primevue/api";
     import { useAuthStore } from "@/store/authStore";
-    import { formatDate } from "@/components/myHelperFunction";
+    import {
+        formatDate,
+        formatPrice,
+        swalErrorHandle,
+        swalSuccessHandle,
+    } from "@/components/myHelperFunction";
     import Swal from "sweetalert2";
+    import router from '@/router';
 
-  const isLoading = ref(false);
-  const editMode = ref(false);
-  const authStore = useAuthStore();
-  const loggedInUser = authStore.loggedInUser;
-  const items = ref([]);
-  const types = ref([]);
-  const sections = ref([]);
-  const states = ref([]);
-  const selected = ref([]);
-  const selectAll = ref("");
-  const currentEditID = ref();
-  const lgas = ref([]); // Define reactive reference for lgas
-    const lgah = ref([]);
-  const filters = ref({
-    global: { value: null, matchMode: FilterMatchMode.CONTAINS },
-  });
+    const isLoading = ref(false);
+    const editMode = ref(false);
+    const authStore = useAuthStore();
+    const loggedInUser = authStore.loggedInUser;
+    const items = ref([]);
+    const types = ref([]);
+    const sections = ref([]);
+    const states = ref([]);
+    const selected = ref([]);
+    const selectAll = ref("");
+    const currentEditID = ref();
+    const lgas = ref([]); // Define reactive reference for lgas
+        const lgah = ref([]);
+    const filters = ref({
+        global: { value: null, matchMode: FilterMatchMode.CONTAINS },
+    });
 
     const gender = ref([
       { value: null, text: 'Select Gender' },
@@ -445,7 +451,6 @@
         let reader = new FileReader();
         if (file['size'] < 8388608) {
         reader.onloadend = () => {
-            
             form.value.image = reader.result; // Update form.image using ref
             console.log(form.value.image)
         }
@@ -461,15 +466,10 @@
 
         await axiosUrl
         .post('members', form.value)
-        .then(() => {
+        .then((response) => {
             isLoading.value = false;
-          
-            Swal.fire(
-                "Created!",
-                "Member Created Successfully.",
-                "success"
-            );
-            this.$router.push({ path: "/members" });
+            swalSuccessHandle('Member Created Successful.')
+            router.push({ path: '/members/view/' + response.data.data.membership_id });
         })
         .catch(() => {
             isLoading.value = false;
