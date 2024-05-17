@@ -2,13 +2,12 @@
   <div class="header">
     <loading :active="isLoading" />
     <div class="sidebar-overlay"></div>
-
     <div class="header-left">
       <router-link to="#" class="logo">
         <img src="@/assets/img/Black_and_Beige_Fitness_Sports_Club_Logo-removebg-preview.png" alt="Logo" width="85" />
       </router-link>
       <router-link to="#" class="logo collapse-logo">
-        <img src="@/assets/img/Black_and_Beige_Fitness_Sports_Club_Logo-removebg-preview.png" alt="Logo" />
+        <img width="95" src="@/assets/img/Black_and_Beige_Fitness_Sports_Club_Logo-removebg-preview.png" alt="Logo" />
       </router-link>
       <router-link to="#" class="logo2">
         <img src="@/assets/img/Black_and_Beige_Fitness_Sports_Club_Logo-removebg-preview.png" width="40" height="40" alt="Logo" />
@@ -24,7 +23,7 @@
     </a>
 
     <div class="page-title-box">
-      <h3>{{ currentClub['name'] }}</h3>
+      <h3 style="color: #024BAE">{{ currentClub['name'] }}</h3>
     </div>
 
     <!-- <a
@@ -369,6 +368,7 @@
           data-bs-toggle="dropdown"
           @click="toggleProfile()"
         >
+
           <span class="user-img"
             ><img src="@/assets/img/avatar/avatar-27.jpg" alt="User Image" />
             <span class="status online"></span

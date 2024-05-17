@@ -82,22 +82,8 @@
             <a href="#"><i class="la la-users"></i> <span>Two</span></a>
           </li>
 
-          <li class="submenu dropdown-sidebar" @click="toggleSidebar(sidebarBtnNum - 2)">
-            <a href="#"><i class="la la-rocket"></i> <span> Three</span> <span class="menu-arrow"></span></a>
-            <ul>
-              <li><router-link to="#" class="active">Lorem, ipsum.</router-link></li>
-              <li><router-link to="#">Lorem, ipsum.</router-link></li>
-              <li><router-link to="#">Lorem, ipsum.</router-link></li>
-            </ul>
-          </li>
+     
 
-          <li class="submenu dropdown-sidebar" @click="toggleSidebar(sidebarBtnNum - 1)">
-            <a href="#"><i class="la la-ticket"></i> <span>Four</span><span class="menu-arrow"></span></a>
-            <ul>
-              <li><router-link to="#" class="active">Lorem, ipsum.</router-link></li>
-              <li><router-link to="#">Lorem, ipsum.</router-link></li>
-            </ul>
-          </li>
         </ul>
       </div>
     </div>
