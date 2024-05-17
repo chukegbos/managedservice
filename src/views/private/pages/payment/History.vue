@@ -87,7 +87,7 @@
         <div v-else>
           <div class="card card-body">
             <div class="alert alert-warning" role="alert">
-              <p class="text-center">No Product available</p>
+              <p class="text-center">No Payment History Available</p>
             </div>
           </div>
         </div>

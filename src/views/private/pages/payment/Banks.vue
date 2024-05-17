@@ -64,17 +64,35 @@
             </Column>
             <Column field="bank_name" header="Bank Name" style="width: 20%">
               <template #body="slotProps">
-                {{ slotProps.data.bank_name ? slotProps.data.bank_name : "N/A" }}
+                {{
+                  slotProps.data.bank_name ? slotProps.data.bank_name : "N/A"
+                }}
               </template>
             </Column>
-            <Column field="account_name" header="Account Name" style="width: 20%">
+            <Column
+              field="account_name"
+              header="Account Name"
+              style="width: 20%"
+            >
               <template #body="slotProps">
-                {{ slotProps.data.account_name ? slotProps.data.account_name : "N/A" }}
+                {{
+                  slotProps.data.account_name
+                    ? slotProps.data.account_name
+                    : "N/A"
+                }}
               </template>
             </Column>
-            <Column field="account_number" header="Account Number" style="width: 20%">
+            <Column
+              field="account_number"
+              header="Account Number"
+              style="width: 20%"
+            >
               <template #body="slotProps">
-                {{ slotProps.data.account_number ? slotProps.data.account_number : "N/A" }}
+                {{
+                  slotProps.data.account_number
+                    ? slotProps.data.account_number
+                    : "N/A"
+                }}
               </template>
             </Column>
             <Column header="Date Created" style="width: 20%">
@@ -85,9 +103,7 @@
             <Column header="Action" style="width: 20%">
               <template #body="slotProps">
                 <button
-                  @click="
-                    openModal('edit', slotProps.data.id, slotProps.data.name)
-                  "
+                  @click="openModal('edit', slotProps.data.id, slotProps.data)"
                   class="btn btn-warning btn-sm m-1 text-white px-4"
                 >
                   Edit
@@ -111,11 +127,29 @@
       <ModalContent>
         <form @submit.prevent="onSubmit(modalParams.title, currentEditID)">
           <div class="input-block mb-4 mx-3">
-            <label class="col-form-label fs-6">Name</label>
+            <label class="col-form-label fs-6">Bank Name</label>
             <input
               class="form-control"
               type="text"
-              v-model="modalForm.name"
+              v-model="bankData.bank_name"
+              required
+            />
+          </div>
+          <div class="input-block mb-4 mx-3">
+            <label class="col-form-label fs-6">Account Name</label>
+            <input
+              class="form-control"
+              type="text"
+              v-model="bankData.account_name"
+              required
+            />
+          </div>
+          <div class="input-block mb-4 mx-3">
+            <label class="col-form-label fs-6">Account Number</label>
+            <input
+              class="form-control"
+              type="text"
+              v-model="bankData.account_number"
               required
             />
           </div>
@@ -156,12 +190,19 @@ const modalForm = reactive({
   name: "",
   club_code: loggedInUser.club_code,
 });
+const bankData = reactive({
+  bank_name: "",
+  account_name: "",
+  account_number: "",
+});
 
-const openModal = (type, id, name) => {
+const openModal = (type, id, data) => {
   if (type === "add") modalParams.title = "Add Bank";
   else if (type === "edit") {
     modalParams.title = "Edit Bank";
-    modalForm.name = name;
+    bankData.account_name = data.bank_name;
+    bankData.account_number = data.account_number;
+    bankData.bank_name = data.account_name;
     currentEditID.value = id;
   }
 
@@ -186,7 +227,7 @@ const getBank = async () => {
     })
     .catch((error) => {
       isLoading.value = false;
-      swalErrorHandle(error)
+      swalErrorHandle(error);
     });
 };
 
@@ -195,39 +236,70 @@ const onSubmit = async (type, id) => {
   let payload = {};
   if (type === "Add Bank") {
     url = "payments/bank";
-    payload = modalForm;
+    payload = bankData;
   } else if (type === "delete") {
     url = "payments/bank";
     payload = {
-      payload: selected.value,
+      ids: selected.value,
     };
   } else if (type === "Edit Bank") {
     url = "payments/bank/" + id;
-    payload = modalForm;
+    payload = bankData;
   } else return;
 
   close("bank-modal");
   isLoading.value = true;
 
-  await axiosUrl
-    .post(url, payload)
-    .then(() => {
-      isLoading.value = false;
+  if (type === "delete") {
+    await axiosUrl
+      .delete(url, { data: payload })
+      .then(() => {
+        isLoading.value = false;
 
-      if (type === "Add Bank" || type === "Edit Bank") {
-        modalForm.name = "";
-        modalParams.title = "";
-      } else if (type === "delete") {
         selected.value = [];
         selectAll.value = false;
-      }
 
-      getBank();
-    })
-    .catch((error) => {
-      isLoading.value = false;
-      swalErrorHandle(error)
-    });
+        getBank();
+      })
+      .catch((error) => {
+        isLoading.value = false;
+        swalErrorHandle(error);
+      });
+  } else if (type === "Edit Bank") {
+    await axiosUrl
+      .put(url, payload)
+      .then(() => {
+        isLoading.value = false;
+
+        bankData.account_name = "";
+        bankData.account_number = "";
+        bankData.bank_name = "";
+        modalParams.title = "";
+
+        getBank();
+      })
+      .catch((error) => {
+        isLoading.value = false;
+        swalErrorHandle(error);
+      });
+  } else {
+    await axiosUrl
+      .post(url, payload)
+      .then(() => {
+        isLoading.value = false;
+
+        bankData.account_name = "";
+        bankData.account_number = "";
+        bankData.bank_name = "";
+        modalParams.title = "";
+
+        getBank();
+      })
+      .catch((error) => {
+        isLoading.value = false;
+        swalErrorHandle(error);
+      });
+  }
 };
 
 onMounted(() => {
@@ -236,4 +308,13 @@ onMounted(() => {
 </script>
 
 <style scoped>
+</style>
+
+<style>
+@media only screen and (min-width: 992px) {
+  .modal {
+    width: 750px !important;
+    height: 450px !important;
+  }
+}
 </style>
