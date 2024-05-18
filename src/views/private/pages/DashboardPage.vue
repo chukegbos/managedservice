@@ -71,6 +71,59 @@
 
           <div class="row mb-xl-4">
             <div class="col-12 col-lg-6 col-xl-4 d-flex mb-2 mb-lg-4">
+              <div class="card flex-fill border-0 shadow-sm">
+                <div class="card-body">
+                  <h4 class="card-title">
+                    Admininistrators
+                    <span class="badge bg-inverse-danger ms-2">5</span>
+                  </h4>
+                  <div class="leave-info-box">
+                    <div class="media d-flex align-items-center">
+                      <a href="profile.html" class="avatar"
+                        ><img src="@/assets/img/user.jpg" alt="User Image"
+                      /></a>
+                      <div class="media-body flex-grow-1">
+                        <div class="text-sm my-0">Victor Anih</div>
+                      </div>
+                    </div>
+                    <div class="row align-items-center mt-3">
+                      <div class="col-6">
+                        <h6 class="mb-0">4 Sep 2019</h6>
+                        <!-- <span class="text-sm text-muted">Leave Date</span> -->
+                      </div>
+                      <div class="col-6 text-end">
+                        <span class="badge bg-inverse-success">Super Admin</span>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="leave-info-box">
+                    <div class="media d-flex align-items-center">
+                      <a href="profile.html" class="avatar"
+                        ><img src="@/assets/img/user.jpg" alt="User Image"
+                      /></a>
+                      <div class="media-body flex-grow-1">
+                        <div class="text-sm my-0">Chukwunonso Egbo</div>
+                      </div>
+                    </div>
+                    <div class="row align-items-center mt-3">
+                      <div class="col-6">
+                        <h6 class="mb-0">4 Sep 2019</h6>
+                        <!-- <span class="text-sm text-muted">Leave Date</span> -->
+                      </div>
+                      <div class="col-6 text-end">
+                        <span class="badge bg-inverse-success">Admin</span>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="load-more text-center">
+                    <a class="text-white bg-success" href="javascript:void(0);"
+                      >Add New Admin</a
+                    >
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="col-12 col-lg-6 col-xl-4 d-flex mb-2 mb-lg-4">
               <div class="card flex-fill dash-statistics border-0 shadow-sm">
                 <div class="card-body">
                   <h5 class="card-title">Statistics</h5>
