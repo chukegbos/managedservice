@@ -188,7 +188,7 @@ const onSubmit = async (type, id) => {
   } else if (type === "delete") {
     url = "sections/delete";
     payload = {
-      payload: selected.value,
+      ids: selected.value,
     };
   } else if (type === "Edit Section") {
     url = "sections/edit/" + id;
@@ -198,25 +198,36 @@ const onSubmit = async (type, id) => {
   close("section-modal");
   isLoading.value = true;
 
-  await axiosUrl
-    .post(url, payload)
-    .then(() => {
-      isLoading.value = false;
-
-      if (type === "Add Section" || type === "Edit Section") {
-        modalForm.name = "";
-        modalParams.title = "";
-      } else if (type === "delete") {
+  if (type === "delete" || type === "delete-m") {
+    await axiosUrl
+      .delete(url, { data: payload })
+      .then(() => {
+        isLoading.value = false;
         selected.value = [];
         selectAll.value = false;
-      }
 
-      getSection();
-    })
-    .catch((error) => {
-      isLoading.value = false;
-      swalErrorHandle(error);
-    });
+        getSection();
+      })
+      .catch((error) => {
+        isLoading.value = false;
+        swalErrorHandle(error);
+      });
+  } else {
+    await axiosUrl
+      .post(url, payload)
+      .then(() => {
+        isLoading.value = false;
+
+        modalForm.name = "";
+        modalParams.title = "";
+
+        getSection();
+      })
+      .catch((error) => {
+        isLoading.value = false;
+        swalErrorHandle(error);
+      });
+  }
 };
 
 onMounted(() => {

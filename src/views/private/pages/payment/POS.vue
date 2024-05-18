@@ -189,7 +189,7 @@ const onSubmit = async (type, id) => {
   } else if (type === "delete") {
     url = "payments/pos";
     payload = {
-      payload: selected.value,
+      ids: selected.value,
     };
   } else if (type === "Edit POS") {
     url = "payments/pos/" + id;
@@ -198,26 +198,50 @@ const onSubmit = async (type, id) => {
 
   close("pos-modal");
   isLoading.value = true;
-
-  await axiosUrl
-    .post(url, payload)
-    .then(() => {
-      isLoading.value = false;
-
-      if (type === "Add POS" || type === "Edit POS") {
-        modalForm.name = "";
-        modalParams.title = "";
-      } else if (type === "delete") {
+  if (type === "delete") {
+    await axiosUrl
+      .delete(url, { data: payload })
+      .then(() => {
+        isLoading.value = false;
         selected.value = [];
         selectAll.value = false;
-      }
+        getPOS();
+      })
+      .catch((error) => {
+        isLoading.value = false;
+        swalErrorHandle(error);
+      });
+  } else if (type === "Edit POS") {
+    await axiosUrl
+      .put(url, payload)
+      .then(() => {
+        isLoading.value = false;
 
-      getPOS();
-    })
-    .catch((error) => {
-      isLoading.value = false;
-      swalErrorHandle(error);
-    });
+        modalForm.name = "";
+        modalParams.title = "";
+
+        getPOS();
+      })
+      .catch((error) => {
+        isLoading.value = false;
+        swalErrorHandle(error);
+      });
+  } else {
+    await axiosUrl
+      .post(url, payload)
+      .then(() => {
+        isLoading.value = false;
+
+        modalForm.name = "";
+        modalParams.title = "";
+
+        getPOS();
+      })
+      .catch((error) => {
+        isLoading.value = false;
+        swalErrorHandle(error);
+      });
+  }
 };
 
 onMounted(() => {

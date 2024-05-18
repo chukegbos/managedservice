@@ -210,7 +210,6 @@ const options = [
     id: "1",
     name: "Pay",
   },
-
 ];
 const filters = ref({
   global: { value: null, matchMode: FilterMatchMode.CONTAINS },
@@ -322,8 +321,8 @@ const onSubmit = async (type, id) => {
         payData.channel_id = null;
         payData.process_id = "";
         modalParams.title = "";
-      } 
-      swalSuccessHandle('Payment Successful.')
+      }
+      swalSuccessHandle("Payment Successful.");
       getDebits();
       getChannel();
       getBanks();

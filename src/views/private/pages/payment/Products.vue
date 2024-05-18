@@ -19,14 +19,14 @@
             <div>
               <button
                 v-if="selected.length > 0"
-                @click="onSubmit('delete')"
+                @click="onSubmit('delete-m')"
                 class="btn add-btn px-4"
               >
                 <i class="fa-solid fa-minus"></i> Delete
               </button>
-              <button v-else class="btn add-btn px-4">
+              <!-- <button v-else class="btn add-btn px-4">
                 <i class="fa-solid fa-minus"></i> Delete
-              </button>
+              </button> -->
               <!-- <button @click="visible = true" class="btn add-btn me-2 px-4">
                 < Add
               </button> -->
@@ -257,14 +257,24 @@
         >
           <div class="form-group mb-3">
             <label class="col-form-label fs-6">Select Member</label>
-             <select v-model="singleDebit.membership_id" class="form-control" required>
-              <option value=null> -- Select Member-- </option>
-              <option v-for="option in members" :value="option.membership_id" :key="option.membership_id">
-                  {{ option.first_name }} {{ option.last_name }} ({{ option.membership_id }})
+            <select
+              v-model="singleDebit.membership_id"
+              class="form-control"
+              required
+            >
+              <option value="null">-- Select Member--</option>
+              <option
+                v-for="option in members"
+                :value="option.membership_id"
+                :key="option.membership_id"
+              >
+                {{ option.first_name }} {{ option.last_name }} ({{
+                  option.membership_id
+                }})
               </option>
             </select>
           </div>
-        
+
           <div class="mt-1">
             <button class="btn btn-primary account-btn w-100" type="submit">
               Submit
@@ -328,7 +338,7 @@ const options = [
     name: "Individual Debit",
   },
 
-   {
+  {
     id: "4",
     name: "Group Debit",
   },
@@ -364,7 +374,6 @@ const openModal = (type, data) => {
     productData.reoccuring_day = data.reoccuring_day;
     currentEditID.value = data.id;
   }
-  
 
   open("product-modal");
 };
@@ -385,16 +394,16 @@ const groupDebit = async (data) => {
   isLoading.value = true;
 
   await axiosUrl
-  .post(url, payload)
-  .then(() => {
-    isLoading.value = false
-    swalSuccessHandle('Members Debited Successfully.')
-    getProducts();
-  })
-  .catch((error) => {
-    isLoading.value = false;
-    swalErrorHandle(error);
-  });
+    .post(url, payload)
+    .then(() => {
+      isLoading.value = false;
+      swalSuccessHandle("Members Debited Successfully.");
+      getProducts();
+    })
+    .catch((error) => {
+      isLoading.value = false;
+      swalErrorHandle(error);
+    });
 };
 
 const onSingleDebit = async () => {
@@ -407,16 +416,16 @@ const onSingleDebit = async () => {
   isLoading.value = true;
 
   await axiosUrl
-  .post(url, payload)
-  .then(() => {
-    isLoading.value = false
-    swalSuccessHandle('Member Debited Successfully.')
-    getProducts();
-  })
-  .catch((error) => {
-    isLoading.value = false;
-    swalErrorHandle(error);
-  });
+    .post(url, payload)
+    .then(() => {
+      isLoading.value = false;
+      swalSuccessHandle("Member Debited Successfully.");
+      getProducts();
+    })
+    .catch((error) => {
+      isLoading.value = false;
+      swalErrorHandle(error);
+    });
 };
 
 const toggleAll = () => {
@@ -432,8 +441,7 @@ const getMembers = async () => {
     .then((response) => {
       members.value = response.data.data;
     })
-    .catch(() => {
-    });
+    .catch(() => {});
 };
 
 const getProducts = async () => {
@@ -460,7 +468,7 @@ const loadFun = (type) => {
     productData.type = null;
     productData.reoccuring_day = null;
     modalParams.title = "";
-  } else if (type === "delete") {
+  } else if (type === "delete" || type === "delete-m") {
     selected.value = [];
     selectAll.value = false;
   }
@@ -475,9 +483,14 @@ const onSubmit = async (type, id) => {
     url = "payments/products";
     payload = productData;
   } else if (type === "delete") {
-    url = "payments/products";
+    url = "payments/product";
     payload = {
-      payload: selected.value,
+      ids: [id],
+    };
+  } else if (type === "delete-m") {
+    url = "payments/product";
+    payload = {
+      ids: selected.value,
     };
   } else if (type === "Edit Product") {
     url = "payments/products/" + id;
@@ -490,6 +503,18 @@ const onSubmit = async (type, id) => {
   if (type === "Edit Product") {
     await axiosUrl
       .put(url, payload)
+      .then(() => {
+        isLoading.value = false;
+        loadFun(type);
+        getProducts();
+      })
+      .catch((error) => {
+        isLoading.value = false;
+        swalErrorHandle(error);
+      });
+  } else if (type === "delete" || type === "delete-m") {
+    await axiosUrl
+      .delete(url, { data: payload })
       .then(() => {
         isLoading.value = false;
         loadFun(type);
