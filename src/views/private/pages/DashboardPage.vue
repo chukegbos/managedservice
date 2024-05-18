@@ -22,7 +22,7 @@
                     ><i class="fa-solid fa-users"></i
                   ></span>
                   <div class="dash-widget-info">
-                    <h3>112</h3>
+                    <h3>{{ }}</h3>
                     <span>Members</span>
                   </div>
                 </div>
@@ -294,11 +294,19 @@ import { ref, reactive, onMounted } from "vue";
 import { useAuthStore } from "@/store/authStore";
 import { axiosUrl } from "@/env";
 import Swal from "sweetalert2";
+// import { formatDate, swalErrorHandle } from "@/components/myHelperFunction";
 
 const loading = ref(false);
-const user = ref("");
+const items = ref([]);
+const resp = ref("")
+const admins = ref([]);
 const authStore = useAuthStore();
 const token = authStore.token;
+const totalMember = ref("");
+const totalPayment = ref("");
+const totalPaymentProduct = ref("");
+const totalSection = ref("");
+
 onMounted(() => {
   if (window.innerWidth >= 1100)
     document.querySelectorAll(".page-header")[0].style.width = "1000px";
@@ -307,6 +315,35 @@ onMounted(() => {
   //   window.location.href = "/login";
   // }
 });
+
+const getData = async () => {
+  loading.value = true;
+
+  await axiosUrl
+    .get("/dashboard")
+    .then((response) => {
+      totalMember.value = response.data.total_members
+      totalPayment.value = response.data.total_payments
+      totalPaymentProduct.value = response.data.total_payment_products
+      totalSection.value = response.data.total_sections
+      totalSection.value = response.data.total_sections
+      admins.value = response.data.admins
+      loading.value = false;
+    })
+    .catch((error) => {
+      loading.value = false;
+      // swalErrorHandle(error);
+    });
+};
+
+onMounted(() => {
+  getData();
+});
+
+
+
+
+
 </script>
 
 <style scoped></style>
