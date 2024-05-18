@@ -96,9 +96,7 @@
                   </div>
                 </div>
                 <div class="load-more text-center">
-                  <a class="text-white bg-success" href="javascript:void(0);"
-                    >Add New Admin</a
-                  >
+                  <router-link class="text-white bg-success" to="/admins">Add New Admin</router-link>
                 </div>
               </div>
             </div>
