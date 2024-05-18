@@ -3,6 +3,7 @@
     <loading :active="isLoading" />
 
     <div class="container">
+
       <div class="d-flex justify-content-between align-items-center">
         <h2>All Members</h2>
 
@@ -93,18 +94,12 @@
               </template>
             </Column>
 
-            <Column header="Status">
+            <Column header="Door Access">
               <template #body="slotProps">
-                <span v-if="slotProps.data.status == 1" class="text-success"
+                <span v-if="slotProps.data.door_access_active == 1" class="text-success"
                   >Access</span
                 >
                 <span v-else class="text-danger">No Access</span>
-              </template>
-            </Column>
-
-            <Column header="Gender">
-              <template #body="slotProps">
-                {{ slotProps.data.gender }}
               </template>
             </Column>
 
@@ -137,6 +132,7 @@
           </div>
         </div>
       </div>
+      
     </div>
   </div>
 </template>
@@ -162,7 +158,7 @@ const filters = ref({
 const selectedAction = ref([]);
 const actions = ref([
   { label: "Edit", id: 1 },
-  { label: "Activate", id: 2 },
+
   { label: "View", id: 3 },
   { label: "Delete", id: 4 },
 ]);

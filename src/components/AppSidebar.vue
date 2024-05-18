@@ -4,7 +4,7 @@
       <div id="sidebar-menu" class="sidebar-menu">
         <ul class="sidebar-vertical">
           <li class="menu-title">
-            <span>Main</span>
+            <span>Member Management</span>
           </li>
           <li>
             <router-link to="/"><i class="la la-dashcube"></i> <span>Dashboard</span></router-link>
@@ -64,40 +64,46 @@
           </li>
 
           <li class="menu-title">
-            <span>Sub Pages</span>
+            <span>Inventory Management <span class="pull-right badge badge-danger">Coming Soon</span></span>
           </li>
 
           <li class="submenu dropdown-sidebar" @click="toggleSidebar(sidebarBtnNum - 3)">
-            <a href="#" class="noti-dot"><i class="la la-user"></i> <span> One</span> <span
+            <a href="#" class="noti-dot"><i class="la la-product-hunt"></i> <span> Inventory Tracking</span> <span
                 class="menu-arrow"></span></a>
             <ul>
-              <li><router-link to="#" class="active">Lorem, ipsum.</router-link></li>
-              <li><router-link to="#">Lorem, ipsum.</router-link></li>
-              <li><router-link to="#">Lorem, ipsum.</router-link></li>
-              <li><router-link to="#">Lorem, ipsum.</router-link></li>
+              <li><router-link to="#">Product List</router-link></li>
+              <li><router-link to="#">Product Group</router-link></li>
             </ul>
           </li>
 
           <li>
-            <a href="#"><i class="la la-users"></i> <span>Two</span></a>
+            <a href="#"><i class="la la-users"></i> <span>Supplier Management</span></a>
           </li>
 
           <li class="submenu dropdown-sidebar" @click="toggleSidebar(sidebarBtnNum - 2)">
-            <a href="#"><i class="la la-rocket"></i> <span> Three</span> <span class="menu-arrow"></span></a>
+            <a href="#"><i class="la la-rocket"></i> <span> Order Management</span> <span class="menu-arrow"></span></a>
             <ul>
-              <li><router-link to="#" class="active">Lorem, ipsum.</router-link></li>
-              <li><router-link to="#">Lorem, ipsum.</router-link></li>
-              <li><router-link to="#">Lorem, ipsum.</router-link></li>
+              <li><router-link to="#" class="active">Purchase Order</router-link></li>
+              <li><router-link to="#">Sales Order</router-link></li>
             </ul>
           </li>
 
+          <li class="menu-title">
+            <span>Account and Reporting <span class="pull-right badge badge-danger">Coming Soon</span></span>
+          </li>
+
           <li class="submenu dropdown-sidebar" @click="toggleSidebar(sidebarBtnNum - 1)">
-            <a href="#"><i class="la la-ticket"></i> <span>Four</span><span class="menu-arrow"></span></a>
+            <a href="#"><i class="la la-ticket"></i> <span>Reports</span><span class="menu-arrow"></span></a>
             <ul>
-              <li><router-link to="#" class="active">Lorem, ipsum.</router-link></li>
-              <li><router-link to="#">Lorem, ipsum.</router-link></li>
+              <li><router-link to="#" class="active">Inventory Reports:</router-link></li>
+              <li><router-link to="#">Sales Analystics</router-link></li>
             </ul>
           </li>
+
+          <li>
+            <a href="#"><i class="la la-users"></i> <span>Accounting Systems</span></a>
+          </li>
+          
         </ul>
       </div>
     </div>

@@ -13,13 +13,10 @@
           </h2>
         </div>
         <div class="col-md-6">
-          <b class="mr-3">Debt: </b> <span v-html="nairaSign"></span
-          >{{ formatPrice(totalDebt) }}
+          <b class="mr-3">Debt: </b> <span v-html="nairaSign"></span>{{ formatPrice(totalDebt) }}
           <span class="mx-3 text-success">|</span>
-          <b class="mr-3"
-            >Wallet Balance : <span v-html="nairaSign"></span
-            >{{ formatPrice(wallet) }}</b
-          >
+          <b class="mr-3" >Wallet Balance : </b><span v-html="nairaSign"></span>{{ formatPrice(wallet) }}
+          
         </div>
       </div>
       <TabView>
@@ -113,26 +110,6 @@
                     <td>{{ additional.kin_relationship }}</td>
                   </tr>
                   <tr>
-                    <th class="mr-2">Beneficiary Name:</th>
-                    <td>{{ additional.beneficiary_name }}</td>
-                  </tr>
-                  <tr>
-                    <th class="mr-2">Beneficiary Address:</th>
-                    <td>{{ additional.beneficiary_address }}</td>
-                  </tr>
-                  <tr>
-                    <th class="mr-2">Beneficiary Phone 1:</th>
-                    <td>{{ additional.beneficiary_phone_1 }}</td>
-                  </tr>
-                  <tr>
-                    <th class="mr-2">Beneficiary Phone 2:</th>
-                    <td>{{ additional.beneficiary_phone_2 }}</td>
-                  </tr>
-                  <tr>
-                    <th class="mr-2">Beneficiary Relationship:</th>
-                    <td>{{ additional.beneficiary_relationship }}</td>
-                  </tr>
-                  <tr>
                     <th class="mr-2">Sponsor 1:</th>
                     <td>{{ additional.sponsor_1 }}</td>
                   </tr>
@@ -145,17 +122,16 @@
             </div>
           </div>
         </TabPanel>
+
         <TabPanel header="Debt">
-          <div class="">
-            <div class="d-flex justify-content-between align-items-center">
-              <div class="d-flex">
-                <div class="me-3">
-                  <input
-                    v-model="filters['global'].value"
-                    placeholder="Keyword Search"
-                    class="form-control my-input"
-                  />
-                </div>
+          <div class="d-flex justify-content-between align-items-center">
+            <div class="d-flex">
+              <div class="me-3">
+                <input
+                  v-model="filters['global'].value"
+                  placeholder="Keyword Search"
+                  class="form-control my-input"
+                />
               </div>
             </div>
           </div>
@@ -244,79 +220,81 @@
         </TabPanel>
 
         <TabPanel header="Payments">
-          <div v-if="history.length > 0">
-            <DataTable
-              class="shadow"
-              v-model:filters="filters"
-              :value="history"
-              :sortField="'created_at'"
-              showGridlines
-              paginator
-              :rows="10"
-              :rowsPerPageOptions="[5, 10, 20, 50]"
-              tableStyle="min-width: 50rem"
-            >
-              <Column header="Product Name" style="width: 20%">
-                <template #body="slotProps">
-                  {{
-                    slotProps.data.product_name
-                      ? slotProps.data.product_name
-                      : ""
-                  }}<br />
-                  <b>Code:</b> #{{
-                    slotProps.data.product_id ? slotProps.data.product_id : ""
-                  }}
-                </template>
-              </Column>
-              <Column header="Member Name" style="width: 20%">
-                <template #body="slotProps">
-                  {{
-                    slotProps.data.member_name
-                      ? slotProps.data.member_name
-                      : ""
-                  }}<br />
-                  <b>Code:</b> #{{
-                    slotProps.data.member_code ? slotProps.data.member_code : ""
-                  }}
-                </template>
-              </Column>
-              <Column header="Payment Channel" style="width: 20%">
-                <template #body="slotProps">
-                  {{
-                    slotProps.data.paymentChannel
-                      ? slotProps.data.paymentChannel
-                      : "N/A"
-                  }}<br />
-                  <b>Amount: </b> <span v-html="nairaSign" />{{
-                    formatPrice(slotProps.data.amount)
-                  }}
-                </template>
-              </Column>
-              <Column header="Channel Process" style="width: 20%">
-                <template #body="slotProps">
-                  {{
-                    slotProps.data.channelProcess
-                      ? slotProps.data.channelProcess
-                      : "N/A"
-                  }}
-                </template>
-              </Column>
-              <Column header="Creator" style="width: 20%">
-                <template #body="slotProps">
-                  {{
-                    slotProps.data.created_by ? slotProps.data.created_by : ""
-                  }}
-                  <br />
-                  {{ formatDate(slotProps.data.date_created) }}
-                </template>
-              </Column>
-            </DataTable>
-          </div>
+          <div class="mt-4">
+            <div v-if="payments.length > 0">
+              <DataTable
+                class="shadow"
+                v-model:filters="filters"
+                :value="payments"
+                :sortField="'created_at'"
+                showGridlines
+                paginator
+                :rows="10"
+                :rowsPerPageOptions="[5, 10, 20, 50]"
+                tableStyle="min-width: 50rem"
+              >
+                <Column header="Product Name" style="width: 20%">
+                  <template #body="slotProps">
+                    {{
+                      slotProps.data.product_name
+                        ? slotProps.data.product_name
+                        : ""
+                    }}<br />
+                    <b>Code:</b> #{{
+                      slotProps.data.product_id ? slotProps.data.product_id : ""
+                    }}
+                  </template>
+                </Column>
+                <Column header="Member Name" style="width: 20%">
+                  <template #body="slotProps">
+                    {{
+                      slotProps.data.member_name
+                        ? slotProps.data.member_name
+                        : ""
+                    }}<br />
+                    <b>Code:</b> #{{
+                      slotProps.data.member_code ? slotProps.data.member_code : ""
+                    }}
+                  </template>
+                </Column>
+                <Column header="Payment Channel" style="width: 20%">
+                  <template #body="slotProps">
+                    {{
+                      slotProps.data.paymentChannel
+                        ? slotProps.data.paymentChannel
+                        : "N/A"
+                    }}<br />
+                    <b>Amount: </b> <span v-html="nairaSign" />{{
+                      formatPrice(slotProps.data.amount)
+                    }}
+                  </template>
+                </Column>
+                <Column header="Channel Process" style="width: 20%">
+                  <template #body="slotProps">
+                    {{
+                      slotProps.data.channelProcess
+                        ? slotProps.data.channelProcess
+                        : "N/A"
+                    }}
+                  </template>
+                </Column>
+                <Column header="Creator" style="width: 20%">
+                  <template #body="slotProps">
+                    {{
+                      slotProps.data.created_by ? slotProps.data.created_by : ""
+                    }}
+                    <br />
+                    {{ formatDate(slotProps.data.date_created) }}
+                  </template>
+                </Column>
+              </DataTable>
+            </div>
 
-          <div v-else>
-            <div class="card card-body">
-              <div class="alert alert-warning" role="alert">
-                <p class="text-center">No Payment History Available</p>
+            <div v-else>
+              <div class="card card-body">
+                <div class="alert alert-warning" role="alert">
+                  <p class="text-center">No Payment Available</p>
+                </div>
               </div>
             </div>
           </div>
@@ -412,7 +390,6 @@ const authStore = useAuthStore();
 const filters = ref({
   global: { value: null, matchMode: FilterMatchMode.CONTAINS },
 });
-const history = ref([]);
 const actionValue = ref([]);
 const channels = ref([]);
 const banks = ref([]);
@@ -447,18 +424,6 @@ const checkSelectedAction = (id, data) => {
   }
 };
 
-const getHistory = async () => {
-  await axiosUrl
-    .get("/payments/history")
-    .then((response) => {
-      history.value = response.data.data;
-      isLoading.value = false;
-    })
-    .catch((error) => {
-      isLoading.value = false;
-      swalErrorHandle(error);
-    });
-};
 
 const onSubmit = async (type, id) => {
   let url = "";
@@ -566,7 +531,6 @@ onMounted(() => {
     getChannel();
     getBanks();
     getPOS();
-    getHistory();
   } catch (error) {
     isLoading.value = false;
     Swal.fire("Failed!", "Its not your fault, try again.", "warning");

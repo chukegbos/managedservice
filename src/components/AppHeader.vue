@@ -2,13 +2,12 @@
   <div class="header">
     <loading :active="isLoading" />
     <div class="sidebar-overlay"></div>
-
     <div class="header-left">
       <router-link to="#" class="logo">
         <img src="@/assets/img/Black_and_Beige_Fitness_Sports_Club_Logo-removebg-preview.png" alt="Logo" width="85" />
       </router-link>
       <router-link to="#" class="logo collapse-logo">
-        <img src="@/assets/img/Black_and_Beige_Fitness_Sports_Club_Logo-removebg-preview.png" alt="Logo" />
+        <img width="95" src="@/assets/img/Black_and_Beige_Fitness_Sports_Club_Logo-removebg-preview.png" alt="Logo" />
       </router-link>
       <router-link to="#" class="logo2">
         <img src="@/assets/img/Black_and_Beige_Fitness_Sports_Club_Logo-removebg-preview.png" width="40" height="40" alt="Logo" />
@@ -24,7 +23,7 @@
     </a>
 
     <div class="page-title-box">
-      <h3>{{ currentClub['name'] }}</h3>
+      <h3 style="color: #024BAE">{{ currentClub['name'] }}</h3>
     </div>
 
     <!-- <a
@@ -369,15 +368,17 @@
           data-bs-toggle="dropdown"
           @click="toggleProfile()"
         >
+
           <span class="user-img"
             ><img src="@/assets/img/avatar/avatar-27.jpg" alt="User Image" />
             <span class="status online"></span
           ></span>
-          <span class="px-2">{{ loggedInUser['username'] }}</span>
+          <span class="px-2">{{ loggedInUser['username'].toUpperCase() }}</span>
         </a>
         <div class="dropdown-menu">
-          <a class="dropdown-item" href="#">My Profile</a>
-          <a class="dropdown-item" href="#">Settings</a>
+          <a class="dropdown-item" href="#">Admins</a>
+          <a class="dropdown-item" href="#">Club Settings</a>
+          <a class="dropdown-item" href="#">Change Password</a>
           <a @click="logout()" class="dropdown-item" href="#">Logout</a>
         </div>
       </li>
@@ -394,8 +395,9 @@
         <i class="fa-solid fa-ellipsis-vertical"></i>
       </a>
       <div class="dropdown-menu dropdown-menu-right">
-        <a class="dropdown-item" href="#">My Profile</a>
-        <a class="dropdown-item" href="#">Settings</a>
+        <a class="dropdown-item" href="#">Admins</a>
+        <a class="dropdown-item" href="#">Club Settings</a>
+        <a class="dropdown-item" href="#">Change Password</a>
         <a class="dropdown-item" href="#">Logout</a>
       </div>
     </div>
