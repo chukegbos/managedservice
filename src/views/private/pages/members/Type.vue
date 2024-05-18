@@ -99,7 +99,7 @@
 
     <Modal name="section-modal" :title="modalParams.title">
       <ModalContent>
-        <form @submit.prevent="onSubmit(modalParams.title, currentEditID)">
+        <form @submit.prevent="onSubmit(modalParams.title, currentEditID)"  style="width: 95%; margin: 0 auto">
           <div class="input-block mb-4 mx-3">
             <label class="col-form-label fs-6">Title</label>
             <input

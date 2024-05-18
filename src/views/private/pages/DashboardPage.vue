@@ -20,7 +20,7 @@
                   ><i class="fa-solid fa-users"></i
                 ></span>
                 <div class="dash-widget-info">
-                  <h3>112</h3>
+                  <h3>{{ totalMember }}</h3>
                   <span>Members</span>
                 </div>
               </div>
@@ -33,7 +33,7 @@
                   ><i class="fa-solid fa-cubes"></i
                 ></span>
                 <div class="dash-widget-info">
-                  <h3>44</h3>
+                  <h3>{{ totalSection }}</h3>
                   <span>Sections</span>
                 </div>
               </div>
@@ -46,7 +46,7 @@
                   ><i class="fa-regular fa-dollar-sign"></i
                 ></span>
                 <div class="dash-widget-info">
-                  <h3>37</h3>
+                  <h3>{{ totalPayment }}</h3>
                   <span>Payment</span>
                 </div>
               </div>
@@ -59,7 +59,7 @@
                   ><i class="fa-solid fa-gem"></i
                 ></span>
                 <div class="dash-widget-info">
-                  <h3>218</h3>
+                  <h3>{{ totalPaymentProduct }}</h3>
                   <span>Products</span>
                 </div>
               </div>
@@ -73,43 +73,25 @@
               <div class="card-body">
                 <h4 class="card-title">
                   Admininistrators
-                  <span class="badge bg-inverse-danger ms-2">5</span>
+                  <span class="badge bg-inverse-danger ms-2">{{ admins.length }}</span>
                 </h4>
-                <div class="leave-info-box">
+                <div class="leave-info-box" v-for="admin in admins" :key="admin">
                   <div class="media d-flex align-items-center">
                     <a href="profile.html" class="avatar"
                       ><img src="@/assets/img/user.jpg" alt="User Image"
                     /></a>
                     <div class="media-body flex-grow-1">
-                      <div class="text-sm my-0">Victor Anih</div>
+                      <div class="text-sm my-0">{{ admin.username }}</div>
                     </div>
                   </div>
                   <div class="row align-items-center mt-3">
                     <div class="col-6">
-                      <h6 class="mb-0">4 Sep 2019</h6>
+                      <h6 class="mb-0">{{ admin.club_code }}</h6>
                       <!-- <span class="text-sm text-muted">Leave Date</span> -->
                     </div>
                     <div class="col-6 text-end">
-                      <span class="badge bg-inverse-success">Super Admin</span>
-                    </div>
-                  </div>
-                </div>
-                <div class="leave-info-box">
-                  <div class="media d-flex align-items-center">
-                    <a href="profile.html" class="avatar"
-                      ><img src="@/assets/img/user.jpg" alt="User Image"
-                    /></a>
-                    <div class="media-body flex-grow-1">
-                      <div class="text-sm my-0">Chukwunonso Egbo</div>
-                    </div>
-                  </div>
-                  <div class="row align-items-center mt-3">
-                    <div class="col-6">
-                      <h6 class="mb-0">4 Sep 2019</h6>
-                      <!-- <span class="text-sm text-muted">Leave Date</span> -->
-                    </div>
-                    <div class="col-6 text-end">
-                      <span class="badge bg-inverse-success">Admin</span>
+                      <span class="badge bg-inverse-success" v-if="admin.role == 3">Super Admin</span>
+                      <span class="badge bg-inverse-success" v-else> Admin</span>
                     </div>
                   </div>
                 </div>
@@ -319,12 +301,12 @@ const getData = async () => {
   await axiosUrl
     .get("/dashboard")
     .then((response) => {
-      totalMember.value = response.data.total_members
-      totalPayment.value = response.data.total_payments
-      totalPaymentProduct.value = response.data.total_payment_products
-      totalSection.value = response.data.total_sections
-      totalSection.value = response.data.total_sections
-      admins.value = response.data.admins
+      totalMember.value = response.data.data.total_members
+      totalPayment.value = response.data.data.total_payments
+      totalPaymentProduct.value = response.data.data.total_payment_products
+      totalSection.value = response.data.data.total_sections
+      totalSection.value = response.data.data.total_sections
+      admins.value = response.data.data.admins
       loading.value = false;
     })
     .catch((error) => {

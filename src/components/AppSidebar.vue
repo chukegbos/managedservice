@@ -23,7 +23,6 @@
             <a href="#"><i class="la la-money"></i> <span> Payments</span> <span class="menu-arrow"></span></a>
             <ul>
              
-
               <li>
                 <router-link to="/payment/products">
                   Payment Products
@@ -61,6 +60,9 @@
               </li>
              
             </ul>
+          </li>
+          <li>
+            <router-link to="/admins"><i class="la la-dashcube"></i> <span>Administrators</span></router-link>
           </li>
 
           <li class="menu-title">
