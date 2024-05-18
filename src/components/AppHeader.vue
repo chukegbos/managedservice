@@ -378,7 +378,7 @@
         <div class="dropdown-menu">
           <a class="dropdown-item" href="#">Admins</a>
           <a class="dropdown-item" href="#">Club Settings</a>
-          <a class="dropdown-item" href="#">Change Password</a>
+          <li class="dropdown-item"><router-link to="/change-password">Change Password</router-link></li>
           <a @click="logout()" class="dropdown-item" href="#">Logout</a>
         </div>
       </li>
@@ -397,8 +397,8 @@
       <div class="dropdown-menu dropdown-menu-right">
         <a class="dropdown-item" href="#">Admins</a>
         <a class="dropdown-item" href="#">Club Settings</a>
-        <a class="dropdown-item" href="#">Change Password</a>
-        <a class="dropdown-item" href="#">Logout</a>
+        <li class="dropdown-item"><router-link to="/change-password">Change Password</router-link></li>
+        <a class="dropdown-item" href="#" @click="logout()">Logout</a>
       </div>
     </div>
   </div>

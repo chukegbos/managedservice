@@ -68,7 +68,7 @@
           </li>
 
           <li class="submenu dropdown-sidebar" @click="toggleSidebar(sidebarBtnNum - 3)">
-            <a href="#" class="noti-dot"><i class="la la-product-hunt"></i> <span> Inventory Tracking</span> <span
+            <a href="#"><i class="la la-product-hunt"></i> <span> Inventory Tracking</span> <span
                 class="menu-arrow"></span></a>
             <ul>
               <li><router-link to="#">Product List</router-link></li>
@@ -95,7 +95,7 @@
           <li class="submenu dropdown-sidebar" @click="toggleSidebar(sidebarBtnNum - 1)">
             <a href="#"><i class="la la-ticket"></i> <span>Reports</span><span class="menu-arrow"></span></a>
             <ul>
-              <li><router-link to="#" class="active">Inventory Reports:</router-link></li>
+              <li><router-link to="#" class="active">Inventory Reports</router-link></li>
               <li><router-link to="#">Sales Analystics</router-link></li>
             </ul>
           </li>
