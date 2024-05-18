@@ -373,11 +373,12 @@
             ><img src="@/assets/img/avatar/avatar-27.jpg" alt="User Image" />
             <span class="status online"></span
           ></span>
-          <span class="px-2">{{ loggedInUser['username'] }}</span>
+          <span class="px-2">{{ loggedInUser['username'].toUpperCase() }}</span>
         </a>
         <div class="dropdown-menu">
-          <a class="dropdown-item" href="#">My Profile</a>
-          <a class="dropdown-item" href="#">Settings</a>
+          <a class="dropdown-item" href="#">Admins</a>
+          <a class="dropdown-item" href="#">Club Settings</a>
+          <a class="dropdown-item" href="#">Change Password</a>
           <a @click="logout()" class="dropdown-item" href="#">Logout</a>
         </div>
       </li>
@@ -394,8 +395,9 @@
         <i class="fa-solid fa-ellipsis-vertical"></i>
       </a>
       <div class="dropdown-menu dropdown-menu-right">
-        <a class="dropdown-item" href="#">My Profile</a>
-        <a class="dropdown-item" href="#">Settings</a>
+        <a class="dropdown-item" href="#">Admins</a>
+        <a class="dropdown-item" href="#">Club Settings</a>
+        <a class="dropdown-item" href="#">Change Password</a>
         <a class="dropdown-item" href="#">Logout</a>
       </div>
     </div>
