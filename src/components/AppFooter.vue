@@ -1,9 +1,11 @@
 <template>
+
   <div class="w-100 mt-3 shadow">
     <div class="px-4 py-3 text-end border-top">
-      <p style="color: #FE7E4A;" class="fw-bold">FOOTER</p>
+      <p style="color: #FE7E4A;" class="fw-bold">Powered by Specstech Africa</p>
     </div>
   </div>
+  
 </template>
 
 <script setup>
