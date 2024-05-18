@@ -96,6 +96,12 @@ const routes = [
 				component: () =>
 					import("@/views/private/pages/payment/History.vue"),
 			},
+			{
+				path: "/admins",
+				name: "Admin",
+				component: () =>
+					import("@/views/private/pages/admin/Admin.vue"),
+			},
 		],
 	},
 ];
