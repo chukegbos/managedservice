@@ -1,5 +1,5 @@
 <template>
-  <div class="page-wrapper mt-5 pt-4">
+  <div class="page-wrapper mx-3 pt-3">
     <div class="content container-fluid pb-0">
         <div class="page-header mb-sm-0">
           <div class="row">
@@ -14,8 +14,8 @@
 
         <div class="row mb-xl-4">
           <div class="col-md-6 col-sm-12 col-lg-6 col-xl-3 mb-3 mb-xl-0">
-            <div class="card dash-widget border-0 shadow-sm">
-              <div class="card-body">
+            <div class="card dash-widget border-0 shadow-sm p-4">
+              <div class="d-flex align-items-center justify-content-between">
                 <span class="dash-widget-icon"
                   ><i class="fa-solid fa-users"></i
                 ></span>

@@ -2,19 +2,110 @@
   <div>
     <div class="body">
       <div class="main-wrapper">
-        <AppHeader />
-        <AppSidebar />
+        <nav class="navbar navbar-expand-lg bg-body-tertiary header mb-2">
+          <div
+            class="d-flex justify-content-between w-100 align-items-center px-2"
+          >
+            <div class="w-50 d-flex align-items-center">
+              <Button
+                icon="pi pi-bars"
+                @click="sidebarVisible = true"
+                style="color: #004aad; background-color: inherit; border: none"
+              />
+              <a class="navbar-brand" href="#">
+                <img
+                  src="../../assets/img/Black_and_Beige_Fitness_Sports_Club_Logo-removebg-preview.png"
+                  alt=""
+                  width="85"
+                />
+              </a>
+            </div>
+
+            <div
+              class="w-50 d-flex justify-content-end collapse navbar-collapse"
+              id="navbarSupportedContent"
+            >
+              <ul class="navbar-nav mb-lg-0 me-3">
+                <li class="nav-item dropdown">
+                  <a
+                    class="nav-link dropdown-toggle text-white"
+                    href="#"
+                    role="button"
+                    data-bs-toggle="dropdown"
+                    aria-expanded="false"
+                  >
+                    {{ loggedInUser["username"] }}
+                  </a>
+                  <ul class="dropdown-menu">
+                    <li><a class="dropdown-item" href="#">My Profile</a></li>
+                    <li>
+                      <a class="dropdown-item" href="#">Settings</a>
+                    </li>
+                    <li>
+                      <a class="dropdown-item" href="#" @click="logout"
+                        >Logout</a
+                      >
+                    </li>
+                  </ul>
+                </li>
+              </ul>
+            </div>
+          </div>
+        </nav>
+        <!-- <AppHeader2 /> -->
+        <AppSidebar
+          class="border-0"
+          :visible="sidebarVisible"
+          @update:visible="sidebarVisible = $event"
+        />
+        <!-- <AppSidebar2 /> -->
         <router-view />
-        <AppFooter />
+        <!-- <AppFooter /> -->
       </div>
     </div>
   </div>
 </template>
 
 <script setup>
-import AppSidebar from "@/components/AppSidebar.vue"
-import AppHeader from "@/components/AppHeader.vue"
-import AppFooter from "@/components/AppFooter.vue"
+import AppSidebar from "@/components/AppSidebar.vue";
+import AppSidebar2 from "@/components/AppSidebar2.vue";
+import AppHeader from "@/components/AppHeader.vue";
+import AppHeader2 from "@/components/AppHeader.vue";
+import AppFooter from "@/components/AppFooter.vue";
+
+const sidebarVisible = ref(false);
+
+import { axiosUrl } from "@/env";
+import { onMounted, ref } from "vue";
+import { useAuthStore } from "@/store/authStore";
+const isLoading = ref(false);
+const authStore = useAuthStore();
+const loggedInUser = authStore.loggedInUser;
+const currentClub = authStore.currentClub;
+
+const logout = async () => {
+  isLoading.value = true;
+  await axiosUrl
+    .post("auth/logout")
+    .then(() => {
+      isLoading.value = false;
+      localStorage.clear();
+      window.location.href = "/";
+    })
+    .catch(() => {
+      isLoading.value = false;
+    });
+};
 </script>
 
-<style scoped></style>
+<style scoped>
+.header {
+  background: #004aad;
+  background: linear-gradient(to right, #ffffff 0%, #004aad 100%);
+  border-bottom: 1px solid transparent;
+  /* height: 60px; */
+  -webkit-box-shadow: 0 1px 1px 0 rgba(0, 0, 0, 0.2);
+  -moz-box-shadow: 0 1px 1px 0 rgba(0, 0, 0, 0.2);
+  box-shadow: 0 1px 1px 0 rgba(0, 0, 0, 0.2);
+}
+</style>
