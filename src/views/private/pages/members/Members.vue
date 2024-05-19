@@ -3,7 +3,6 @@
     <loading :active="isLoading" />
 
     <div class="container">
-
       <div class="d-flex justify-content-between align-items-center">
         <h2>All Members</h2>
 
@@ -96,7 +95,9 @@
 
             <Column header="Door Access">
               <template #body="slotProps">
-                <span v-if="slotProps.data.door_access_active == 1" class="text-success"
+                <span
+                  v-if="slotProps.data.door_access_active == 1"
+                  class="text-success"
                   >Access</span
                 >
                 <span v-else class="text-danger">No Access</span>
@@ -132,7 +133,6 @@
           </div>
         </div>
       </div>
-      
     </div>
   </div>
 </template>
@@ -158,19 +158,19 @@ const filters = ref({
 const selectedAction = ref([]);
 const actions = ref([
   { label: "Edit", id: 1 },
-
-  { label: "View", id: 3 },
-  { label: "Delete", id: 4 },
+  { label: "View", id: 2 },
+  { label: "Delete", id: 3 },
 ]);
 
 const checkSelectedAction = (id, data) => {
-  if (id === "1") {
-    openModal("edit", data);
-  } else if (id === "2") {
-    onSubmit("delete", id);
-  } else if (id == 3) {
+  if (id === 1) {
+    router.push({
+      path: "/members/create/",
+      query: { edit: "true", id: data },
+    });
+  } else if (id == 2) {
     router.push({ path: "/members/view/" + data });
-  } else if (id === 4) {
+  } else if (id === 3) {
     onSubmit("delete", id);
   }
 };

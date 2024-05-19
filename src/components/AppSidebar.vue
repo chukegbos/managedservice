@@ -61,9 +61,7 @@
              
             </ul>
           </li>
-          <li>
-            <router-link to="/admins"><i class="la la-dashcube"></i> <span>Administrators</span></router-link>
-          </li>
+         
 
           <li class="menu-title">
             <span>Inventory Management <span class="pull-right badge badge-danger">Coming Soon</span></span>

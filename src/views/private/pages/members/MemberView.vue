@@ -2,7 +2,7 @@
   <div class="content-wrapper">
     <loading :active="isLoading" />
 
-    <div class="container">
+    <div class="container" v-if="!isLoading">
       <div class="d-flex justify-content-between align-items-center row">
         <div class="col-md-6">
           <h2>

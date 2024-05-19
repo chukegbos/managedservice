@@ -376,9 +376,9 @@
           <span class="px-2">{{ loggedInUser['username'].toUpperCase() }}</span>
         </a>
         <div class="dropdown-menu">
-          <a class="dropdown-item" href="#">Admins</a>
+          <router-link to="/admins" class="dropdown-item">Admins</router-link>
           <a class="dropdown-item" href="#">Club Settings</a>
-          <li class="dropdown-item"><router-link to="/change-password">Change Password</router-link></li>
+          <router-link to="/change-password" class="dropdown-item">Change Password</router-link>
           <a @click="logout()" class="dropdown-item" href="#">Logout</a>
         </div>
       </li>
@@ -395,9 +395,9 @@
         <i class="fa-solid fa-ellipsis-vertical"></i>
       </a>
       <div class="dropdown-menu dropdown-menu-right">
-        <a class="dropdown-item" href="#">Admins</a>
+        <router-link to="/admins" class="dropdown-item">Admins</router-link>
         <a class="dropdown-item" href="#">Club Settings</a>
-        <li class="dropdown-item"><router-link to="/change-password">Change Password</router-link></li>
+        <router-link to="/change-password"class="dropdown-item">Change Password</router-link>
         <a class="dropdown-item" href="#" @click="logout()">Logout</a>
       </div>
     </div>
