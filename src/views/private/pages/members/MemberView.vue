@@ -14,9 +14,7 @@
         </div>
         <div class="col-md-6">
           <b class="mr-3">Debt: </b> <span v-html="nairaSign"></span>{{ formatPrice(totalDebt) }}
-          <span class="mx-3 text-success">|</span>
-          <b class="mr-3" >Wallet Balance : </b><span v-html="nairaSign"></span>{{ formatPrice(wallet) }}
-          
+         
         </div>
       </div>
       <TabView>
@@ -149,6 +147,11 @@
                 :rowsPerPageOptions="[5, 10, 20, 50]"
                 tableStyle="min-width: 50rem"
               >
+              <Column header="Debt ID" style="width: 10%">
+                  <template #body="slotProps">
+                    #{{ slotProps.data.trans_id}}
+                  </template>
+                </Column>
                 <Column header="Product Name" style="width: 20%">
                   <template #body="slotProps">
                     {{
@@ -233,6 +236,11 @@
                 :rowsPerPageOptions="[5, 10, 20, 50]"
                 tableStyle="min-width: 50rem"
               >
+              <Column header="Payment ID" style="width: 10%">
+              <template #body="slotProps">
+                #{{ slotProps.data.trans_id}}
+              </template>
+            </Column>
                 <Column header="Product Name" style="width: 20%">
                   <template #body="slotProps">
                     {{
@@ -242,18 +250,6 @@
                     }}<br />
                     <b>Code:</b> #{{
                       slotProps.data.product_id ? slotProps.data.product_id : ""
-                    }}
-                  </template>
-                </Column>
-                <Column header="Member Name" style="width: 20%">
-                  <template #body="slotProps">
-                    {{
-                      slotProps.data.member_name
-                        ? slotProps.data.member_name
-                        : ""
-                    }}<br />
-                    <b>Code:</b> #{{
-                      slotProps.data.member_code ? slotProps.data.member_code : ""
                     }}
                   </template>
                 </Column>
@@ -418,9 +414,10 @@ const modalParams = reactive({
 const checkSelectedAction = (id, data) => {
   if (id === "1") {
     modalParams.title = "Pay";
-    payData.membership_id = data.member_code;
+    payData.membership_id = membership_id;
     payData.transaction_code = data.trans_id;
     open("pay-modal");
+    
   }
 };
 
@@ -456,10 +453,7 @@ const onSubmit = async (type, id) => {
         modalParams.title = "";
       }
       swalSuccessHandle("Payment Successful.");
-      getMember();
-      getChannel();
-      getBanks();
-      getPOS();
+       location.reload();
     })
     .catch((error) => {
       isLoading.value = false;

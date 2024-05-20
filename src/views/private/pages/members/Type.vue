@@ -165,7 +165,7 @@ const toggleAll = () => {
   else selected.value = [];
 };
 
-const getSection = async () => {
+const getType = async () => {
   isLoading.value = true;
 
   await axiosUrl
@@ -205,7 +205,7 @@ const onSubmit = async (type, id) => {
         isLoading.value = false;
         selected.value = [];
         selectAll.value = false;
-        getSection();
+        getType();
       })
       .catch((error) => {
         isLoading.value = false;
@@ -218,7 +218,7 @@ const onSubmit = async (type, id) => {
         isLoading.value = false;
         modalForm.title = "";
         modalParams.title = "";
-        getSection();
+        getType();
       })
       .catch((error) => {
         isLoading.value = false;
@@ -228,7 +228,7 @@ const onSubmit = async (type, id) => {
 };
 
 onMounted(() => {
-  getSection();
+  getType();
 });
 </script>
 
