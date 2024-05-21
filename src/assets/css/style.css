@@ -7712,6 +7712,7 @@ input[type=file].form-control {
     line-height: 70px;
     padding: 0 10px;
     cursor: pointer;
+    display: none;
   }
 
   .header #toggle_btn .bar-icon {
@@ -8622,7 +8623,13 @@ input[type=file].form-control {
 
 @media(min-width:991px) {
   .mini-sidebar .page-wrapper {
-    margin-left: 60px
+    margin-left: 60px;
+    width: 95%;
+  }
+
+  .mini-sidebar .content-wrapper {
+    margin-left: 60px;
+    width: 95%;
   }
 }
 
@@ -23806,15 +23813,31 @@ textarea.form-control {
 }
 
 
+.content-wrapper{
+  margin-top: 100px;
+  margin-left: 280px;
+  min-height: 513px;
+  height: 100%;
+  background-color: #f4f6f9;
+  width: 78vw;
+}
 
+.page-wrapper{
+  margin-top: 100px;
+  margin-left: 280px;
+  min-height: 513px;
+  height: 100%;
+  background-color: #f4f6f9;
+  width: 78vw;
+}
 
-.content-wrapper {
+/* .content-wrapper {
   margin-top: 100px;
   margin-left: 50px;
   min-height: 513px;
   height: 100%;
   background-color: #f4f6f9;
-}
+} */
 
 @media (max-width: 991.98px) {
   .content-wrapper{
