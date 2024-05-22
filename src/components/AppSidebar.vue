@@ -19,7 +19,7 @@
             </ul>
           </li>
           
-          <li class="submenu dropdown-sidebar" @click="toggleSidebar(sidebarBtnNum - 5)">
+          <li class="submenu dropdown-sidebar" @click="toggleSidebar(sidebarBtnNum - 4)">
             <a href="#"><i class="la la-money"></i> <span> Payments</span> <span class="menu-arrow"></span></a>
             <ul>
              
@@ -62,24 +62,14 @@
             </ul>
           </li>
          
-          <li class="menu-title">
-            <span>Account and Reporting <span class="pull-right badge badge-danger">Coming Soon</span></span>
-          </li>
-
-          <li class="submenu dropdown-sidebar" @click="toggleSidebar(sidebarBtnNum - 4)">
-            <a href="#"><i class="la la-ticket"></i> <span>Accounting</span><span class="menu-arrow"></span></a>
-            <ul>
-              <li><router-link to="#">Approvals</router-link></li>
-              <li><router-link to="#">Accounts</router-link></li>
-              <li><router-link to="#">Ledger Entries</router-link></li>
-            </ul>
-          </li>
-
+      
           <li class="submenu dropdown-sidebar" @click="toggleSidebar(sidebarBtnNum - 3)">
-            <a href="#"><i class="la la-ticket"></i> <span>Reports</span><span class="menu-arrow"></span></a>
+            <a href="#"><i class="la la-ticket"></i> <span>Accounting/Reports</span><span class="menu-arrow"></span></a>
             <ul>
-              <li><router-link to="#">Inventory Reports</router-link></li>
-              <li><router-link to="#">Sales Analystics</router-link></li>
+              <li><router-link to="/accounting/approvals">Pending Entries</router-link></li>
+              <li><router-link to="/accounting/entries">Approved Entries</router-link></li>
+              <li><router-link to="/accounting/accounts">Accounts</router-link></li>
+              <li><router-link to="/accounting/ledger">Ledger Entries</router-link></li>
             </ul>
           </li>
 
@@ -97,6 +87,7 @@
           </li>
 
           <li><a href="#"><i class="la la-users"></i> <span>Supplier Management</span></a></li>
+          <li><a href="#"><i class="la la-beer"></i> <span>Bar Management</span></a></li>
 
           <li class="submenu dropdown-sidebar" @click="toggleSidebar(sidebarBtnNum - 1)">
             <a href="#"><i class="la la-rocket"></i> <span> Order Management</span> <span class="menu-arrow"></span></a>

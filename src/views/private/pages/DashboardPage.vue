@@ -26,41 +26,44 @@
               </div>
             </div>
           </div>
-          <div class="col-sm-12 col-md-6 col-lg-6 col-xl-3 mb-3 mb-xl-0">
+
+          <div class="col-md-6 col-sm-12 col-lg-6 col-xl-3 mb-3 mb-xl-0">
+            <div class="card dash-widget border-0 shadow-sm">
+              <div class="card-body">
+                <span class="dash-widget-icon"
+                  ><i class="fa-solid fa-times"></i
+                ></span>
+                <div class="dash-widget-info">
+                  <h3>{{ inactiveMembers }}</h3>
+                  <span>Debted Members</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+           <div class="col-md-6 col-sm-12 col-lg-6 col-xl-3 mb-3 mb-xl-0">
             <div class="card dash-widget border-0 shadow-sm">
               <div class="card-body">
                 <span class="dash-widget-icon"
                   ><i class="fa-solid fa-cubes"></i
                 ></span>
                 <div class="dash-widget-info">
-                  <h3>{{ totalSection }}</h3>
-                  <span>Sections</span>
+                  <h3>{{ activeMembers }}</h3>
+                  <span>Active Members</span>
                 </div>
               </div>
             </div>
           </div>
-          <div class="col-sm-12 col-md-6 col-lg-6 col-xl-3 mb-3 mb-xl-0">
+
+          <div class="col-md-6 col-sm-12 col-lg-6 col-xl-3 mb-3 mb-xl-0">
             <div class="card dash-widget border-0 shadow-sm">
               <div class="card-body">
                 <span class="dash-widget-icon"
-                  ><i class="fa-regular fa-dollar-sign"></i
+                  ><i class="fa-solid fa-plus"></i
                 ></span>
                 <div class="dash-widget-info">
-                  <h3>{{ totalPayment }}</h3>
-                  <span>Payment</span>
-                </div>
-              </div>
-            </div>
-          </div>
-          <div class="col-sm-12 col-md-6 col-lg-6 col-xl-3 mb-3 mb-xl-0">
-            <div class="card dash-widget border-0 shadow-sm">
-              <div class="card-body">
-                <span class="dash-widget-icon"
-                  ><i class="fa-solid fa-gem"></i
-                ></span>
-                <div class="dash-widget-info">
-                  <h3>{{ totalPaymentProduct }}</h3>
-                  <span>Products</span>
+                  <h3>{{ newMembers }}</h3>
+                  <span>New Members</span>
                 </div>
               </div>
             </div>
@@ -108,7 +111,7 @@
                 <div class="stats-list">
                   <div class="stats-info">
                     <p>
-                      Total Debt <strong>4 <small>/ 65</small></strong>
+                      Total Debt <strong> {{ totalDebt }}</strong>
                     </p>
                     <div class="progress">
                       <div
@@ -123,7 +126,7 @@
                   <div class="stats-info">
                     <p>
                       Completed Payment
-                      <strong>85 <small>/ 112</small></strong>
+                      <strong>{{ totalPayment }}</strong>
                     </p>
                     <div class="progress">
                       <div
@@ -137,7 +140,7 @@
                   </div>
                   <div class="stats-info">
                     <p>
-                      Open Tickets <strong>190 <small>/ 212</small></strong>
+                      Payment Products <strong>{{ totalPaymentProduct }}</strong>
                     </p>
                     <div class="progress">
                       <div
@@ -151,7 +154,7 @@
                   </div>
                   <div class="stats-info">
                     <p>
-                      Closed Tickets <strong>22 <small>/ 212</small></strong>
+                      Total Sections <strong>{{ totalSection }}</strong>
                     </p>
                     <div class="progress">
                       <div
@@ -280,9 +283,13 @@ const authStore = useAuthStore();
 const loggedInUser = authStore.loggedInUser;
 const token = authStore.token;
 const totalMember = ref("");
+const activeMembers = ref("");
+const newMembers = ref("");
+const inactiveMembers = ref("");
 const totalPayment = ref("");
 const totalPaymentProduct = ref("");
 const totalSection = ref("");
+const totalDebt = ref("");
 
 onMounted(() => {
   if (window.innerWidth >= 1100)
@@ -304,7 +311,12 @@ const getData = async () => {
       totalPaymentProduct.value = response.data.data.total_payment_products
       totalSection.value = response.data.data.total_sections
       totalSection.value = response.data.data.total_sections
+      inactiveMembers.value = response.data.data.inactiveMembers
+      activeMembers.value = response.data.data.activeMembers
+      newMembers.value = response.data.data.newMembers
       admins.value = response.data.data.admins
+      totalDebt.value = response.data.data.totalDebt
+
       loading.value = false;
     })
     .catch((error) => {
