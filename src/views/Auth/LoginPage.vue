@@ -1,21 +1,25 @@
 <template>
   <div>
-    <div class="main-wrapper d-flex" style="height: 100vh">
-      <div class="w-50 h-100" style="background-color: #014aac">
+    <div class="main-wrapper d-md-flex pt-5 pt-md-0">
+      <div
+        class="d-none d-md-block w-50 h-100"
+        style="background-color: #014aac"
+      >
         <img
-          src="@/assets/img/lindsay-henwood-7_kRuX1hSXM-unsplash.jpg"
+          src="@/assets/img/login-bg-img.jpg"
           alt=""
-          style="width: 100%; height: 100%"
+          class="w-100 h-100"
         />
       </div>
       <div
-        class="w-50 h-100 d-flex justify-content-center align-items-center flex-column"
+        class="w-md-50 h-100 d-flex justify-content-center align-items-center flex-column"
       >
         <form @submit.prevent="onSubmit()" class="w-75">
           <div class="d-flex justify-content-center mb-3">
             <img
-              src="@/assets/img/Black_and_Beige_Fitness_Sports_Club_Logo-removebg-preview.png"
+              src="@/assets/img/manageclub-247.png"
               alt=""
+              class="login-img"
             />
           </div>
           <div class="input-block mb-4">
@@ -187,6 +191,19 @@ onMounted(() => {
 </script>
 
 <style scoped>
+@media only screen and (min-width: 720px) {
+  .main-wrapper {
+    height: 100vh;
+  }
+  .w-md-50 {
+    width: 50%;
+  }
+}
+
+.login-img {
+  width: 150px;
+}
+
 button {
   background-color: #014aac;
 }
