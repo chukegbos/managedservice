@@ -7,6 +7,12 @@ export const formatDate = (value) => {
 	else return "N/A";
 };
 
+export const formatDay = (value) => {
+	if (!isNaN(new Date(value))) return moment(value).format("MMMM Do");
+	// return moment(value).format("dddd, MMMM Do YYYY, h:mm:ss a");
+	else return "N/A";
+};
+
 export const formatPrice = (value) => {
 	let val = (value / 1).toFixed(2).replace(",", ".");
 	return val.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");

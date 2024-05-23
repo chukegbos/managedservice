@@ -32,6 +32,12 @@
             :rowsPerPageOptions="[5, 10, 20, 50]"
             tableStyle="min-width: 50rem"
           >
+            <Column header="Debit ID" style="width: 10%">
+              <template #body="slotProps">
+                #{{ slotProps.data.trans_id}}
+              </template>
+            </Column>
+
             <Column header="Product Name" style="width: 20%">
               <template #body="slotProps">
                 {{
@@ -39,7 +45,7 @@
                     ? slotProps.data.product_name
                     : ""
                 }}<br />
-                <b>Code:</b> #{{
+                <b>Product Code:</b> #{{
                   slotProps.data.product_id ? slotProps.data.product_id : ""
                 }}
               </template>
@@ -48,7 +54,7 @@
               <template #body="slotProps">
                 {{ slotProps.data.member_name ? slotProps.data.member_name : ""
                 }}<br />
-                <b>Code:</b> #{{
+                <b>Member ID:</b> #{{
                   slotProps.data.member_code ? slotProps.data.member_code : ""
                 }}
               </template>
@@ -312,7 +318,7 @@ const onSubmit = async (type, id) => {
 
   await axiosUrl
     .post(url, payload)
-    .then(() => {
+    .then((response) => {
       isLoading.value = false;
 
       if (type === "Pay") {
@@ -322,7 +328,7 @@ const onSubmit = async (type, id) => {
         payData.process_id = "";
         modalParams.title = "";
       }
-      swalSuccessHandle("Payment Successful.");
+      swalSuccessHandle(response.data.message);
       getDebits();
       getChannel();
       getBanks();

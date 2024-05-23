@@ -99,7 +99,7 @@
 
     <Modal name="section-modal" :title="modalParams.title">
       <ModalContent>
-        <form @submit.prevent="onSubmit(modalParams.title, currentEditID)">
+        <form @submit.prevent="onSubmit(modalParams.title, currentEditID)"  style="width: 95%; margin: 0 auto">
           <div class="input-block mb-4 mx-3">
             <label class="col-form-label fs-6">Title</label>
             <input
@@ -165,7 +165,7 @@ const toggleAll = () => {
   else selected.value = [];
 };
 
-const getSection = async () => {
+const getType = async () => {
   isLoading.value = true;
 
   await axiosUrl
@@ -205,7 +205,7 @@ const onSubmit = async (type, id) => {
         isLoading.value = false;
         selected.value = [];
         selectAll.value = false;
-        getSection();
+        getType();
       })
       .catch((error) => {
         isLoading.value = false;
@@ -218,7 +218,7 @@ const onSubmit = async (type, id) => {
         isLoading.value = false;
         modalForm.title = "";
         modalParams.title = "";
-        getSection();
+        getType();
       })
       .catch((error) => {
         isLoading.value = false;
@@ -228,7 +228,7 @@ const onSubmit = async (type, id) => {
 };
 
 onMounted(() => {
-  getSection();
+  getType();
 });
 </script>
 

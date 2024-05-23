@@ -29,6 +29,13 @@ const routes = [
 				component: () =>
 					import("@/views/private/pages/DashboardPage.vue"),
 			},
+
+			{
+				path: "/change-password",
+				name: "ChangePassword",
+				component: () =>
+					import("@/views/private/pages/PasswordView.vue"),
+			},
 			{
 				path: "/members",
 				name: "Members",
@@ -88,6 +95,37 @@ const routes = [
 				name: "PaymentHistory",
 				component: () =>
 					import("@/views/private/pages/payment/History.vue"),
+			},
+			{
+				path: "/admins",
+				name: "Admin",
+				component: () =>
+					import("@/views/private/pages/admin/Admin.vue"),
+			},
+
+			{
+				path: "/accounting/approvals",
+				name: "Approvals",
+				component: () =>
+					import("@/views/private/pages/account/Approvals.vue"),
+			},
+			{
+				path: "/accounting/entries",
+				name: "Entries",
+				component: () =>
+					import("@/views/private/pages/account/Entry.vue"),
+			},
+			{
+				path: "/accounting/accounts",
+				name: "accounts",
+				component: () =>
+					import("@/views/private/pages/account/Account.vue"),
+			},
+			{
+				path: "/accounting/ledger",
+				name: "PaymentHistory",
+				component: () =>
+					import("@/views/private/pages/account/Ledger.vue"),
 			},
 		],
 	},

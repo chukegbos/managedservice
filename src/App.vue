@@ -20,10 +20,11 @@
   font-size: 18px;
   font-weight: 700;
   color: #fb7500;
+  text-align:center
 }
 
 .modal-visible {
-  height: 250px !important;
+  height: auto !important;
 }
 
 @media only screen and (min-width: 768px) {

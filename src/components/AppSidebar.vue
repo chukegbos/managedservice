@@ -9,11 +9,7 @@
           >
             <span class="inline-flex align-items-center gap-2">
               <span class="font-semibold text-2xl text-primary">
-                <img
-                  src="@/assets/img/manageclub-247.png"
-                  alt=""
-                  width="85"
-                />
+                <img src="@/assets/img/manageclub-247.png" alt="" width="85" />
               </span>
             </span>
             <span>
@@ -46,7 +42,8 @@
                 </div>
                 <ul class="list-none p-0 m-0 overflow-hidden">
                   <li>
-                    <router-link to="/"
+                    <router-link
+                      to="/"
                       v-ripple
                       class="text-decoration-none flex align-items-center cursor-pointer p-3 border-round text-700 hover:surface-100 transition-duration-150 transition-colors p-ripple"
                     >

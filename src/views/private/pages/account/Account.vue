@@ -5,7 +5,7 @@
     <div class="container">
       <div class="">
         <div class="d-flex justify-content-between align-items-center">
-          <h2>Payments History</h2>
+          <h2>Accounts</h2>
 
           <div class="d-flex">
             <div class="me-3">
@@ -28,64 +28,26 @@
             :sortField="'created_at'"
             showGridlines
             paginator
-            :rows="10"
+            :rows="20"
             :rowsPerPageOptions="[5, 10, 20, 50]"
             tableStyle="min-width: 50rem"
           >
-          <Column header="Payment ID" style="width: 10%">
-              <template #body="slotProps">
-                #{{ slotProps.data.trans_id}}
-              </template>
-            </Column>
-
-            <Column header="Product Name" style="width: 20%">
+            <Column header="Account Name" style="width: 20%">
               <template #body="slotProps">
                 {{
-                  slotProps.data.product_name
-                    ? slotProps.data.product_name
-                    : ""
-                }}<br />
-                <b>Product ID:</b> #{{
-                  slotProps.data.product_id ? slotProps.data.product_id : ""
+                  slotProps.data.name
                 }}
               </template>
             </Column>
-            <Column header="Member Name" style="width: 20%">
-              <template #body="slotProps">
-                {{ slotProps.data.member_name ? slotProps.data.member_name : ""
-                }}<br />
-                <b>Member ID:</b> #{{
-                  slotProps.data.member_code ? slotProps.data.member_code : ""
-                }}
-              </template>
+            <Column header="Account Type" style="width: 20%">
+                <template #body="slotProps">
+                    {{ slotProps.data.account_type }}
+                </template>
             </Column>
-            <Column header="Payment Channel" style="width: 20%">
-              <template #body="slotProps">
-                {{
-                  slotProps.data.paymentChannel
-                    ? slotProps.data.paymentChannel
-                    : "N/A"
-                }}<br />
-                <b>Amount: </b> <span v-html="nairaSign" />{{
-                  formatPrice(slotProps.data.amount)
-                }}
-              </template>
-            </Column>
-            <Column header="Channel Process" style="width: 20%">
-              <template #body="slotProps">
-                {{
-                  slotProps.data.channelProcess
-                    ? slotProps.data.channelProcess
-                    : "N/A"
-                }}
-              </template>
-            </Column>
-            <Column header="Creator" style="width: 20%">
-              <template #body="slotProps">
-                {{ slotProps.data.created_by ? slotProps.data.created_by : "" }}
-                <br />
-                {{ formatDate(slotProps.data.date_created) }}
-              </template>
+            <Column header="Account Type" style="width: 20%">
+                <template #body="slotProps">
+                    <span v-html="nairaSign" />{{ formatPrice(slotProps.data.amount) }}
+                </template>
             </Column>
           </DataTable>
         </div>
@@ -127,7 +89,7 @@ const getHistory = async () => {
   isLoading.value = true;
 
   await axiosUrl
-    .get("/payments/history")
+    .get("/accounting/accounts")
     .then((response) => {
       items.value = response.data.data;
       isLoading.value = false;

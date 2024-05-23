@@ -5,7 +5,7 @@
     <div class="container">
       <div class="">
         <div class="d-flex justify-content-between align-items-center">
-          <h2>Payments History</h2>
+          <h2>Pending Approvals</h2>
 
           <div class="d-flex">
             <div class="me-3">
@@ -32,60 +32,49 @@
             :rowsPerPageOptions="[5, 10, 20, 50]"
             tableStyle="min-width: 50rem"
           >
-          <Column header="Payment ID" style="width: 10%">
+            <Column header="Tranx ID" style="width: 10%">
               <template #body="slotProps">
                 #{{ slotProps.data.trans_id}}
               </template>
             </Column>
 
-            <Column header="Product Name" style="width: 20%">
+            <Column header="Partiular" style="width: 25%">
               <template #body="slotProps">
-                {{
-                  slotProps.data.product_name
-                    ? slotProps.data.product_name
-                    : ""
-                }}<br />
-                <b>Product ID:</b> #{{
-                  slotProps.data.product_id ? slotProps.data.product_id : ""
-                }}
+                {{ slotProps.data.description }}
               </template>
             </Column>
-            <Column header="Member Name" style="width: 20%">
+
+            <Column header="Amount" style="width: 20%">
               <template #body="slotProps">
-                {{ slotProps.data.member_name ? slotProps.data.member_name : ""
-                }}<br />
-                <b>Member ID:</b> #{{
-                  slotProps.data.member_code ? slotProps.data.member_code : ""
-                }}
+                 <span v-html="nairaSign" />{{formatPrice(slotProps.data.amount)}}
               </template>
             </Column>
-            <Column header="Payment Channel" style="width: 20%">
-              <template #body="slotProps">
-                {{
-                  slotProps.data.paymentChannel
-                    ? slotProps.data.paymentChannel
-                    : "N/A"
-                }}<br />
-                <b>Amount: </b> <span v-html="nairaSign" />{{
-                  formatPrice(slotProps.data.amount)
-                }}
-              </template>
+
+            <Column header="Status" style="width: 10%">
+                <template #body="slotProps">
+                    <span v-if="slotProps.data.statusValue=='Cr'" class="text-info">{{ slotProps.data.statusValue }}</span>
+                    <span v-else class="text-danger">{{ slotProps.data.statusValue }}</span>
+                </template>
             </Column>
-            <Column header="Channel Process" style="width: 20%">
-              <template #body="slotProps">
-                {{
-                  slotProps.data.channelProcess
-                    ? slotProps.data.channelProcess
-                    : "N/A"
-                }}
+
+            <Column header="Payment Method" style="width: 15%">
+                <template #body="slotProps">
+                    {{ slotProps.data.theChannel }}<br />
+                    {{ slotProps.data.channelMethod }}
               </template>
             </Column>
             <Column header="Creator" style="width: 20%">
               <template #body="slotProps">
-                {{ slotProps.data.created_by ? slotProps.data.created_by : "" }}
+                {{ slotProps.data.creator }}
                 <br />
-                {{ formatDate(slotProps.data.date_created) }}
+                {{ formatDate(slotProps.data.created_at) }}
               </template>
+            </Column>
+
+            <Column header="Action" style="width: 10%">
+                <template #body="slotProps">
+                    <a href="#" @click="approve(slotProps.data.trans_id)" class="btn btn-info btn-sm text-white">Approve</a>
+                </template>
             </Column>
           </DataTable>
         </div>
@@ -93,7 +82,7 @@
         <div v-else>
           <div class="card card-body">
             <div class="alert alert-warning" role="alert">
-              <p class="text-center">No Payment History Available</p>
+              <p class="text-center">No Pending Approval</p>
             </div>
           </div>
         </div>
@@ -127,10 +116,26 @@ const getHistory = async () => {
   isLoading.value = true;
 
   await axiosUrl
-    .get("/payments/history")
+    .get("/accounting/approvals")
     .then((response) => {
       items.value = response.data.data;
       isLoading.value = false;
+    })
+    .catch((error) => {
+      isLoading.value = false;
+      swalErrorHandle(error);
+    });
+};
+
+const approve = async (id) => {
+  isLoading.value = true;
+
+  await axiosUrl
+    .get("/accounting/approvals/" + id)
+    .then((response) => {
+      isLoading.value = false;
+      swalSuccessHandle('Approved')
+      getHistory();
     })
     .catch((error) => {
       isLoading.value = false;

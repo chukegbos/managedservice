@@ -15,21 +15,65 @@
         </div>
       </div>
 
-      <div class="row mb-xl-4">
-        <div class="col-md-6 col-sm-12 col-lg-6 col-xl-3 mb-3 mb-xl-0">
-          <div class="card dash-widget border-0 shadow-sm">
-            <div class="card-body">
-              <span class="dash-widget-icon"
-                ><i class="fa-solid fa-users"></i
-              ></span>
-              <div class="dash-widget-info">
-                <h3>112</h3>
-                <span>Members</span>
+        <div class="row mb-xl-4">
+          <div class="col-md-6 col-sm-12 col-lg-6 col-xl-3 mb-3 mb-xl-0">
+            <div class="card dash-widget border-0 shadow-sm">
+              <div class="card-body">
+                <span class="dash-widget-icon"
+                  ><i class="fa-solid fa-users"></i
+                ></span>
+                <div class="dash-widget-info">
+                  <h3>{{ totalMember }}</h3>
+                  <span>Members</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="col-md-6 col-sm-12 col-lg-6 col-xl-3 mb-3 mb-xl-0">
+            <div class="card dash-widget border-0 shadow-sm">
+              <div class="card-body">
+                <span class="dash-widget-icon"
+                  ><i class="fa-solid fa-times"></i
+                ></span>
+                <div class="dash-widget-info">
+                  <h3>{{ inactiveMembers }}</h3>
+                  <span>Debted Members</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+           <div class="col-md-6 col-sm-12 col-lg-6 col-xl-3 mb-3 mb-xl-0">
+            <div class="card dash-widget border-0 shadow-sm">
+              <div class="card-body">
+                <span class="dash-widget-icon"
+                  ><i class="fa-solid fa-cubes"></i
+                ></span>
+                <div class="dash-widget-info">
+                  <h3>{{ activeMembers }}</h3>
+                  <span>Active Members</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="col-md-6 col-sm-12 col-lg-6 col-xl-3 mb-3 mb-xl-0">
+            <div class="card dash-widget border-0 shadow-sm">
+              <div class="card-body">
+                <span class="dash-widget-icon"
+                  ><i class="fa-solid fa-plus"></i
+                ></span>
+                <div class="dash-widget-info">
+                  <h3>{{ newMembers }}</h3>
+                  <span>New Members</span>
+                </div>
               </div>
             </div>
           </div>
         </div>
-        <div class="col-sm-12 col-md-6 col-lg-6 col-xl-3 mb-3 mb-xl-0">
+
+        <!-- <div class="col-sm-12 col-md-6 col-lg-6 col-xl-3 mb-3 mb-xl-0">
           <div class="card dash-widget border-0 shadow-sm">
             <div class="card-body">
               <span class="dash-widget-icon"
@@ -67,33 +111,104 @@
               </div>
             </div>
           </div>
-        </div>
+        </div> -->
       </div>
 
-      <div class="row mb-xl-4">
-        <div class="col-sm-12 col-lg-6 col-xl-4 d-flex mb-2 mb-lg-4">
-          <div class="card flex-fill border-0 shadow-sm">
-            <div class="card-body">
-              <h4 class="card-title">
-                Administrators
-                <span class="badge bg-inverse-danger ms-2">5</span>
-              </h4>
-              <div class="leave-info-box">
-                <div class="media d-flex align-items-center">
-                  <a href="profile.html" class="avatar"
-                    ><img src="@/assets/img/user.jpg" alt="User Image" width="50"
-                  /></a>
-                  <div class="media-body flex-grow-1">
-                    <div class="text-sm my-0">Victor Anih</div>
+        <div class="row mb-xl-4">
+          <div class="col-12 col-lg-6 col-xl-4 d-flex mb-2 mb-lg-4">
+            <div class="card flex-fill border-0 shadow-sm">
+              <div class="card-body">
+                <h4 class="card-title">
+                  Admininistrators
+                  <span class="badge bg-inverse-danger ms-2">{{ admins.length }}</span>
+                </h4>
+                <div class="leave-info-box" v-for="admin in admins" :key="admin">
+                  <div class="media d-flex align-items-center">
+                    <a href="profile.html" class="avatar"
+                      ><img src="@/assets/img/user.jpg" alt="User Image"
+                    /></a>
+                    <div class="media-body flex-grow-1">
+                      <div class="text-sm my-0">{{ admin.username }}</div>
+                    </div>
+                  </div>
+                  <div class="row align-items-center mt-3">
+                    <div class="col-6">
+                      <h6 class="mb-0">{{ admin.club_code }}</h6>
+                      <!-- <span class="text-sm text-muted">Leave Date</span> -->
+                    </div>
+                    <div class="col-6 text-end">
+                      <span class="badge bg-inverse-success" v-if="admin.role == 3">Super Admin</span>
+                      <span class="badge bg-inverse-success" v-else> Admin</span>
+                    </div>
                   </div>
                 </div>
-                <div class="row align-items-center mt-3">
-                  <div class="col-6">
-                    <h6 class="mb-0">4 Sep 2019</h6>
-                    <!-- <span class="text-sm text-muted">Leave Date</span> -->
+                <div class="load-more text-center">
+                  <router-link class="text-white bg-success" to="/admins">Add New Admin</router-link>
+                </div>
+              </div>
+            </div>
+          </div>
+          <!-- <div class="col-12 col-lg-6 col-xl-4 d-flex mb-2 mb-lg-4">
+            <div class="card flex-fill dash-statistics border-0 shadow-sm">
+              <div class="card-body">
+                <h5 class="card-title">Statistics</h5>
+                <div class="stats-list">
+                  <div class="stats-info">
+                    <p>
+                      Total Debt <strong> {{ totalDebt }}</strong>
+                    </p>
+                    <div class="progress">
+                      <div
+                        class="progress-bar bg-primary w-31"
+                        role="progressbar"
+                        aria-valuenow="31"
+                        aria-valuemin="0"
+                        aria-valuemax="100"
+                      ></div>
+                    </div>
+                  </div>  
+                  <div class="stats-info">
+                    <p>
+                      Completed Payment
+                      <strong>{{ totalPayment }}</strong>
+                    </p>
+                    <div class="progress">
+                      <div
+                        class="progress-bar bg-success w-62"
+                        role="progressbar"
+                        aria-valuenow="62"
+                        aria-valuemin="0"
+                        aria-valuemax="100"
+                      ></div>
+                    </div>
                   </div>
-                  <div class="col-6 text-end">
-                    <span class="badge bg-inverse-success">Super Admin</span>
+                  <div class="stats-info">
+                    <p>
+                      Payment Products <strong>{{ totalPaymentProduct }}</strong>
+                    </p>
+                    <div class="progress">
+                      <div
+                        class="progress-bar bg-danger w-62"
+                        role="progressbar"
+                        aria-valuenow="62"
+                        aria-valuemin="0"
+                        aria-valuemax="100"
+                      ></div>
+                    </div>
+                  </div>
+                  <div class="stats-info">
+                    <p>
+                      Total Sections <strong>{{ totalSection }}</strong>
+                    </p>
+                    <div class="progress">
+                      <div
+                        class="progress-bar bg-info w-22"
+                        role="progressbar"
+                        aria-valuenow="22"
+                        aria-valuemin="0"
+                        aria-valuemax="100"
+                      ></div>
+                    </div>
                   </div>
                 </div>
               </div>
@@ -109,7 +224,6 @@
                 <div class="row align-items-center mt-3">
                   <div class="col-6">
                     <h6 class="mb-0">4 Sep 2019</h6>
-                    <!-- <span class="text-sm text-muted">Leave Date</span> -->
                   </div>
                   <div class="col-6 text-end">
                     <span class="badge bg-inverse-success">Admin</span>
@@ -122,8 +236,9 @@
                 >
               </div>
             </div>
-          </div>
-        </div>
+          </div> -->
+        
+
         <div class="col-sm-12 col-lg-6 col-xl-4 d-flex mb-2 mb-lg-4">
           <div class="card flex-fill dash-statistics border-0 shadow-sm">
             <div class="card-body">
@@ -282,9 +397,7 @@
               </div>
             </div>
           </div>
-        </div>
-      </div>
-    </div>
+        </div></div>
   </div>
 </template>
 
@@ -297,7 +410,7 @@ import Swal from "sweetalert2";
 
 const loading = ref(false);
 const items = ref([]);
-const resp = ref("")
+const resp = ref("");
 const admins = ref([]);
 const authStore = useAuthStore();
 const loggedInUser = authStore.loggedInUser;
@@ -305,9 +418,13 @@ const currentClub = authStore.currentClub;
 
 const token = authStore.token;
 const totalMember = ref("");
+const activeMembers = ref("");
+const newMembers = ref("");
+const inactiveMembers = ref("");
 const totalPayment = ref("");
 const totalPaymentProduct = ref("");
 const totalSection = ref("");
+const totalDebt = ref("");
 
 onMounted(() => {
   if (window.innerWidth >= 1100)
@@ -324,12 +441,17 @@ const getData = async () => {
   await axiosUrl
     .get("/dashboard")
     .then((response) => {
-      totalMember.value = response.data.total_members
-      totalPayment.value = response.data.total_payments
-      totalPaymentProduct.value = response.data.total_payment_products
-      totalSection.value = response.data.total_sections
-      totalSection.value = response.data.total_sections
-      admins.value = response.data.admins
+      totalMember.value = response.data.data.total_members;
+      totalPayment.value = response.data.data.total_payments;
+      totalPaymentProduct.value = response.data.data.total_payment_products;
+      totalSection.value = response.data.data.total_sections;
+      totalSection.value = response.data.data.total_sections;
+      inactiveMembers.value = response.data.data.inactiveMembers;
+      activeMembers.value = response.data.data.activeMembers;
+      newMembers.value = response.data.data.newMembers;
+      admins.value = response.data.data.admins;
+      totalDebt.value = response.data.data.totalDebt;
+
       loading.value = false;
     })
     .catch((error) => {
@@ -341,11 +463,6 @@ const getData = async () => {
 onMounted(() => {
   getData();
 });
-
-
-
-
-
 </script>
 
 <style scoped>

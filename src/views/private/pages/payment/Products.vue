@@ -80,7 +80,7 @@
                 }}
               </template>
             </Column>
-            <Column header="Amount" style="width: 20%">
+            <Column header="Amount" style="width: 25%">
               <template #body="slotProps">
                 <span v-html="nairaSign"></span
                 >{{ formatPrice(slotProps.data.amount) }}<br />
@@ -92,7 +92,7 @@
                 }}days
               </template>
             </Column>
-            <Column header="Status" style="width: 25%">
+            <Column header="Status" style="width: 30%">
               <template #body="slotProps">
                 <span>
                   <b>Door Access:</b>
@@ -104,21 +104,19 @@
                 <span>
                   <b>Type of product:</b>
                   <span v-if="slotProps.data.type == 1"> Monthly </span>
+                  <span v-else-if="slotProps.data.type == 2"> Every 3 Months </span>
+                  <span v-else-if="slotProps.data.type == 3"> Every 4 Months </span>
+                  <span v-else-if="slotProps.data.type == 4"> Every 6 Months </span>
+                  <span v-else-if="slotProps.data.type == 5"> Annualy </span>
+                  <span v-else-if="slotProps.data.type == 5"> Biannualy </span>
                   <span v-else> One Off </span>
-                  <span>
-                    <b v-if="slotProps.data.reoccuring_day == 1"
-                      >Reoccurring Day:
-                    </b>
-                    <b v-else>Reoccurring Days: </b>
-                    <span v-if="slotProps.data.type == 1">
-                      {{
-                        slotProps.data.reoccuring_day
-                          ? slotProps.data.reoccuring_day
-                          : "N/A"
-                      }}
-                    </span>
-                    <span v-else>N/A</span>
-                  </span>
+                </span>
+                <br>
+
+                <span>
+                  <b v-if="slotProps.data.reoccuring_day == 1">Reoccurring Day: {{ slotProps.data.reoccuring_day  }}</b>
+                  <b v-else-if="slotProps.data.type == 0"></b>
+                  <b v-else>Next Due Date:</b> <span v-if="slotProps.data.next_date">{{ formatDate(slotProps.data.next_date)  }}</span>
                 </span>
               </template>
             </Column>
@@ -212,12 +210,14 @@
                 <option value="null">-- Select Type--</option>
                 <option value="0">One Off</option>
                 <option value="1">Monthly</option>
+                <option value="2">Every 3 Months</option>
+                <option value="3">Every 4 Months</option>
+                <option value="4">Every 6 Months</option>
+                <option value="5">Annualy</option>
+                <option value="6">Biannualy</option>
               </select>
             </div>
-            <div
-              class="col-12 col-lg-6 mb-3"
-              v-if="productData.type === '1' || productData.type === 1"
-            >
+            <div class="col-12 col-lg-6 mb-3" v-if="productData.type === '1' || productData.type === 1">
               <label class="col-form-label fs-6">Recurring Day</label>
               <input
                 class="form-control"
@@ -226,20 +226,21 @@
                 required
               />
             </div>
+
+            <div class="col-12 col-lg-12 mb-3">
+              <label class="col-form-label fs-6">Select Member Types</label>
+              <div style="border: 1px solid grey; height: 15em; overflow-y: auto; white-space: nowrap; padding:5px">
+                  <div class="c-inputs-stacked" v-for="member_type in types" :key="member_type.id">
+
+                  
+                      <div class="m-1">
+                          <input type="checkbox" v-model="productData.member_type" :value="member_type.id" number> {{ member_type.title }}
+                      </div>
+                  </div>
+              </div>
+            </div>
           </div>
-          <!-- <div class="flex justify-content-end gap-2">
-            <Button
-              type="button"
-              label="Cancel"
-              severity="secondary"
-              @click="addVisible = false"
-            ></Button>
-            <Button
-              type="button"
-              label="Save"
-              @click="addVisible = false"
-            ></Button>
-          </div> -->
+       
           <div class="mt-1">
             <button class="btn btn-primary account-btn w-100" type="submit">
               Submit
@@ -305,6 +306,7 @@ const authStore = useAuthStore();
 const loggedInUser = authStore.loggedInUser;
 const items = ref([]);
 const members = ref([]);
+const types = ref([]);
 const selected = ref([]);
 const selectAll = ref("");
 const actionValue = ref([]);
@@ -317,6 +319,7 @@ const productData = reactive({
   grace_period: null,
   type: null,
   reoccuring_day: null,
+  member_type: [],
 });
 
 const singleDebit = reactive({
@@ -373,6 +376,13 @@ const openModal = (type, data) => {
     productData.type = data.type;
     productData.reoccuring_day = data.reoccuring_day;
     currentEditID.value = data.id;
+
+    var selectedType = [];
+      data.types.forEach(function (ty) {
+          selectedType.push(ty.pivot.member_type_id);
+      });
+      console.log(selectedType)
+      productData.member_type = selectedType;
   }
 
   open("product-modal");
@@ -459,6 +469,17 @@ const getProducts = async () => {
     });
 };
 
+const getType = async () => {
+  await axiosUrl
+    .get("/members/types/all")
+    .then((response) => {
+      types.value = response.data.data;
+    })
+    .catch((error) => {
+      isLoading.value = false;
+    });
+};
+
 const loadFun = (type) => {
   if (type === "Add Product" || type === "Edit Product") {
     productData.payment_name = "";
@@ -542,6 +563,7 @@ const onSubmit = async (type, id) => {
 onMounted(() => {
   getProducts();
   getMembers();
+  getType();
 });
 </script>
 
