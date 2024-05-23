@@ -1,6 +1,7 @@
 <template>
   <div class="page-wrapper mx-3 pt-3">
     <div class="content container-fluid pb-0">
+
       <div class="page-header mb-sm-0">
         <div class="row">
           <div class="col-sm-12">
@@ -188,6 +189,7 @@
               </div>
             </div>
           </div>
+
         </div>
         <div class="col-sm-12 col-lg-6 col-xl-4 d-flex mb-2 mb-lg-4">
           <div class="card flex-fill border-0 shadow-sm">
@@ -291,15 +293,21 @@ import { ref, reactive, onMounted } from "vue";
 import { useAuthStore } from "@/store/authStore";
 import { axiosUrl } from "@/env";
 import Swal from "sweetalert2";
+// import { formatDate, swalErrorHandle } from "@/components/myHelperFunction";
 
 const loading = ref(false);
-const user = ref("");
+const items = ref([]);
+const resp = ref("")
+const admins = ref([]);
 const authStore = useAuthStore();
-const token = authStore.token;
-const element = ref();
-const element2 = ref();
 const loggedInUser = authStore.loggedInUser;
 const currentClub = authStore.currentClub;
+
+const token = authStore.token;
+const totalMember = ref("");
+const totalPayment = ref("");
+const totalPaymentProduct = ref("");
+const totalSection = ref("");
 
 onMounted(() => {
   if (window.innerWidth >= 1100)
@@ -309,6 +317,35 @@ onMounted(() => {
   //   window.location.href = "/login";
   // }
 });
+
+const getData = async () => {
+  loading.value = true;
+
+  await axiosUrl
+    .get("/dashboard")
+    .then((response) => {
+      totalMember.value = response.data.total_members
+      totalPayment.value = response.data.total_payments
+      totalPaymentProduct.value = response.data.total_payment_products
+      totalSection.value = response.data.total_sections
+      totalSection.value = response.data.total_sections
+      admins.value = response.data.admins
+      loading.value = false;
+    })
+    .catch((error) => {
+      loading.value = false;
+      // swalErrorHandle(error);
+    });
+};
+
+onMounted(() => {
+  getData();
+});
+
+
+
+
+
 </script>
 
 <style scoped>
