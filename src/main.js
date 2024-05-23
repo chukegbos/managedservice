@@ -9,8 +9,9 @@ import "primeflex/primeflex.css";
 import "primevue/resources/themes/aura-light-green/theme.css";
 import "primevue/resources/primevue.min.css"; /* Deprecated */
 import "primeicons/primeicons.css";
-import "../src/assets/css/style.css";
-import "../src/assets/css/flags.css";
+
+import "bootstrap/dist/css/bootstrap.css";
+import bootstrap from "bootstrap/dist/js/bootstrap.bundle";
 
 import Loading from "vue-loading-overlay";
 // Import stylesheet
@@ -25,10 +26,10 @@ import DataTable from "primevue/datatable";
 import Column from "primevue/column";
 import TabView from "primevue/tabview";
 import TabPanel from "primevue/tabpanel";
-import StyleClass from 'primevue/styleclass';
-import Ripple from 'primevue/ripple';
-import Button from 'primevue/button';
-import Avatar from 'primevue/avatar';
+import StyleClass from "primevue/styleclass";
+import Ripple from "primevue/ripple";
+import Button from "primevue/button";
+import Avatar from "primevue/avatar";
 
 import Calendar from "primevue/calendar";
 // import Editor from "primevue/editor";
@@ -53,6 +54,7 @@ createApp(App)
 	.use(router)
 	.use(LoadingPlugin)
 	.use(PrimeVue)
+	.use(bootstrap)
 	.use(Vue3FormWizard)
 	.use(PrimeVue, { ripple: true })
 
@@ -66,7 +68,7 @@ createApp(App)
 	.component("TabPanel", TabPanel)
 	.component("Calendar", Calendar)
 	.component("Column", Column)
-  .component('Button', Button)
+	.component("Button", Button)
 	.component("Dropdown", Dropdown)
 	.component("Sidebar", Sidebar)
 	.component("Avatar", Avatar)

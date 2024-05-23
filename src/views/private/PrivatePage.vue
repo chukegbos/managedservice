@@ -12,13 +12,9 @@
                 @click="sidebarVisible = true"
                 style="color: #004aad; background-color: inherit; border: none"
               />
-              <a class="navbar-brand" href="#">
-                <img
-                  src="../../assets/img/Black_and_Beige_Fitness_Sports_Club_Logo-removebg-preview.png"
-                  alt=""
-                  width="85"
-                />
-              </a>
+              <router-link to="/" class="navbar-brand">
+                <img src="@/assets/img/manageclub-247.png" alt="" width="85" />
+              </router-link>
             </div>
 
             <div

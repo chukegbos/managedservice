@@ -10,7 +10,7 @@
             <span class="inline-flex align-items-center gap-2">
               <span class="font-semibold text-2xl text-primary">
                 <img
-                  src="../assets/img/Black_and_Beige_Fitness_Sports_Club_Logo-removebg-preview.png"
+                  src="@/assets/img/manageclub-247.png"
                   alt=""
                   width="85"
                 />
@@ -255,7 +255,7 @@
 </template>
 
 <script setup>
-import { defineProps, defineEmits } from "vue";
+// import { defineProps, defineEmits } from "vue";
 import { axiosUrl } from "@/env";
 import { onMounted, ref } from "vue";
 import { useAuthStore } from "@/store/authStore";
