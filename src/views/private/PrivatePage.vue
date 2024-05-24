@@ -22,6 +22,10 @@
               id="navbarSupportedContent"
             >
               <ul class="navbar-nav mb-lg-0 me-3">
+                <!-- < class="dropdown-item">Admins</>
+          <a class="dropdown-item" href="#">Club Settings</a>
+          <router-link class="dropdown-item">Change Password</router-link>
+          <aclass="dropdown-item" href="#">Logout</aclass=> -->
                 <li class="nav-item dropdown">
                   <a
                     class="nav-link dropdown-toggle text-white"
@@ -33,14 +37,21 @@
                     {{ loggedInUser["username"] }}
                   </a>
                   <ul class="dropdown-menu">
-                    <li><a class="dropdown-item" href="#">My Profile</a></li>
                     <li>
-                      <a class="dropdown-item" href="#">Settings</a>
+                      <router-link to="/admins" class="dropdown-item"
+                        >Admin</router-link
+                      >
                     </li>
                     <li>
-                      <a class="dropdown-item" href="#" @click="logout"
-                        >Logout</a
+                      <a class="dropdown-item" href="#">Club Settings</a>
+                    </li>
+                    <li>
+                      <router-link to="" class="dropdown-item"
+                        >Change Password</router-link
                       >
+                    </li>
+                    <li>
+                      <a @click="logout()" class="dropdown-item" style="cursor: pointer;">Logout</a>
                     </li>
                   </ul>
                 </li>
