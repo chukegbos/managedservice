@@ -85,11 +85,17 @@
             </h4>
             <div class="leave-info-box" v-for="admin in admins" :key="admin">
               <div class="media d-flex align-items-center">
-                <a href="profile.html" class="avatar"
-                  ><img src="@/assets/img/user.jpg" alt="User Image"
+                <a href="profile.html"
+                  ><img
+                    src="@/assets/img/user.jpg"
+                    alt="User Image"
+                    width="50"
+                    class="avatar rounded-circle"
                 /></a>
                 <div class="media-body flex-grow-1">
-                  <div class="text-sm my-0">{{ admin.username }}</div>
+                  <div class="text-sm my-0 font-bold ms-3">
+                    {{ admin.username }}
+                  </div>
                 </div>
               </div>
               <div class="row align-items-center mt-3">
@@ -98,10 +104,10 @@
                   <!-- <span class="text-sm text-muted">Leave Date</span> -->
                 </div>
                 <div class="col-6 text-end">
-                  <span class="badge bg-inverse-success" v-if="admin.role == 3"
+                  <span class="badge bg-info" v-if="admin.role_id == 3"
                     >Super Admin</span
                   >
-                  <span class="badge bg-inverse-success" v-else> Admin</span>
+                  <span class="badge bg-info-subtle" v-else> Admin</span>
                 </div>
               </div>
             </div>
