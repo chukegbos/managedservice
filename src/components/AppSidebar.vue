@@ -37,7 +37,7 @@
                   }"
                   class="p-3 flex align-items-center justify-content-between text-600 cursor-pointer p-ripple"
                 >
-                  <span class="font-medium">MAIN</span>
+                  <span class="font-medium">MEMBERS MANAGEMENT</span>
                   <i class="pi pi-chevron-down"></i>
                 </div>
                 <ul class="list-none p-0 m-0 overflow-hidden">
@@ -176,6 +176,67 @@
                   <li>
                     <a
                       v-ripple
+                      v-styleclass="{
+                        selector: '@next',
+                        enterClass: 'hidden',
+                        enterActiveClass: 'slidedown',
+                        leaveToClass: 'hidden',
+                        leaveActiveClass: 'slideup',
+                      }"
+                      class="text-decoration-none flex align-items-center cursor-pointer p-3 border-round text-700 hover:surface-100 transition-duration-150 transition-colors p-ripple"
+                    >
+                      <i class="pi pi-comments mr-2"></i>
+                      <span class="font-medium">Accounting/Reports</span>
+                      <i class="pi pi-chevron-down ml-auto"></i>
+                    </a>
+                    <ul
+                      class="list-none py-0 pl-3 pr-0 m-0 hidden overflow-y-hidden transition-all transition-duration-400 transition-ease-in-out"
+                    >
+                      <li>
+                        <router-link
+                          to="/accounting/approvals"
+                          v-ripple
+                          class="text-decoration-none flex align-items-center cursor-pointer p-3 border-round text-700 hover:surface-100 transition-duration-150 transition-colors p-ripple"
+                        >
+                          <i class="pi pi-chart-line mr-2"></i>
+                          <span class="font-medium">Pending Entries</span>
+                        </router-link>
+                      </li>
+                      <li>
+                        <router-link
+                          to="/accounting/entries"
+                          v-ripple
+                          class="text-decoration-none flex align-items-center cursor-pointer p-3 border-round text-700 hover:surface-100 transition-duration-150 transition-colors p-ripple"
+                        >
+                          <i class="pi pi-chart-line mr-2"></i>
+                          <span class="font-medium">Approved Entries</span>
+                        </router-link>
+                      </li>
+                      <li>
+                        <router-link
+                          to="/accounting/accounts"
+                          v-ripple
+                          class="text-decoration-none flex align-items-center cursor-pointer p-3 border-round text-700 hover:surface-100 transition-duration-150 transition-colors p-ripple"
+                        >
+                          <i class="pi pi-chart-line mr-2"></i>
+                          <span class="font-medium">Accounts</span>
+                        </router-link>
+                      </li>
+                      <li>
+                        <router-link
+                          to="/accounting/ledger"
+                          v-ripple
+                          class="text-decoration-none flex align-items-center cursor-pointer p-3 border-round text-700 hover:surface-100 transition-duration-150 transition-colors p-ripple"
+                        >
+                          <i class="pi pi-chart-line mr-2"></i>
+                          <span class="font-medium">Ledger Entities</span>
+                        </router-link>
+                      </li>
+                    </ul>
+                  </li>
+                  <!-- <li>
+                    <a
+                      v-ripple
                       class="text-decoration-none flex align-items-center cursor-pointer p-3 border-round text-700 hover:surface-100 transition-duration-150 transition-colors p-ripple"
                     >
                       <i class="pi pi-comments mr-2"></i>
@@ -186,7 +247,7 @@
                         >3</span
                       >
                     </a>
-                  </li>
+                  </li> -->
                 </ul>
               </li>
             </ul>
@@ -203,18 +264,59 @@
                   }"
                   class="p-3 flex align-items-center justify-content-between text-600 cursor-pointer p-ripple"
                 >
-                  <span class="font-medium">SUB MENU</span>
+                  <span class="font-medium">INVENTORY MANAGEMENT</span>
                   <i class="pi pi-chevron-down"></i>
                 </div>
                 <ul class="list-none p-0 m-0 overflow-hidden">
+                  <li>
+                    <a
+                      v-ripple
+                      v-styleclass="{
+                        selector: '@next',
+                        enterClass: 'hidden',
+                        enterActiveClass: 'slidedown',
+                        leaveToClass: 'hidden',
+                        leaveActiveClass: 'slideup',
+                      }"
+                      class="text-decoration-none flex align-items-center cursor-pointer p-3 border-round text-700 hover:surface-100 transition-duration-150 transition-colors p-ripple"
+                    >
+                      <i class="pi pi-comments mr-2"></i>
+                      <span class="font-medium">Inventory Tracking</span>
+                      <i class="pi pi-chevron-down ml-auto"></i>
+                    </a>
+                    <ul
+                      class="list-none py-0 pl-3 pr-0 m-0 hidden overflow-y-hidden transition-all transition-duration-400 transition-ease-in-out"
+                    >
+                      <li>
+                        <router-link
+                          to="/payment/products"
+                          v-ripple
+                          class="text-decoration-none flex align-items-center cursor-pointer p-3 border-round text-700 hover:surface-100 transition-duration-150 transition-colors p-ripple"
+                        >
+                          <i class="pi pi-chart-line mr-2"></i>
+                          <span class="font-medium">Product List</span>
+                        </router-link>
+                      </li>
+                      <li>
+                        <router-link
+                          to="/payment/debits"
+                          v-ripple
+                          class="text-decoration-none flex align-items-center cursor-pointer p-3 border-round text-700 hover:surface-100 transition-duration-150 transition-colors p-ripple"
+                        >
+                          <i class="pi pi-chart-line mr-2"></i>
+                          <span class="font-medium">Product Group</span>
+                        </router-link>
+                      </li>
+                    </ul>
+                  </li>
                   <li>
                     <router-link
                       to="#"
                       v-ripple
                       class="text-decoration-none flex align-items-center cursor-pointer p-3 border-round text-700 hover:surface-100 transition-duration-150 transition-colors p-ripple"
                     >
-                      <i class="pi pi-folder mr-2"></i>
-                      <span class="font-medium">Test 1</span>
+                      <i class="pi pi-chart-bar mr-2"></i>
+                      <span class="font-medium">Supplier Management</span>
                     </router-link>
                   </li>
                   <li>
@@ -224,8 +326,49 @@
                       class="text-decoration-none flex align-items-center cursor-pointer p-3 border-round text-700 hover:surface-100 transition-duration-150 transition-colors p-ripple"
                     >
                       <i class="pi pi-chart-bar mr-2"></i>
-                      <span class="font-medium">Test 2</span>
+                      <span class="font-medium">Bar Management</span>
                     </router-link>
+                  </li>
+                  <li>
+                    <a
+                      v-ripple
+                      v-styleclass="{
+                        selector: '@next',
+                        enterClass: 'hidden',
+                        enterActiveClass: 'slidedown',
+                        leaveToClass: 'hidden',
+                        leaveActiveClass: 'slideup',
+                      }"
+                      class="text-decoration-none flex align-items-center cursor-pointer p-3 border-round text-700 hover:surface-100 transition-duration-150 transition-colors p-ripple"
+                    >
+                      <i class="pi pi-comments mr-2"></i>
+                      <span class="font-medium">Order Management</span>
+                      <i class="pi pi-chevron-down ml-auto"></i>
+                    </a>
+                    <ul
+                      class="list-none py-0 pl-3 pr-0 m-0 hidden overflow-y-hidden transition-all transition-duration-400 transition-ease-in-out"
+                    >
+                      <li>
+                        <router-link
+                          to="/payment/products"
+                          v-ripple
+                          class="text-decoration-none flex align-items-center cursor-pointer p-3 border-round text-700 hover:surface-100 transition-duration-150 transition-colors p-ripple"
+                        >
+                          <i class="pi pi-chart-line mr-2"></i>
+                          <span class="font-medium">Purchase Order</span>
+                        </router-link>
+                      </li>
+                      <li>
+                        <router-link
+                          to="/payment/debits"
+                          v-ripple
+                          class="text-decoration-none flex align-items-center cursor-pointer p-3 border-round text-700 hover:surface-100 transition-duration-150 transition-colors p-ripple"
+                        >
+                          <i class="pi pi-chart-line mr-2"></i>
+                          <span class="font-medium">Sales Order</span>
+                        </router-link>
+                      </li>
+                    </ul>
                   </li>
                 </ul>
               </li>
