@@ -47,6 +47,11 @@ import "primevue/resources/primevue.min.css";
 import Vue3FormWizard from "vue3-form-wizard";
 import "vue3-form-wizard/dist/style.css";
 
+import {
+	fpjsPlugin,
+	FingerprintJSPro
+  } from '@fingerprintjs/fingerprintjs-pro-vue-v3';
+
 const pinia = createPinia();
 pinia.use(piniaPluginPersistedstate);
 createApp(App)
@@ -58,6 +63,21 @@ createApp(App)
 	.use(Vue3FormWizard)
 	.use(PrimeVue, { ripple: true })
 
+	.use(fpjsPlugin, {
+		loadOptions: {
+		  apiKey: "<PUBLIC_API_KEY>",
+		  endpoint: [
+			// "https://metrics.yourwebsite.com", 
+			FingerprintJSPro.defaultEndpoint
+		  ],
+		  scriptUrlPattern: [
+			// "https://metrics.yourwebsite.com/web/v<version>/<apiKey>/loader_v<loaderVersion>.js",
+			FingerprintJSPro.defaultScriptUrlPattern
+		  ],
+		  // region: "eu"
+		},
+	  })
+	  
 	.directive("tooltip", Tooltip)
 	.directive("ripple", Ripple)
 	.directive("styleclass", StyleClass)
