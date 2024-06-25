@@ -54,7 +54,6 @@ export const swalErrorHandle = (error) => {
 };
 
 export const swalSuccessHandle = (text) => {
-	
 	let icon = "success";
 	let color = "green";
 	let title = "Success!!!";

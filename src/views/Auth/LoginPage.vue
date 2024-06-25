@@ -1,26 +1,13 @@
 <template>
   <div>
     <div class="main-wrapper d-md-flex pt-5 pt-md-0">
-      <div
-        class="d-none d-md-block w-50 h-100"
-        style="background-color: #014aac"
-      >
-        <img
-          src="@/assets/img/login-bg-img.jpg"
-          alt=""
-          class="w-100 h-100"
-        />
+      <div class="d-none d-md-block w-50 h-100" style="background-color: #014aac">
+        <img src="@/assets/img/login-bg-img.jpg" alt="" class="w-100 h-100" />
       </div>
-      <div
-        class="w-md-50 h-100 d-flex justify-content-center align-items-center flex-column"
-      >
+      <div class="w-md-50 h-100 d-flex justify-content-center align-items-center flex-column">
         <form @submit.prevent="onSubmit()" class="w-75">
           <div class="d-flex justify-content-center mb-3">
-            <img
-              src="@/assets/img/manageclub-247.png"
-              alt=""
-              class="login-img"
-            />
+            <img src="@/assets/img/manageclub-247.png" alt="" class="login-img" />
           </div>
           <div class="input-block mb-4">
             <label class="col-form-label">Username</label>
@@ -33,27 +20,14 @@
               </div>
             </div>
             <div class="position-relative">
-              <input
-                class="form-control"
-                type="password"
-                v-model="form.password"
-                id="password"
-              />
+              <input class="form-control" type="password" v-model="form.password" id="password" />
             </div>
           </div>
           <div class="input-block mb-4 text-center">
-            <button
-              class="btn account-btn text-white w-100 d-flex justify-content-center align-items-center"
-              type="submit"
-              :disabled="loading"
-            >
+            <button class="btn account-btn text-white w-100 d-flex justify-content-center align-items-center"
+              type="submit" :disabled="loading">
               login
-              <div
-                v-if="loading"
-                class="spinner-border ms-2"
-                role="status"
-                style="height: 18px; width: 18px"
-              >
+              <div v-if="loading" class="spinner-border ms-2" role="status" style="height: 18px; width: 18px">
                 <span class="visually-hidden">Loading...</span>
               </div>
             </button>
@@ -195,6 +169,7 @@ onMounted(() => {
   .main-wrapper {
     height: 100vh;
   }
+
   .w-md-50 {
     width: 50%;
   }

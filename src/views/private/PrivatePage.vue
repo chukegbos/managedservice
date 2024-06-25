@@ -14,14 +14,10 @@
 
             <div class="w-50 d-flex justify-content-end collapse navbar-collapse" id="navbarSupportedContent">
               <ul class="navbar-nav mb-lg-0 me-3">
-                <!-- < class="dropdown-item">Admins</>
-          <a class="dropdown-item" href="#">Club Settings</a>
-          <router-link class="dropdown-item">Change Password</router-link>
-          <aclass="dropdown-item" href="#">Logout</aclass=> -->
                 <li class="nav-item dropdown">
                   <a class="nav-link dropdown-toggle text-white" href="#" role="button" data-bs-toggle="dropdown"
                     aria-expanded="false">
-                    {{ loggedInUser["username"] }} || {{ timeoutInMS }} || {{ formattedCountdown }}
+                    {{ loggedInUser["username"] }}
                   </a>
                   <ul class="dropdown-menu">
                     <li>
@@ -58,16 +54,11 @@ import { onMounted, onBeforeUnmount, ref, computed } from "vue";
 import { useAuthStore } from "@/store/authStore";
 import { swalErrorHandle } from "@/components/myHelperFunction";
 import AppSidebar from "@/components/AppSidebar.vue";
-import AppSidebar2 from "@/components/AppSidebar2.vue";
-import AppHeader from "@/components/AppHeader.vue";
-import AppHeader2 from "@/components/AppHeader.vue";
-import AppFooter from "@/components/AppFooter.vue";
 
 const sidebarVisible = ref(false);
 const isLoading = ref(false);
 const authStore = useAuthStore();
 const loggedInUser = authStore.loggedInUser;
-const currentClub = authStore.currentClub;
 
 const logout = async () => {
   isLoading.value = true;
