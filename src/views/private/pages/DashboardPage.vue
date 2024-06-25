@@ -339,7 +339,7 @@ const getData = async () => {
     })
     .catch((error) => {
       loading.value = false;
-      // swalErrorHandle(error);
+      swalErrorHandle(error);
     });
 };
 
