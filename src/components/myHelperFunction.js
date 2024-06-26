@@ -68,3 +68,11 @@ export const swalSuccessHandle = (text) => {
 		allowEnterKey: false,
 	});
 };
+
+export const isObjectEmpty = (obj) => {
+	if (obj != undefined) {
+		return Object.keys(obj).length === 0;
+	} else {
+		return true;
+	}
+};

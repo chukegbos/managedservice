@@ -5,8 +5,8 @@
         <nav class="navbar navbar-expand-lg bg-body-tertiary header mb-2">
           <div class="d-flex justify-content-between w-100 align-items-center px-2">
             <div class="w-50 d-flex align-items-center">
-              <Button icon="pi pi-bars" @click="sidebarVisible = true"
-                style="color: #004aad; background-color: inherit; border: none" />
+              <!-- <Button icon="pi pi-bars" @click="sidebarVisible = true"
+                style="color: #004aad; background-color: inherit; border: none" /> -->
               <router-link to="/" class="navbar-brand">
                 <img src="@/assets/img/manageclub-247.png" alt="" width="85" />
               </router-link>
@@ -20,7 +20,7 @@
                     {{ loggedInUser["username"] }}
                   </a>
                   <ul class="dropdown-menu">
-                    <li>
+                    <!-- <li>
                       <router-link to="/admins" class="dropdown-item">Admin</router-link>
                     </li>
                     <li>
@@ -28,7 +28,7 @@
                     </li>
                     <li>
                       <router-link to="" class="dropdown-item">Change Password</router-link>
-                    </li>
+                    </li> -->
                     <li>
                       <a @click="logout()" class="dropdown-item" style="cursor: pointer;">Logout</a>
                     </li>
@@ -38,11 +38,11 @@
             </div>
           </div>
         </nav>
-        <!-- <AppHeader2 /> -->
+
         <AppSidebar class="border-0" :visible="sidebarVisible" @update:visible="sidebarVisible = $event" />
-        <!-- <AppSidebar2 /> -->
+
         <router-view />
-        <!-- <AppFooter /> -->
+
       </div>
     </div>
   </div>
@@ -117,5 +117,12 @@ onMounted(() => {
   -webkit-box-shadow: 0 1px 1px 0 rgba(0, 0, 0, 0.2);
   -moz-box-shadow: 0 1px 1px 0 rgba(0, 0, 0, 0.2);
   box-shadow: 0 1px 1px 0 rgba(0, 0, 0, 0.2);
+}
+</style>
+
+<style>
+.navbar-nav .dropdown-menu {
+  position: absolute;
+  left: -100%;
 }
 </style>

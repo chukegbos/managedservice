@@ -31,6 +31,13 @@ const routes = [
 			},
 
 			{
+				path: "/bar/:id",
+				name: "BarPage",
+				component: () =>
+					import("@/views/private/pages/BarPage.vue"),
+			},
+
+			{
 				path: "/change-password",
 				name: "ChangePassword",
 				component: () =>
