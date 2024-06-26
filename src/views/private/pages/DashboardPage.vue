@@ -44,9 +44,9 @@ const getData = async () => {
   loading.value = true;
 
   await axiosUrl
-    .get("/dashboard")
+    .get("/bars")
     .then((response) => {
-
+      console.log(response)
       loading.value = false;
     })
     .catch((error) => {
