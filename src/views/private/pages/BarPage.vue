@@ -2,26 +2,31 @@
   <div class="mx-3 pt-3">
     <div class="container-fluid pb-0">
       <h3 class="fs-6"> Total Amount - 1000</h3>
-      <h3 class="fs-6">Total Sale - N400</h3>
+      <h3 class="fs-6">Total Sale - <NairaSymbol /> 400</h3>
     </div>
 
-    <div class="row mb-xl-4">
-      <DataTable v-if="!isObjectEmpty(barData)" class="shadow" v-model:filters="filters" :value="barData"
-        :sortField="'Date Sent for Approval'" :sortOrder="-1" stripedRows paginator :rows="20"
-        :rowsPerPageOptions="[5, 10, 20, 50]" tableStyle="min-width: 800px; text-transform: capitalize;">
-        <Column field="Document No_" :sortable="true" header="Document ID" style="width: 20%">
+    <div>
+      <div class="mb-3">
+        <input v-model="filters['global'].value" placeholder="Keyword Search" class="form-control my-input" />
+      </div>
+
+      <DataTable v-if="bars[route.params.id]?.items.length > 0" class="shadow mb-5" v-model:filters="filters"
+        :value="bars[route.params.id].items" :sortField="'name'" :sortOrder="1" stripedRows paginator :rows="20"
+        :rowsPerPageOptions="[5, 10, 20, 50]" tableStyle="min-width: 600px; text-transform: capitalize;">
+        <Column field="name" :sortable="true" header="Name" style="width: 30%">
           <template #body="{ data }">
-            {{ data["Document No_"] ? data["Document No_"] : "N/A" }}
+            {{ data["name"] ? data["name"] : "N/A" }}
           </template>
         </Column>
-        <Column field="Document Type" :sortable="true" header="Document Type" style="width: 20%">
+        <Column field="number" :sortable="true" header="number" style="width: 30%">
           <template #body="{ data }">
-            {{ data["Document Type"] ? data["Document Type"] : "N/A" }}
+            {{ data["number"] ? data["number"] : "N/A" }}
           </template>
         </Column>
-        <Column field="Request Unit" :sortable="true" header="Requested By" style="width: 25%">
-          <template #body="{ data }">
-            {{ data["Request Unit"] ? data["Request Unit"] : "N/A" }}
+        <Column field="amount_sold" :sortable="true" header="Amount Sold" style="width: 30%">
+          <template #body="{ data }"> 
+            <NairaSymbol />
+            {{ data["amount_sold"] ? data["amount_sold"] : "N/A" }}
           </template>
         </Column>
       </DataTable>
@@ -46,14 +51,24 @@
 
 <script setup>
 import { ref, reactive, onMounted } from "vue";
+import { FilterMatchMode } from 'primevue/api';
 import { useAuthStore } from "@/store/authStore";
+import { useBarsStore } from "@/store/barsStore";
 import { axiosUrl } from "@/env";
+import { useRoute } from "vue-router";
+import { storeToRefs } from "pinia";
 import { formatDate, swalErrorHandle, isObjectEmpty } from "@/components/myHelperFunction";
 
 const loading = ref(false);
 const authStore = useAuthStore();
+const barsStore = useBarsStore();
 const loggedInUser = authStore.loggedInUser;
-const barData = ref([])
+const route = useRoute()
+const { bars } = storeToRefs(barsStore)
+
+const filters = ref({
+  global: { value: null, matchMode: FilterMatchMode.CONTAINS }
+});
 
 onMounted(() => {
   if (window.innerWidth >= 1100)

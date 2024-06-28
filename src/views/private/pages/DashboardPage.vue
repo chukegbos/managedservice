@@ -13,11 +13,11 @@
       </div>
 
       <div class="row mb-xl-4">
-        <router-link :to="{ name: 'BarPage', params: { id: '0' } }"
+        <router-link v-for="bar, index in bars" :key="bar" :to="{ name: 'BarPage', params: { id: index } }"
           class="col-12 mb-3 p-3 d-flex align-items-center shadow-lg text-decoration-none">
           <div class="dash-widget-icon me-3"><i class="fa-solid fa-wine-bottle"></i></div>
           <div>
-            <h4 class="mb-0">Bar 1</h4>
+            <h4 class="mb-0">{{ bar["name"] }}</h4>
           </div>
         </router-link>
       </div>
@@ -28,12 +28,16 @@
 <script setup>
 import { ref, reactive, onMounted } from "vue";
 import { useAuthStore } from "@/store/authStore";
+import { useBarsStore } from "@/store/barsStore";
 import { axiosUrl } from "@/env";
+import { storeToRefs } from "pinia";
 // import { formatDate, swalErrorHandle } from "@/components/myHelperFunction";
 
 const loading = ref(false);
 const authStore = useAuthStore();
+const barsStore = useBarsStore();
 const loggedInUser = authStore.loggedInUser;
+const { bars } = storeToRefs(barsStore)
 
 onMounted(() => {
   if (window.innerWidth >= 1100)
@@ -44,9 +48,10 @@ const getData = async () => {
   loading.value = true;
 
   await axiosUrl
-    .get("/bars")
+    .get("/bars/mobile")
     .then((response) => {
-      console.log(response)
+      console.log(response.data.data)
+      bars.value = response.data?.data
       loading.value = false;
     })
     .catch((error) => {
@@ -56,7 +61,7 @@ const getData = async () => {
 };
 
 onMounted(() => {
-  // getData();
+  getData();
 });
 </script>
 
