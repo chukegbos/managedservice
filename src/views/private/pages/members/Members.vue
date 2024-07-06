@@ -17,15 +17,19 @@
 
           <div>
             <button
-              v-if="selected.length > 0"
               @click="onSubmit('delete-m')"
-              class="btn add-btn px-4"
+              class="btn btn-danger m-1"
             >
               <i class="fa-solid fa-minus"></i> Delete
             </button>
-            <router-link class="btn add-btn me-2 px-4" to="/members/create"
+            <router-link class="btn btn-info m-1" to="/members/create"
               >Add</router-link
             >
+            <button
+              @click="onSynch()"
+              class="btn btn-primary m-1">
+              Synchronize
+            </button>
           </div>
         </div>
       </div>
@@ -173,6 +177,22 @@ const checkSelectedAction = (id, data) => {
   } else if (id === 3) {
     onSubmit("delete", id);
   }
+};
+
+const onSynch = async () => {
+  isLoading.value = true;
+  await axiosUrl
+    .get("synch")
+    .then((response) => {
+      console.log(response)
+      isLoading.value = false;
+      swalSuccessHandle("Done Successful.");
+      getProducts();
+    })
+    .catch((error) => {
+      isLoading.value = false;
+      swalErrorHandle(error);
+    });
 };
 
 const onSubmit = async (type, id) => {

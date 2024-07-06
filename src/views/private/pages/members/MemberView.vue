@@ -382,7 +382,6 @@ const debts = ref([]);
 const payments = ref([]);
 const wallet = ref();
 const totalDebt = ref();
-const authStore = useAuthStore();
 const filters = ref({
   global: { value: null, matchMode: FilterMatchMode.CONTAINS },
 });
@@ -498,6 +497,14 @@ const getPOS = async () => {
     });
 };
 
+const getFingerprint = async () => {
+  await axiosUrl
+  .get("/members/fingerprint/" + membership_id.value)
+    .then((response) => {
+      console.log(response)
+    });
+};
+
 const getMember = async () => {
   isLoading.value = true;
 
@@ -525,6 +532,7 @@ onMounted(() => {
     getChannel();
     getBanks();
     getPOS();
+    getFingerprint();
   } catch (error) {
     isLoading.value = false;
     Swal.fire("Failed!", "Its not your fault, try again.", "warning");

@@ -319,16 +319,60 @@
                       <span class="font-medium">Supplier Management</span>
                     </router-link>
                   </li>
+
                   <li>
-                    <router-link
-                      to="#"
+                    <a
                       v-ripple
+                      v-styleclass="{
+                        selector: '@next',
+                        enterClass: 'hidden',
+                        enterActiveClass: 'slidedown',
+                        leaveToClass: 'hidden',
+                        leaveActiveClass: 'slideup',
+                      }"
                       class="text-decoration-none flex align-items-center cursor-pointer p-3 border-round text-700 hover:surface-100 transition-duration-150 transition-colors p-ripple"
                     >
-                      <i class="pi pi-chart-bar mr-2"></i>
+                      <i class="pi pi-comments mr-2"></i>
                       <span class="font-medium">Bar Management</span>
-                    </router-link>
+                      <i class="pi pi-chevron-down ml-auto"></i>
+                    </a>
+                    <ul
+                      class="list-none py-0 pl-3 pr-0 m-0 hidden overflow-y-hidden transition-all transition-duration-400 transition-ease-in-out"
+                    >
+                      <li>
+                        <router-link
+                          to="/bars"
+                          v-ripple
+                          class="text-decoration-none flex align-items-center cursor-pointer p-3 border-round text-700 hover:surface-100 transition-duration-150 transition-colors p-ripple"
+                        >
+                          <i class="pi pi-chart-line mr-2"></i>
+                          <span class="font-medium">Bars</span>
+                        </router-link>
+                      </li>
+                      <li>
+                        <router-link
+                          to="/bar/exchange"
+                          v-ripple
+                          class="text-decoration-none flex align-items-center cursor-pointer p-3 border-round text-700 hover:surface-100 transition-duration-150 transition-colors p-ripple"
+                        >
+                          <i class="pi pi-chart-line mr-2"></i>
+                          <span class="font-medium">Drink Exchange</span>
+                        </router-link>
+                      </li>
+
+                      <li>
+                        <router-link
+                          to="/bar/request"
+                          v-ripple
+                          class="text-decoration-none flex align-items-center cursor-pointer p-3 border-round text-700 hover:surface-100 transition-duration-150 transition-colors p-ripple"
+                        >
+                          <i class="pi pi-chart-line mr-2"></i>
+                          <span class="font-medium">Inventory Request</span>
+                        </router-link>
+                      </li>
+                    </ul>
                   </li>
+                  
                   <li>
                     <a
                       v-ripple

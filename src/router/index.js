@@ -127,6 +127,28 @@ const routes = [
 				component: () =>
 					import("@/views/private/pages/account/Ledger.vue"),
 			},
+
+			//bars
+			{
+				path: "/bars",
+				name: "Bars",
+				component: () =>
+					import("@/views/private/pages/bars/Bars.vue"),
+			},
+
+			// {
+			// 	path: "/bars/request",
+			// 	name: "Bars",
+			// 	component: () =>
+			// 		import("@/views/private/pages/bars/BarRequest.vue"),
+			// },
+
+			{
+				path: "/bars/:bar_code",
+				name: "BarView",
+				component: () =>
+					import("@/views/private/pages/bars/BarView.vue"),
+			},
 		],
 	},
 ];

@@ -338,6 +338,11 @@ const getData = async () => {
       loading.value = false;
     })
     .catch((error) => {
+      console.log(error.message)
+      if (error.message=="Network Error") {
+        localStorage.clear();
+        window.location.href = "/";
+      }
       loading.value = false;
       // swalErrorHandle(error);
     });
