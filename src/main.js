@@ -53,11 +53,10 @@ createApp(App)
 	.use(pinia)
 	.use(router)
 	.use(LoadingPlugin)
-	.use(PrimeVue)
 	.use(bootstrap)
 	.use(Vue3FormWizard)
 	.use(PrimeVue, { ripple: true })
-	  
+
 	.directive("tooltip", Tooltip)
 	.directive("ripple", Ripple)
 	.directive("styleclass", StyleClass)

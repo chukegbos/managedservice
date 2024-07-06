@@ -408,5 +408,8 @@
 <script setup>
 </script>
 
-<style scoped>
+<style>
+.dropdown-menu {
+  left: -50% !important;
+}
 </style>

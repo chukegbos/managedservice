@@ -344,7 +344,7 @@ const getData = async () => {
         window.location.href = "/";
       }
       loading.value = false;
-      // swalErrorHandle(error);
+      swalErrorHandle(error);
     });
 };
 
