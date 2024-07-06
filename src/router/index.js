@@ -38,6 +38,13 @@ const routes = [
 			},
 
 			{
+				path: "/order/:id",
+				name: "OrderPage",
+				component: () =>
+					import("@/views/private/pages/OrderPage.vue"),
+			},
+
+			{
 				path: "/change-password",
 				name: "ChangePassword",
 				component: () =>

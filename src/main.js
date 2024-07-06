@@ -3,7 +3,8 @@ import { createApp } from "vue";
 import App from "./App.vue";
 import router from "./router";
 import { createPinia } from "pinia";
-import NairaSymbol from "@/components/NairaSymbol.vue"
+import NairaSymbol from "@/components/NairaSymbol.vue";
+import ModalComp from "@/components/ModalComp.vue";
 import piniaPluginPersistedstate from "pinia-plugin-persistedstate";
 
 import "primeflex/primeflex.css";
@@ -63,6 +64,7 @@ createApp(App)
 	.directive("ripple", Ripple)
 	.directive("styleclass", StyleClass)
 
+	.component("ModalComp", ModalComp)
 	.component("NairaSymbol", NairaSymbol)
 	.component("Loading", Loading)
 	.component("DataTable", DataTable)

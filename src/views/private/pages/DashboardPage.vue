@@ -1,5 +1,7 @@
 <template>
   <div class="mx-3 pt-3">
+    <Loading :active="loading" />
+    
     <div class="container-fluid pb-0">
       <div class="page-header mb-sm-0">
         <div class="row">
@@ -26,7 +28,7 @@
 </template>
 
 <script setup>
-import { ref, reactive, onMounted } from "vue";
+import { ref, onMounted } from "vue";
 import { useAuthStore } from "@/store/authStore";
 import { useBarsStore } from "@/store/barsStore";
 import { axiosUrl } from "@/env";
@@ -50,7 +52,7 @@ const getData = async () => {
   await axiosUrl
     .get("/bars/mobile")
     .then((response) => {
-      console.log(response.data.data)
+      // console.log(response.data.data)
       bars.value = response.data?.data
       loading.value = false;
     })
