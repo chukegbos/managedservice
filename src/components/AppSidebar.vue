@@ -27,6 +27,7 @@
             <ul class="list-none p-3 m-0">
               <li>
                 <div
+                  @click="checkToggle('M1')"
                   v-ripple
                   v-styleclass="{
                     selector: '@next',
@@ -38,9 +39,10 @@
                   class="p-3 flex align-items-center justify-content-between text-600 cursor-pointer p-ripple"
                 >
                   <span class="font-medium">MEMBERS MANAGEMENT</span>
-                  <i class="pi pi-chevron-down"></i>
+                  <i class="pi pi-chevron-down" v-if="checkMainDD1"></i>
+                  <i class="pi pi-chevron-up" v-else></i>
                 </div>
-                <ul class="list-none p-0 m-0 overflow-hidden">
+                <ul class="main-toggle list-none p-0 m-0 overflow-hidden">
                   <li>
                     <router-link
                       to="/"
@@ -53,6 +55,7 @@
                   </li>
                   <li>
                     <a
+                      @click="checkToggle('S1')"
                       v-ripple
                       v-styleclass="{
                         selector: '@next',
@@ -65,10 +68,14 @@
                     >
                       <i class="pi pi-chart-line mr-2"></i>
                       <span class="font-medium">Members</span>
-                      <i class="pi pi-chevron-down ml-auto"></i>
+                      <i
+                        class="pi pi-chevron-down ml-auto"
+                        v-if="checkSubDD1"
+                      ></i>
+                      <i class="pi pi-chevron-up ml-auto" v-else></i>
                     </a>
                     <ul
-                      class="list-none py-0 pl-3 pr-0 m-0 hidden overflow-y-hidden transition-all transition-duration-400 transition-ease-in-out"
+                      class="sub-toggle list-none py-0 pl-3 pr-0 m-0 hidden overflow-y-hidden transition-all transition-duration-400 transition-ease-in-out"
                     >
                       <li>
                         <router-link
@@ -77,7 +84,7 @@
                           class="text-decoration-none flex align-items-center cursor-pointer p-3 border-round text-700 hover:surface-100 transition-duration-150 transition-colors p-ripple"
                         >
                           <i class="pi pi-chart-line mr-2"></i>
-                          <span class="font-medium">Members</span>
+                          <span class="font-medium">All Members</span>
                         </router-link>
                       </li>
                       <li>
@@ -254,6 +261,7 @@
             <ul class="list-none p-3 m-0">
               <li>
                 <div
+                  @click="checkToggle('M2')"
                   v-ripple
                   v-styleclass="{
                     selector: '@next',
@@ -265,9 +273,10 @@
                   class="p-3 flex align-items-center justify-content-between text-600 cursor-pointer p-ripple"
                 >
                   <span class="font-medium">INVENTORY MANAGEMENT</span>
-                  <i class="pi pi-chevron-down"></i>
+                  <i class="pi pi-chevron-down" v-if="checkMainDD2"></i>
+                  <i class="pi pi-chevron-up" v-else></i>
                 </div>
-                <ul class="list-none p-0 m-0 overflow-hidden">
+                <ul class="main-toggle list-none p-0 m-0 overflow-hidden">
                   <li>
                     <a
                       v-ripple
@@ -372,7 +381,7 @@
                       </li>
                     </ul>
                   </li>
-                  
+
                   <li>
                     <a
                       v-ripple
@@ -447,6 +456,9 @@ const isLoading = ref(false);
 const authStore = useAuthStore();
 const loggedInUser = authStore.loggedInUser;
 const currentClub = authStore.currentClub;
+const checkMainDD1 = ref(true);
+const checkMainDD2 = ref(true);
+const checkSubDD1 = ref(true);
 
 const logout = async () => {
   isLoading.value = true;
@@ -462,6 +474,28 @@ const logout = async () => {
     });
 };
 
+const checkToggle = (id) => {
+  switch (id) {
+    case "M1":
+      checkMainDD1.value = document
+        .getElementsByClassName("main-toggle")[0]
+        .classList.contains("hidden");
+      break;
+    case "M2":
+      checkMainDD2.value = document
+        .getElementsByClassName("main-toggle")[1]
+        .classList.contains("hidden");
+      break;
+    case "S1":
+      checkSubDD1.value = document
+        .getElementsByClassName("sub-toggle")[0]
+        .classList.contains("hidden");
+      break;
+    default:
+      break;
+  }
+};
+
 const props = defineProps({
   visible: {
     default: false,
@@ -474,4 +508,6 @@ const emit = defineEmits(["update:visible"]);
 const emitClose = () => {
   emit("update:visible", false);
 };
+
+onMounted(() => {});
 </script>

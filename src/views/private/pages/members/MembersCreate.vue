@@ -432,6 +432,19 @@
                 </div>
               </div>
             </tab-content>
+
+            <tab-content title="Entrance Card" icon="fa fa-id-card">
+              <div class="row">
+                <div class="col-12 form-group mb-3">
+                  <label>Card Number</label>
+                  <input
+                    v-model="form.card_number"
+                    type="number"
+                    class="form-control"
+                  />
+                </div>
+              </div>
+            </tab-content>
           </form-wizard>
         </div>
       </div>
@@ -547,6 +560,7 @@ const form = ref({
   educationItems: [],
   sections: [],
   membership_id: "",
+  card_number: null,
 });
 
 const toggleAll = () => {
@@ -664,17 +678,17 @@ const getMember = async (id) => {
   await axiosUrl
     .get("/members/" + id)
     .then((response) => {
-      
       form.value = response.data.data[0].member;
       form.value["kin_address"] = response.data.data[0].additional.kin_address;
       form.value["kin_name"] = response.data.data[0].additional.kin_name;
       form.value["kin_phone_1"] = response.data.data[0].additional.kin_phone_1;
       form.value["kin_phone_2"] = response.data.data[0].additional.kin_phone_2;
-      form.value["kin_relationship"] = response.data.data[0].additional.kin_relationship;
+      form.value["kin_relationship"] =
+        response.data.data[0].additional.kin_relationship;
       form.value["sponsor_1"] = response.data.data[0].additional.sponsor_1;
       form.value["sponsor_2"] = response.data.data[0].additional.sponsor_2;
 
-      onChange()
+      onChange();
       // additional.value = response.data.data[0].additional;
       // wallet.value = response.data.data[0].wallet;
       // totalDebt.value = response.data.data[0].totalDebt;

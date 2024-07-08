@@ -54,7 +54,6 @@ export const swalErrorHandle = (error) => {
 };
 
 export const swalSuccessHandle = (text) => {
-	
 	let icon = "success";
 	let color = "green";
 	let title = "Success!!!";
@@ -67,5 +66,37 @@ export const swalSuccessHandle = (text) => {
 		allowOutsideClick: false,
 		allowEscapeKey: false,
 		allowEnterKey: false,
+	});
+};
+
+export const swalHandler = (title, text, icon, confirmButtonColor) => {
+	Swal.fire({ title, text, icon, confirmButtonColor });
+};
+
+export const swalConfirmDelete = (
+	confirmCallback = () => {},
+	dismissCallback = () => {}
+) => {
+	Swal.fire({
+		title: "Are you sure?",
+		text: "You won't be able to revert this!",
+		icon: "warning",
+		showCancelButton: true,
+		confirmButtonColor: "#3085d6",
+		cancelButtonColor: "#d33",
+		confirmButtonText: "Yes, delete it!",
+	}).then((result) => {
+		// if (result.isConfirmed) {
+		// 	Swal.fire({
+		// 		title: "Deleted!",
+		// 		text: deleteText,
+		// 		icon: "success",
+		// 	});
+		// }
+		if (result.isConfirmed) {
+			confirmCallback();
+		} else if (result.isDismissed) {
+			dismissCallback();
+		}
 	});
 };

@@ -18,13 +18,15 @@
 
             <div>
               <button
-                v-if="selected.length > 0"
                 @click="onSubmit('delete')"
-                class="btn add-btn px-4"
+                class="btn btn-danger me-3 add-btn px-4"
               >
                 <i class="fa-solid fa-minus"></i> Delete Section
               </button>
-              <button @click="openModal('add')" class="btn add-btn me-2 px-4">
+              <button
+                @click="openModal('add')"
+                class="btn btn-primary add-btn me-2 px-4"
+              >
                 <i class="fa-solid fa-plus"></i> Add Section
               </button>
             </div>
@@ -126,7 +128,12 @@ import { axiosUrl } from "@/env";
 import { ref, reactive, onMounted } from "vue";
 import { FilterMatchMode } from "primevue/api";
 import { useAuthStore } from "@/store/authStore";
-import { formatDate } from "@/components/myHelperFunction";
+import {
+  formatDate,
+  swalHandler,
+  swalConfirmDelete,
+  swalErrorHandle,
+} from "@/components/myHelperFunction";
 import { Modal, ModalContent, open, close } from "@dimsog/vue-modal";
 
 const isLoading = ref(false);
@@ -186,6 +193,15 @@ const onSubmit = async (type, id) => {
     url = "sections/create";
     payload = modalForm;
   } else if (type === "delete") {
+    if (selected.value.length <= 0) {
+      swalHandler(
+        "Warning !!",
+        "Please select at least on section",
+        "warning",
+        "#FACEA8"
+      );
+      return;
+    }
     url = "sections/delete";
     payload = {
       ids: selected.value,
@@ -196,23 +212,31 @@ const onSubmit = async (type, id) => {
   } else return;
 
   close("section-modal");
-  isLoading.value = true;
 
   if (type === "delete" || type === "delete-m") {
-    await axiosUrl
-      .delete(url, { data: payload })
-      .then(() => {
-        isLoading.value = false;
-        selected.value = [];
-        selectAll.value = false;
+    swalConfirmDelete(
+      async () => {
+        isLoading.value = true;
+        await axiosUrl
+          .delete(url, { data: payload })
+          .then(() => {
+            isLoading.value = false;
+            selected.value = [];
+            selectAll.value = false;
 
-        getSection();
-      })
-      .catch((error) => {
-        isLoading.value = false;
-        swalErrorHandle(error);
-      });
+            getSection();
+          })
+          .catch((error) => {
+            isLoading.value = false;
+            swalErrorHandle(error);
+          });
+      },
+      () => {
+        return;
+      }
+    );
   } else {
+    isLoading.value = true;
     await axiosUrl
       .post(url, payload)
       .then(() => {
