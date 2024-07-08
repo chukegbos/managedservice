@@ -532,7 +532,7 @@ onMounted(() => {
     getChannel();
     getBanks();
     getPOS();
-    getFingerprint();
+    // getFingerprint();
   } catch (error) {
     isLoading.value = false;
     Swal.fire("Failed!", "Its not your fault, try again.", "warning");
