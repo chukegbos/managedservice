@@ -92,7 +92,7 @@
 
             <Column header="Gender">
               <template #body="slotProps">
-                <span v-if="slotProps.data.gender == 'male'">Male</span>
+                <span v-if="(slotProps.data.gender == 'male' || slotProps.data.gender == 'm'  || slotProps.data.gender == null)">Male</span>
                 <span v-else class="text-danger">Female</span>
               </template>
             </Column>

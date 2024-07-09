@@ -14,7 +14,6 @@
         </div>
         <div class="col-md-6">
           <b class="mr-3">Debt: </b> <span v-html="nairaSign"></span>{{ formatPrice(totalDebt) }}
-         
         </div>
       </div>
       <TabView>
@@ -87,34 +86,36 @@
                     <th class="mr-2">Children:</th>
                     <td>{{ member.children }}</td>
                   </tr>
-                  <tr>
-                    <th class="mr-2">Kin Name:</th>
-                    <td>{{ additional.kin_name }}</td>
-                  </tr>
-                  <tr>
-                    <th class="mr-2">Kin Address:</th>
-                    <td>{{ additional.kin_address }}</td>
-                  </tr>
-                  <tr>
-                    <th class="mr-2">Kin Phone 1:</th>
-                    <td>{{ additional.kin_phone_1 }}</td>
-                  </tr>
-                  <tr>
-                    <th class="mr-2">Kin Phone 2:</th>
-                    <td>{{ additional.kin_phone_2 }}</td>
-                  </tr>
-                  <tr>
-                    <th class="mr-2">Kin Relationship:</th>
-                    <td>{{ additional.kin_relationship }}</td>
-                  </tr>
-                  <tr>
-                    <th class="mr-2">Sponsor 1:</th>
-                    <td>{{ additional.sponsor_1 }}</td>
-                  </tr>
-                  <tr>
-                    <th class="mr-2">Sponsor 2:</th>
-                    <td>{{ additional.sponsor_2 }}</td>
-                  </tr>
+                  <span v-if="additional">
+                    <tr>
+                      <th class="mr-2">Kin Name:</th>
+                      <td>{{ additional.kin_name }}</td>
+                    </tr>
+                    <tr>
+                      <th class="mr-2">Kin Address:</th>
+                      <td>{{ additional.kin_address }}</td>
+                    </tr>
+                    <tr>
+                      <th class="mr-2">Kin Phone 1:</th>
+                      <td>{{ additional.kin_phone_1 }}</td>
+                    </tr>
+                    <tr>
+                      <th class="mr-2">Kin Phone 2:</th>
+                      <td>{{ additional.kin_phone_2 }}</td>
+                    </tr>
+                    <tr>
+                      <th class="mr-2">Kin Relationship:</th>
+                      <td>{{ additional.kin_relationship }}</td>
+                    </tr>
+                    <tr>
+                      <th class="mr-2">Sponsor 1:</th>
+                      <td>{{ additional.sponsor_1 }}</td>
+                    </tr>
+                    <tr>
+                      <th class="mr-2">Sponsor 2:</th>
+                      <td>{{ additional.sponsor_2 }}</td>
+                    </tr>
+                  </span>
                 </table>
               </div>
             </div>
@@ -223,6 +224,17 @@
         </TabPanel>
 
         <TabPanel header="Payments">
+          <div class="d-flex justify-content-between align-items-center">
+            <div class="d-flex">
+              <div class="me-3">
+                <input
+                  v-model="filters['global'].value"
+                  placeholder="Keyword Search"
+                  class="form-control my-input"
+                />
+              </div>
+            </div>
+          </div>
           <div class="mt-4">
             <div v-if="payments.length > 0">
               <DataTable
@@ -295,6 +307,79 @@
             </div>
           </div>
         </TabPanel>
+
+        <TabPanel header="Card">
+          <div class="d-flex justify-content-between align-items-center">
+            <div class="d-flex">
+              <div class="me-3">
+                <input
+                  v-model="filters['global'].value"
+                  placeholder="Keyword Search"
+                  class="form-control my-input"
+                />
+                
+              </div>
+              <button @click="openModal()" class="btn btn-primary mb-3 ">
+                <i class="fa-solid fa-plus"></i> Add Card
+              </button>
+            </div>
+          </div>
+          <div class="mt-4">
+            <div v-if="cards.length > 0">
+              <DataTable
+                class="shadow"
+                v-model:filters="filters"
+                :value="cards"
+                :sortField="'created_at'"
+                showGridlines
+                paginator
+                :rows="10"
+                :rowsPerPageOptions="[5, 10, 20, 50]"
+                tableStyle="min-width: 50rem"
+              >
+                <Column header="Name" style="width: 20%">
+                  <template #body="slotProps">
+                    {{ slotProps.data.name }}
+                  </template>
+                </Column>
+                <Column header="Relationship" style="width: 20%">
+                  <template #body="slotProps">
+                    {{ slotProps.data.relationship }}
+                  </template>
+                </Column>
+                <Column header="Card Number" style="width: 20%">
+                  <template #body="slotProps">
+                    {{ slotProps.data.card_number }}
+                  </template>
+                </Column>
+                <Column header="Date Created" style="width: 20%">
+                  <template #body="slotProps">
+                    {{ formatDate(slotProps.data.created_at) }}
+                  </template>
+                </Column>
+
+                <Column header="Date Created" style="width: 10%">
+                  <template #body="slotProps">
+                    <button
+                      @click="onRemoveCard(slotProps.data.id)"
+                      class="px-4"
+                    >
+                      <i class="fa-solid fa-times text-danger"></i>
+                    </button>
+                  </template>
+                </Column>
+              </DataTable>
+            </div>
+
+            <div v-else>
+              <div class="card card-body">
+                <div class="alert alert-warning" role="alert">
+                  <p class="text-center">No Card Available</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </TabPanel>
       </TabView>
 
       <Modal name="pay-modal" :title="modalParams.title">
@@ -352,6 +437,56 @@
           </form>
         </ModalContent>
       </Modal>
+
+      <Modal name="card-modal" :title="modalParams.title">
+      <ModalContent>
+        <form @submit.prevent="onSubmitCard()">
+          <div class="input-block mb-2 mx-3">
+            <label class="col-form-label fs-6">Name</label>
+            <input
+              class="form-control"
+              type="text"
+              v-model="modalForm.name"
+              required
+            />
+          </div>
+
+          <div class="input-block mb-2 mx-3">
+            <label class="col-form-label fs-6">Card Number</label>
+            <input
+              class="form-control"
+              type="text"
+              v-model="modalForm.card_number"
+              required
+            />
+          </div>
+
+          <div class="input-block mb-2 mx-3">
+            <label class="col-form-label fs-6">Relationship</label>
+            <select
+              v-model="modalForm.relationship"
+              class="form-control"
+              required>
+              <option value="null">-- Select Type--</option>
+              <option value="Owner">Owner of Account</option>
+              <option value="Father">Father</option>
+              <option value="Mother">Mother</option>
+              <option value="Sister">Sister</option>
+              <option value="Brother">Brother</option>
+              <option value="Child">Child</option>
+              <option value="Friend">Friend</option>
+              <option value="Others">Others</option>
+            </select>
+          </div>
+
+          <div class="mx-3">
+            <button class="btn btn-primary account-btn w-100" type="submit">
+              Submit
+            </button>
+          </div>
+        </form>
+      </ModalContent>
+    </Modal>
     </div>
   </div>
 </template>
@@ -368,6 +503,7 @@ import {
   formatDate,
   formatPrice,
   swalErrorHandle,
+  swalConfirmDelete,
   swalSuccessHandle,
 } from "@/components/myHelperFunction";
 import { Modal, ModalContent, open, close } from "@dimsog/vue-modal";
@@ -380,6 +516,7 @@ const member = ref({});
 const additional = ref({});
 const debts = ref([]);
 const payments = ref([]);
+const cards = ref([]);
 const wallet = ref();
 const totalDebt = ref();
 const filters = ref({
@@ -395,6 +532,17 @@ const payData = reactive({
   channel_id: null,
   process_id: "",
 });
+const modalForm = reactive({
+  name: "",
+  relationship: null,
+  membership_id: "",
+  card_number: "",
+});
+const openModal = () => {
+  modalParams.title = "Add Card";
+  open("card-modal");
+};
+
 const singleDeptData = reactive({
   membership_id: "",
   product_id: "",
@@ -419,7 +567,6 @@ const checkSelectedAction = (id, data) => {
     
   }
 };
-
 
 const onSubmit = async (type, id) => {
   let url = "";
@@ -459,6 +606,51 @@ const onSubmit = async (type, id) => {
       swalErrorHandle(error);
     });
 };
+
+const onSubmitCard = async () => {
+  let url = "members/card/create";
+
+  close("card-modal");
+  modalForm.membership_id = membership_id.value;
+  isLoading.value = true;
+
+  await axiosUrl
+  .post(url, modalForm)
+  .then(() => {
+
+    isLoading.value = false;
+    modalForm.name = "",
+    modalForm.relationship = null,
+    modalForm.card_number = "",
+    location.reload();
+  })
+  .catch((error) => {
+    isLoading.value = false;
+    swalErrorHandle(error);
+  });
+};
+
+const onRemoveCard = async (id) => {
+  swalConfirmDelete(
+    async () => {
+      let url = 'members/card/' + id;
+      isLoading.value = true;
+      await axiosUrl
+        .delete(url)
+        .then(() => {
+          isLoading.value = false;
+          location.reload();
+        })
+        .catch((error) => {
+          isLoading.value = false;
+          swalErrorHandle(error);
+        });
+    },
+    () => {
+      return;
+    }
+  );
+}
 
 const getChannel = async () => {
   await axiosUrl
@@ -515,9 +707,10 @@ const getMember = async () => {
       additional.value = response.data.data[0].additional;
       wallet.value = response.data.data[0].wallet;
       totalDebt.value = response.data.data[0].totalDebt;
-
       payments.value = response.data.data[0].payments;
       debts.value = response.data.data[0].debts;
+      cards.value = response.data.data[0].cards;
+      
       isLoading.value = false;
     })
     .catch((error) => {
