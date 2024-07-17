@@ -92,7 +92,7 @@
 
             <Column header="Gender">
               <template #body="slotProps">
-                <span v-if="slotProps.data.gender == 'male'">Male</span>
+                <span v-if="(slotProps.data.gender == 'male' || slotProps.data.gender == 'm'  || slotProps.data.gender == null)">Male</span>
                 <span v-else class="text-danger">Female</span>
               </template>
             </Column>
@@ -100,7 +100,7 @@
             <Column header="Door Access">
               <template #body="slotProps">
                 <span
-                  v-if="slotProps.data.door_access_active == 1"
+                  v-if="slotProps.data.status == 1"
                   class="text-success"
                   >Access</span
                 >
@@ -163,6 +163,7 @@ const selectedAction = ref([]);
 const actions = ref([
   { label: "Edit", id: 1 },
   { label: "View", id: 2 },
+  { label: "Activate/Deactivate", id: 4 },
   { label: "Delete", id: 3 },
 ]);
 
@@ -177,6 +178,25 @@ const checkSelectedAction = (id, data) => {
   } else if (id === 3) {
     onSubmit("delete", id);
   }
+  else if (id === 4) {
+    activate(data);
+  }
+  
+};
+
+const activate = async (data) => {
+  isLoading.value = true;
+  await axiosUrl
+    .get('members/status/?membership_id=' + data)
+    .then(() => {
+      isLoading.value = false;
+      getMembers()
+    })
+    .catch((error) => {
+      console.log(error)
+      isLoading.value = false;
+      swalErrorHandle(error);
+    });
 };
 
 const onSynch = async () => {
@@ -187,7 +207,7 @@ const onSynch = async () => {
       console.log(response)
       isLoading.value = false;
       swalSuccessHandle("Done Successful.");
-      getProducts();
+      getMembers()
     })
     .catch((error) => {
       isLoading.value = false;
@@ -214,7 +234,7 @@ const onSubmit = async (type, id) => {
       isLoading.value = false;
       selected.value = [];
       selectAll.value = false;
-      getProducts();
+      getMembers()
     })
     .catch((error) => {
       isLoading.value = false;
