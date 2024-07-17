@@ -308,7 +308,7 @@
                     </div>
 
                     <div class="col-md-6 form-group mb-3">
-                      <label>Next of Kin {{ form.kin_name }}</label>
+                      <label>Next of Kin</label>
                       <input
                         v-model="form.kin_name"
                         type="text"

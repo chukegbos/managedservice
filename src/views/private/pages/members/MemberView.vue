@@ -13,8 +13,8 @@
           </h2>
         </div>
         <div class="col-md-6">
-          <b class="mr-3">Debt: </b> <span v-html="nairaSign"></span>{{ formatPrice(totalDebt) }}
-         
+          <b class="mr-3">Debt: </b> <span v-html="nairaSign"></span
+          >{{ formatPrice(totalDebt) }}
         </div>
       </div>
       <TabView>
@@ -147,9 +147,9 @@
                 :rowsPerPageOptions="[5, 10, 20, 50]"
                 tableStyle="min-width: 50rem"
               >
-              <Column header="Debt ID" style="width: 10%">
+                <Column header="Debt ID" style="width: 10%">
                   <template #body="slotProps">
-                    #{{ slotProps.data.trans_id}}
+                    #{{ slotProps.data.trans_id }}
                   </template>
                 </Column>
                 <Column header="Product Name" style="width: 20%">
@@ -236,11 +236,11 @@
                 :rowsPerPageOptions="[5, 10, 20, 50]"
                 tableStyle="min-width: 50rem"
               >
-              <Column header="Payment ID" style="width: 10%">
-              <template #body="slotProps">
-                #{{ slotProps.data.trans_id}}
-              </template>
-            </Column>
+                <Column header="Payment ID" style="width: 10%">
+                  <template #body="slotProps">
+                    #{{ slotProps.data.trans_id }}
+                  </template>
+                </Column>
                 <Column header="Product Name" style="width: 20%">
                   <template #body="slotProps">
                     {{
@@ -290,6 +290,74 @@
               <div class="card card-body">
                 <div class="alert alert-warning" role="alert">
                   <p class="text-center">No Payment Available</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </TabPanel>
+
+        <TabPanel header="Cards">
+          <button class="btn btn-sm btn-success px-5">Add Card</button>
+          <div class="mt-4">
+            <div v-if="cards.length > 0">
+              <DataTable
+                class="shadow"
+                v-model:filters="filters"
+                :value="cards"
+                :sortField="'name'"
+                showGridlines
+                paginator
+                :rows="10"
+                :rowsPerPageOptions="[5, 10, 20, 50]"
+                tableStyle="min-width: 50rem"
+              >
+                <Column
+                  field="name"
+                  :sortable="true"
+                  header="Name"
+                  style="width: 30%"
+                >
+                  <template #body="{ data }">
+                    {{ data["name"] ? data["name"] : "N/A" }}
+                  </template>
+                </Column>
+                <Column
+                  field="relationship"
+                  :sortable="true"
+                  header="Relationship"
+                  style="width: 20%"
+                >
+                  <template #body="{ data }">
+                    {{ data["relationship"] ? data["relationship"] : "N/A" }}
+                  </template>
+                </Column>
+                <Column
+                  field="card_number"
+                  :sortable="true"
+                  header="Card Number"
+                  style="width: 20%"
+                >
+                  <template #body="{ data }">
+                    {{ data["card_number"] ? data["card_number"] : "N/A" }}
+                  </template>
+                </Column>
+                <Column
+                  field=""
+                  :sortable="false"
+                  header="Action"
+                  style="width: 20%"
+                >
+                  <template #body="{}">
+                    <span class="bg-danger btn btn-sm text-white">X</span>
+                  </template>
+                </Column>
+              </DataTable>
+            </div>
+
+            <div v-else>
+              <div class="card card-body">
+                <div class="alert alert-warning" role="alert">
+                  <p class="text-center">No Card Available</p>
                 </div>
               </div>
             </div>
@@ -380,6 +448,7 @@ const member = ref({});
 const additional = ref({});
 const debts = ref([]);
 const payments = ref([]);
+const cards = ref([]);
 const wallet = ref();
 const totalDebt = ref();
 const filters = ref({
@@ -416,10 +485,8 @@ const checkSelectedAction = (id, data) => {
     payData.membership_id = membership_id;
     payData.transaction_code = data.trans_id;
     open("pay-modal");
-    
   }
 };
-
 
 const onSubmit = async (type, id) => {
   let url = "";
@@ -452,7 +519,7 @@ const onSubmit = async (type, id) => {
         modalParams.title = "";
       }
       swalSuccessHandle("Payment Successful.");
-       location.reload();
+      location.reload();
     })
     .catch((error) => {
       isLoading.value = false;
@@ -499,9 +566,9 @@ const getPOS = async () => {
 
 const getFingerprint = async () => {
   await axiosUrl
-  .get("/members/fingerprint/" + membership_id.value)
+    .get("/members/fingerprint/" + membership_id.value)
     .then((response) => {
-      console.log(response)
+      console.log(response);
     });
 };
 
@@ -515,6 +582,7 @@ const getMember = async () => {
       additional.value = response.data.data[0].additional;
       wallet.value = response.data.data[0].wallet;
       totalDebt.value = response.data.data[0].totalDebt;
+      cards.value = response.data.data[0].cards;
 
       payments.value = response.data.data[0].payments;
       debts.value = response.data.data[0].debts;
