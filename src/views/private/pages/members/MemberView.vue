@@ -13,12 +13,7 @@
           </h2>
         </div>
         <div class="col-md-6">
-<<<<<<< HEAD
-          <b class="mr-3">Debt: </b> <span v-html="nairaSign"></span
-          >{{ formatPrice(totalDebt) }}
-=======
           <b class="mr-3">Debt: </b> <span v-html="nairaSign"></span>{{ formatPrice(totalDebt) }}
->>>>>>> ab6830059a448376057d8c82266c4ada871d5289
         </div>
       </div>
       <TabView>
