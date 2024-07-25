@@ -81,13 +81,13 @@
               style="width: 15%"
             ></Column>
 
-            <Column field="name" header="Fullname">
+            <!-- <Column field="name" header="Fullname">
               <template #body="slotProps">
                 {{ slotProps.data.last_name }} {{ slotProps.data.first_name }}
                 {{ slotProps.data.middle_name }}
               </template>
-            </Column>
-
+            </Column> -->
+            <Column field="fullname" header="Fullname"> </Column>
             <Column field="phone_1" header="Phone"> </Column>
 
             <Column header="Gender">

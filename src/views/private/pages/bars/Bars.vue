@@ -251,10 +251,8 @@ const onSubmit = async (type, id) => {
       .post(url, payload)
       .then(() => {
         isLoading.value = false;
-
         modalForm.name = "";
         modalParams.title = "";
-
         getBar();
       })
       .catch((error) => {

@@ -136,12 +136,12 @@ const routes = [
 					import("@/views/private/pages/bars/Bars.vue"),
 			},
 
-			// {
-			// 	path: "/bars/request",
-			// 	name: "Bars",
-			// 	component: () =>
-			// 		import("@/views/private/pages/bars/BarRequest.vue"),
-			// },
+			{
+				path: "/bars/requests/:request_code",
+				name: "Bar Request",
+				component: () =>
+					import("@/views/private/pages/bars/BarRequestProcess.vue"),
+			},
 
 			{
 				path: "/bars/:bar_code",
