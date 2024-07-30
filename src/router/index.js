@@ -99,7 +99,7 @@ const routes = [
 			},
 			{
 				path: "/payment/history",
-				name: "PaymentHistory",
+				name: "PaymentsHistory",
 				component: () =>
 					import("@/views/private/pages/payment/History.vue"),
 			},
