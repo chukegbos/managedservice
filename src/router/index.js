@@ -42,8 +42,15 @@ const routes = [
 				component: () =>
 					import("@/views/private/pages/members/Members.vue"),
 			},
+			// {
+			// 	path: "/members/view/:membershipID",
+			// 	name: "MemberView",
+			// 	component: () =>
+			// 		import("@/views/private/pages/members/MemberView.vue"),
+			// },
+
 			{
-				path: "/members/view/:membershipID",
+				path: "/members/view",
 				name: "MemberView",
 				component: () =>
 					import("@/views/private/pages/members/MemberView.vue"),
@@ -95,6 +102,12 @@ const routes = [
 				name: "PaymentHistory",
 				component: () =>
 					import("@/views/private/pages/payment/History.vue"),
+			},
+			{
+				path: "/wallet",
+				name: "Wallet",
+				component: () =>
+					import("@/views/private/pages/payment/Wallet.vue"),
 			},
 			{
 				path: "/admins",

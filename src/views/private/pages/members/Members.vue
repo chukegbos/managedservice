@@ -174,7 +174,11 @@ const checkSelectedAction = (id, data) => {
       query: { edit: "true", id: data },
     });
   } else if (id == 2) {
-    router.push({ path: "/members/view/" + data });
+    router.push({
+      path: "/members/view/",
+      query: { id: data },
+    });
+    // router.push({ path: "/members/view/" + data });
   } else if (id === 3) {
     onSubmit("delete", id);
   }
