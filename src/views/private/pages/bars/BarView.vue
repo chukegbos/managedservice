@@ -3,14 +3,13 @@
     <loading :active="isLoading" />
 
     <div class="container" v-if="!isLoading">
-      <div class="d-flex justify-content-between align-items-center row">
+      <div class="d-flex justify-content-between align-items-center row mb-3">
         <div class="col-md-12 text-center">
           <h4><b>{{ bar.name }} ({{ bar_code }})</b></h4>
           <b>Current Manager: </b>{{ bar.manager }}<br>
           <b>Daily Sales: </b> <span v-html="nairaSign"></span>{{ formatPrice(totalDebt) }}
         </div>
       </div>
-
       <TabView>
         <TabPanel header="Drinks">
           
@@ -113,19 +112,21 @@
     import { FilterMatchMode } from "primevue/api";
     import { useAuthStore } from "@/store/authStore";
     import Swal from "sweetalert2";
-    import { useRoute } from "vue-router";
     import {
       formatDate,
       formatPrice,
       swalErrorHandle,
       swalSuccessHandle,
     } from "@/components/myHelperFunction";
+    import { useRoute, useRouter } from "vue-router";
 
+    const route = useRoute();
+    const router = useRouter();
     const isLoading = ref(false);
     const nairaSign = "&#x20A6;";
-    const route = useRoute();
     const bar_code = ref();
     const bar = ref("");
+    const request = ref(false);
     const drinks = ref({});
     const selected = ref([]);
     const selectAll = ref("");
@@ -141,44 +142,35 @@
       else selected.value = [];
     };
 
-    const onRequest = async (type, id) => {
-    let url = "";
-    let payload = {};
-    if (type === "Pay") {
-        url = "/payments/debit/pay";
-        if (payData.channel_id === 2) payData.process_id = null;
-        payload = payData;
-    } else if (type === "Single") {
-        url = "payments/dept";
-        payload = singleDeptData;
-    } else if (type === "Group") {
-        url = "payments/debit/pay";
-        payload = groupDeptData;
-    } else return;
+    const onRequest = async () => {
+      if(selected.value.length === 0){
+        Swal.fire(
+          "Wait!",
+          "Select at least one product.",
+          "warning"
+        );
+      }
+      else {
+         var payload = {
+          ids: selected.value,
+        };
 
-    close("pay-modal");
-    isLoading.value = true;
-
-    await axiosUrl
+        isLoading.value = true;
+        var url = "/bars/requests/create";
+        await axiosUrl
         .post(url, payload)
-        .then(() => {
-        isLoading.value = false;
-
-        if (type === "Pay") {
-            payData.bar_code = "";
-            payData.transaction_code = "";
-            payData.channel_id = null;
-            payData.process_id = "";
-            modalParams.title = "";
-        }
-        swalSuccessHandle("Payment Successful.");
-        location.reload();
+        .then((response) => {
+          isLoading.value = false;
+          router.push({
+            path: "/bars/requests/" + response.data,
+          });
         })
         .catch((error) => {
-        isLoading.value = false;
-        swalErrorHandle(error);
+          isLoading.value = false;
+          swalErrorHandle(error);
         });
-    };
+      }
+    }
 
     const getBar = async () => {
         isLoading.value = true;

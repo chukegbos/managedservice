@@ -13,7 +13,8 @@
           </h2>
         </div>
         <div class="col-md-6">
-          <b class="mr-3">Debt: </b> <span v-html="nairaSign"></span>{{ formatPrice(totalDebt) }}
+          <b class="mr-3">Debt: </b> <span v-html="nairaSign"></span>{{ formatPrice(totalDebt) }} <br> 
+          <b class="mr-3">Wallet Balance: </b> <span v-html="nairaSign"></span>{{ formatPrice(walletBalance) }}
         </div>
       </div>
       <TabView>
@@ -308,6 +309,105 @@
           </div>
         </TabPanel>
 
+        <TabPanel header="Wallet Account">
+          <div class="d-flex justify-content-between align-items-center">
+            <div class="d-flex">
+              <div class="me-3">
+                <input
+                  v-model="filters['global'].value"
+                  placeholder="Keyword Search"
+                  class="form-control my-input"
+                />
+              </div>
+              <button
+                @click="openModalMoney('add')"
+                class="btn btn-primary add-btn me-2 px-4"
+              >
+                <i class="fa-solid fa-plus"></i> Add Money
+              </button>
+            </div>
+          </div>
+          <div class="mt-4">
+            <div v-if="walletAccount.length > 0">
+              <DataTable
+                class="shadow"
+                v-model:filters="filters"
+                :value="walletAccount"
+                :sortField="'created_at'"
+                showGridlines
+                paginator
+                :rows="10"
+                :rowsPerPageOptions="[5, 10, 20, 50]"
+                tableStyle="min-width: 50rem"
+              >
+                <Column header="Reference ID">
+                  <template #body="slotProps">
+                    #{{ slotProps.data.ref_id}}
+                  </template>
+                </Column>
+                <Column header="Type">
+                  <template #body="slotProps">
+                    {{ slotProps.data.type}}
+                  </template>
+                </Column>
+
+                <Column header="Amount" style="width: 20%">
+                  <template #body="slotProps">
+                    {{ formatPrice(slotProps.data.amount) }}
+                  </template>
+                </Column>
+
+                <Column header="Payment Method" style="width: 20%">
+                  <template #body="slotProps">
+                    {{ slotProps.data.channel }}<br /> {{ slotProps.data.process }}
+                  </template>
+                </Column>
+
+                <Column header="Status">
+                  <template #body="slotProps">
+                    <span v-if="slotProps.data.payment_type==0">
+                      -
+                    </span>
+                    <span v-else>
+                      <span v-if="slotProps.data.status==0">
+                        {{ slotProps.data.approval_status }}<br>
+                        <button @click="approve(slotProps.data.id)" class="btn btn-warning btn-sm">Approve</button>
+                      </span>
+
+                      <span v-else>
+                        Approved
+                      </span>
+                    </span>
+                  </template>
+                </Column>
+
+                <Column header="Created By">
+                  <template #body="slotProps">
+                    {{ slotProps.data.creator }}<br>{{ formatDate(slotProps.data.created_at) }}
+                  </template>
+                </Column>
+
+                <Column header="Updated By">
+                  <template #body="slotProps">
+                    <span v-if="slotProps.data.updater">
+                      {{ slotProps.data.updater }}<br>{{ formatDate(slotProps.data.updated_at) }}
+                    </span>
+                  </template>
+                </Column>
+
+              </DataTable>
+            </div>
+
+            <div v-else>
+              <div class="card card-body">
+                <div class="alert alert-warning" role="alert">
+                  <p class="text-center">No Wallet Information Available</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </TabPanel>
+
         <TabPanel header="Card">
           <div class="d-flex justify-content-between align-items-center">
             <div class="d-flex">
@@ -448,54 +548,119 @@
       </Modal>
 
       <Modal name="card-modal" :title="modalParams.title">
-      <ModalContent>
-        <form @submit.prevent="onSubmitCard()">
-          <div class="input-block mb-2 mx-3">
-            <label class="col-form-label fs-6">Name</label>
-            <input
-              class="form-control"
-              type="text"
-              v-model="modalForm.name"
-              required
-            />
-          </div>
+        <ModalContent>
+          <form @submit.prevent="onSubmitCard()">
+            <div class="input-block mb-2 mx-3">
+              <label class="col-form-label fs-6">Name</label>
+              <input
+                class="form-control"
+                type="text"
+                v-model="modalForm.name"
+                required
+              />
+            </div>
 
-          <div class="input-block mb-2 mx-3">
-            <label class="col-form-label fs-6">Card Number</label>
-            <input
-              class="form-control"
-              type="text"
-              v-model="modalForm.card_number"
-              required
-            />
-          </div>
+            <div class="input-block mb-2 mx-3">
+              <label class="col-form-label fs-6">Card Number</label>
+              <input
+                class="form-control"
+                type="text"
+                v-model="modalForm.card_number"
+                required
+              />
+            </div>
 
-          <div class="input-block mb-2 mx-3">
-            <label class="col-form-label fs-6">Relationship</label>
-            <select
-              v-model="modalForm.relationship"
-              class="form-control"
-              required>
-              <option value="null">-- Select Type--</option>
-              <option value="Owner">Owner of Account</option>
-              <option value="Father">Father</option>
-              <option value="Mother">Mother</option>
-              <option value="Sister">Sister</option>
-              <option value="Brother">Brother</option>
-              <option value="Child">Child</option>
-              <option value="Friend">Friend</option>
-              <option value="Others">Others</option>
-            </select>
-          </div>
+            <div class="input-block mb-2 mx-3">
+              <label class="col-form-label fs-6">Relationship</label>
+              <select
+                v-model="modalForm.relationship"
+                class="form-control"
+                required>
+                <option value="null">-- Select Type--</option>
+                <option value="Owner">Owner of Account</option>
+                <option value="Father">Father</option>
+                <option value="Mother">Mother</option>
+                <option value="Sister">Sister</option>
+                <option value="Brother">Brother</option>
+                <option value="Child">Child</option>
+                <option value="Friend">Friend</option>
+                <option value="Others">Others</option>
+              </select>
+            </div>
 
-          <div class="mx-3">
-            <button class="btn btn-primary account-btn w-100" type="submit">
-              Submit
-            </button>
-          </div>
-        </form>
-      </ModalContent>
-    </Modal>
+            <div class="mx-3">
+              <button class="btn btn-primary account-btn w-100" type="submit">
+                Submit
+              </button>
+            </div>
+          </form>
+        </ModalContent>
+      </Modal>
+
+      <Modal name="wallet-modal" :title="modalParams.title">
+        <ModalContent>
+          <form
+            @submit.prevent="onSubmitWallet(modalParams.title, currentEditID)" style="width: 90%; height:100%; margin: 0 auto">
+            <div class="">
+              <div class="input-block mb-2">
+                <label class="col-form-label fs-6">Amount</label>
+                <input
+                  class="form-control"
+                  type="number"
+                  v-model="payWalletData.amount"
+                  required
+                />
+              </div>
+
+              <div class="input-block mb-2">
+                <label class="col-form-label fs-6">Channel</label>
+                <select
+                  v-model="payWalletData.channel_id"
+                  class="form-control"
+                  required>
+                  <option value="null">-- Select Type--</option>
+                  <option v-for="data in channels" :key="data" :value="data.id">
+                    {{ data["name"] }}
+                  </option>
+                </select>
+              </div>
+
+              <div class="input-block mb-3" v-if="payWalletData.channel_id === 1">
+                <label class="col-form-label fs-6">POS</label>
+                <select
+                  v-model="payWalletData.process_id"
+                  class="form-control"
+                  required
+                >
+                  <option value="null">-- Select Type--</option>
+                  <option v-for="data in pos" :key="data" :value="data.id">
+                    {{ data["name"] }}
+                  </option>
+                </select>
+              </div>
+
+              <div class="input-block mb-3" v-if="payWalletData.channel_id === 3">
+                <label class="col-form-label fs-6">Bank</label>
+                <select
+                  v-model="payWalletData.process_id"
+                  class="form-control"
+                  required
+                >
+                  <option value="null">-- Select Type--</option>
+                  <option v-for="data in banks" :key="data" :value="data.id">
+                    {{ data["bank_name"] }} - {{ data["account_number"] }}
+                  </option>
+                </select>
+              </div>
+            </div>
+            <div class="mt-1">
+              <button class="btn btn-primary account-btn w-100" type="submit">
+                Submit
+              </button>
+            </div>
+          </form>
+        </ModalContent>
+      </Modal>
     </div>
   </div>
 </template>
@@ -526,7 +691,8 @@ const additional = ref({});
 const debts = ref([]);
 const payments = ref([]);
 const cards = ref([]);
-const wallet = ref();
+const walletBalance = ref();
+const walletAccount = ref([]);
 const totalDebt = ref();
 const filters = ref({
   global: { value: null, matchMode: FilterMatchMode.CONTAINS },
@@ -534,6 +700,7 @@ const filters = ref({
 const actionValue = ref([]);
 const channels = ref([]);
 const banks = ref([]);
+const currentEditID = ref();
 const pos = ref([]);
 const payData = reactive({
   membership_id: "",
@@ -541,15 +708,35 @@ const payData = reactive({
   channel_id: null,
   process_id: "",
 });
+
+const payWalletData = reactive({
+  membership_id: "",
+  amount: "",
+  channel_id: null,
+  process_id: "",
+});
+
 const modalForm = reactive({
   name: "",
   relationship: null,
   membership_id: "",
   card_number: "",
 });
+
 const openModal = () => {
   modalParams.title = "Add Card";
   open("card-modal");
+};
+
+const openModalMoney = (type, $id) => {
+  if (type === "add") modalParams.title = "Add Money";
+  else if (type === "edit") {
+    modalParams.title = "Edit Money";
+    currentEditID.value = id;
+  }
+
+  payWalletData.membership_id = membership_id;
+  open("wallet-modal");
 };
 
 const singleDeptData = reactive({
@@ -563,6 +750,7 @@ const options = [
     name: "Pay",
   },
 ];
+
 const modalParams = reactive({
   title: "",
 });
@@ -574,6 +762,42 @@ const checkSelectedAction = (id, data) => {
     payData.transaction_code = data.trans_id;
     open("pay-modal");
   }
+};
+
+const approve = async (id) => {
+  let url = 'members/wallet/' + id;
+
+  isLoading.value = true;
+
+  await axiosUrl
+  .get(url)
+  .then(() => {
+    isLoading.value = false;
+    location.reload();
+  })
+  .catch((error) => {
+    isLoading.value = false;
+    swalErrorHandle(error);
+  });
+};
+
+const onSubmitWallet = async () => {
+  let url = "members/wallet/create";
+
+  close("wallet-modal");
+  modalForm.membership_id = membership_id.value;
+  isLoading.value = true;
+
+  await axiosUrl
+  .post(url, payWalletData)
+  .then(() => {
+    isLoading.value = false;
+    location.reload();
+  })
+  .catch((error) => {
+    isLoading.value = false;
+    swalErrorHandle(error);
+  });
 };
 
 const onSubmit = async (type, id) => {
@@ -709,11 +933,22 @@ const getMember = async () => {
   isLoading.value = true;
 
   await axiosUrl
-    .get("/members/" + membership_id.value)
+    .get("/members/view?member=" + membership_id.value)
     .then((response) => {
+      if (response.data.error) {
+        Swal.fire({
+            title: "Error!",
+            text: response.data.error,
+            icon: "error",
+            confirmButtonText: 'OK'
+        }).then(() => {
+            router.push({ path: "/members" });
+        });
+      }
       member.value = response.data.data[0].member;
       additional.value = response.data.data[0].additional;
-      wallet.value = response.data.data[0].wallet;
+      walletBalance.value = response.data.data[0].walletBalance;
+      walletAccount.value = response.data.data[0].walletAccount;
       totalDebt.value = response.data.data[0].totalDebt;
       payments.value = response.data.data[0].payments;
       debts.value = response.data.data[0].debts;
@@ -728,7 +963,7 @@ const getMember = async () => {
 
 onMounted(() => {
   try {
-    membership_id.value = route.params.membershipID;
+    membership_id.value = route.query.id;
     getMember();
     getChannel();
     getBanks();
@@ -754,7 +989,7 @@ onMounted(() => {
 @media only screen and (min-width: 720px) {
   .modal {
     width: 600px !important;
-    height: 300px !important;
+    /* height: 300px !important; */
   }
 }
 </style>

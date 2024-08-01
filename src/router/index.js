@@ -42,8 +42,15 @@ const routes = [
 				component: () =>
 					import("@/views/private/pages/members/Members.vue"),
 			},
+			// {
+			// 	path: "/members/view/:membershipID",
+			// 	name: "MemberView",
+			// 	component: () =>
+			// 		import("@/views/private/pages/members/MemberView.vue"),
+			// },
+
 			{
-				path: "/members/view/:membershipID",
+				path: "/members/view",
 				name: "MemberView",
 				component: () =>
 					import("@/views/private/pages/members/MemberView.vue"),
@@ -92,9 +99,15 @@ const routes = [
 			},
 			{
 				path: "/payment/history",
-				name: "PaymentHistory",
+				name: "PaymentsHistory",
 				component: () =>
 					import("@/views/private/pages/payment/History.vue"),
+			},
+			{
+				path: "/wallet",
+				name: "Wallet",
+				component: () =>
+					import("@/views/private/pages/payment/Wallet.vue"),
 			},
 			{
 				path: "/admins",
@@ -145,12 +158,12 @@ const routes = [
 					),
 			},
 
-			// {
-			// 	path: "/bars/request",
-			// 	name: "Bars",
-			// 	component: () =>
-			// 		import("@/views/private/pages/bars/BarRequest.vue"),
-			// },
+			{
+				path: "/bars/requests/:request_code",
+				name: "Bar Request",
+				component: () =>
+					import("@/views/private/pages/bars/BarRequestProcess.vue"),
+			},
 
 			{
 				path: "/bars/:bar_code",
