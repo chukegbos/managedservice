@@ -415,11 +415,7 @@
 
             <tab-content title="Member Sections" icon="fa fa-check">
               <div class="row">
-                <div
-                  class="col-md-3"
-                  v-for="section in sections"
-                  :key="section.id"
-                >
+                <div class="col-md-3" v-for="section in sections" :key="section.id">
                   <div class="m-1">
                     <input
                       type="checkbox"
@@ -676,7 +672,8 @@ const getMember = async (id) => {
   isLoading2.value = true;
 
   await axiosUrl
-    .get("/members/" + id)
+    .get("/members/view?member=" + id)
+    // .get("/members/" + id)
     .then((response) => {
       form.value = response.data.data[0].member;
       form.value["kin_address"] = response.data.data[0].additional.kin_address;
