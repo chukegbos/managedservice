@@ -104,19 +104,30 @@
                 <span>
                   <b>Type of product:</b>
                   <span v-if="slotProps.data.type == 1"> Monthly </span>
-                  <span v-else-if="slotProps.data.type == 2"> Every 3 Months </span>
-                  <span v-else-if="slotProps.data.type == 3"> Every 4 Months </span>
-                  <span v-else-if="slotProps.data.type == 4"> Every 6 Months </span>
+                  <span v-else-if="slotProps.data.type == 2">
+                    Every 3 Months
+                  </span>
+                  <span v-else-if="slotProps.data.type == 3">
+                    Every 4 Months
+                  </span>
+                  <span v-else-if="slotProps.data.type == 4">
+                    Every 6 Months
+                  </span>
                   <span v-else-if="slotProps.data.type == 5"> Annualy </span>
                   <span v-else-if="slotProps.data.type == 5"> Biannualy </span>
                   <span v-else> One Off </span>
                 </span>
-                <br>
+                <br />
 
                 <span>
-                  <b v-if="slotProps.data.reoccuring_day == 1">Reoccurring Day: {{ slotProps.data.reoccuring_day  }}</b>
+                  <b v-if="slotProps.data.reoccuring_day == 1"
+                    >Reoccurring Day: {{ slotProps.data.reoccuring_day }}</b
+                  >
                   <b v-else-if="slotProps.data.type == 0"></b>
-                  <b v-else>Next Due Date:</b> <span v-if="slotProps.data.next_date">{{ formatDate(slotProps.data.next_date)  }}</span>
+                  <b v-else>Next Due Date:</b>
+                  <span v-if="slotProps.data.next_date">{{
+                    formatDate(slotProps.data.next_date)
+                  }}</span>
                 </span>
               </template>
             </Column>
@@ -217,7 +228,10 @@
                 <option value="6">Biannualy</option>
               </select>
             </div>
-            <div class="col-12 col-lg-6 mb-3" v-if="productData.type === '1' || productData.type === 1">
+            <div
+              class="col-12 col-lg-6 mb-3"
+              v-if="productData.type === '1' || productData.type === 1"
+            >
               <label class="col-form-label fs-6">Recurring Day</label>
               <input
                 class="form-control"
@@ -229,18 +243,34 @@
 
             <div class="col-12 col-lg-12 mb-3">
               <label class="col-form-label fs-6">Select Member Types</label>
-              <div style="border: 1px solid grey; height: 15em; overflow-y: auto; white-space: nowrap; padding:5px">
-                  <div class="c-inputs-stacked" v-for="member_type in types" :key="member_type.id">
-
-                  
-                      <div class="m-1">
-                          <input type="checkbox" v-model="productData.member_type" :value="member_type.id" number> {{ member_type.title }}
-                      </div>
+              <div
+                style="
+                  border: 1px solid grey;
+                  height: 15em;
+                  overflow-y: auto;
+                  white-space: nowrap;
+                  padding: 5px;
+                "
+              >
+                <div
+                  class="c-inputs-stacked"
+                  v-for="member_type in types"
+                  :key="member_type.id"
+                >
+                  <div class="m-1">
+                    <input
+                      type="checkbox"
+                      v-model="productData.member_type"
+                      :value="member_type.id"
+                      number
+                    />
+                    {{ member_type.title }}
                   </div>
+                </div>
               </div>
             </div>
           </div>
-       
+
           <div class="mt-1">
             <button class="btn btn-primary account-btn w-100" type="submit">
               Submit
@@ -275,15 +305,38 @@
               </option>
             </select>
           </div>
-
-          <div class="mt-1">
-            <button class="btn btn-primary account-btn w-100" type="submit">
-              Submit
-            </button>
-          </div>
+          <button class="btn btn-primary account-btn w-100" type="submit">
+            Submit
+          </button>
         </form>
       </ModalContent>
     </Modal>
+
+    <ModalComp
+      :isToggled="isToggled"
+      :title="modalParams.title"
+      @close="isToggled = false"
+    >
+      <form @submit.prevent="onSingleDebit()">
+        <div class="form-group mb-3">
+          <label class="col-form-label fs-6">Select Member</label>
+          <Dropdown
+            v-model="singleDebit['membership_id']"
+            :options="members"
+            filter
+            editable
+            optionLabel="display_name"
+            optionValue="membership_id"
+            placeholder="Select Fund Name"
+            class="w-100"
+          />
+        </div>
+
+        <button type="submit" class="btn btn-primary account-btn w-100">
+          Submit
+        </button>
+      </form>
+    </ModalComp>
   </div>
 </template>
 
@@ -311,6 +364,7 @@ const selected = ref([]);
 const selectAll = ref("");
 const actionValue = ref([]);
 const currentEditID = ref();
+const isToggled = ref(false);
 const addVisible = ref(false);
 const productData = reactive({
   payment_name: "",
@@ -378,11 +432,11 @@ const openModal = (type, data) => {
     currentEditID.value = data.id;
 
     var selectedType = [];
-      data.types.forEach(function (ty) {
-          selectedType.push(ty.pivot.member_type_id);
-      });
-      console.log(selectedType)
-      productData.member_type = selectedType;
+    data.types.forEach(function (ty) {
+      selectedType.push(ty.pivot.member_type_id);
+    });
+    console.log(selectedType);
+    productData.member_type = selectedType;
   }
 
   open("product-modal");
@@ -391,7 +445,8 @@ const openModal = (type, data) => {
 const individualDebit = (data) => {
   modalParams.title = "Single Debit";
   singleDebit.product_id = data.product_id;
-  open("singleDebit");
+  // open("singleDebit");
+  isToggled.value = true;
 };
 
 const groupDebit = async (data) => {
@@ -450,6 +505,16 @@ const getMembers = async () => {
     .get("/payload/members")
     .then((response) => {
       members.value = response.data.data;
+      if (Array.isArray(members.value) && members.value.length > 0) {
+        console.log("in")
+        for (let i = 0; i < members.value.length; i++) {
+          members.value[i][
+            "display_name"
+          ] = `${members.value[i]?.["first_name"]} ${members.value[i]?.["last_name"]} (${members.value[i]?.["membership_id"]})`;
+        }
+      }
+
+      console.log(members.value)
     })
     .catch(() => {});
 };
