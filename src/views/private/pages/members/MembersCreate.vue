@@ -1,6 +1,6 @@
 <template>
   <div class="content-wrapper">
-    <loading :active="isLoading && isLoading2" />
+    <loading :active="isLoading || isLoading2" />
 
     <div class="container">
       <div class="d-flex justify-content-between align-items-center">
@@ -55,64 +55,64 @@
 
                 <div class="col-md-4 form-group mb-3">
                   <label>Admission Date</label>
-                  <input
-                    v-model="form.entrance_date"
-                    type="date"
-                    required
-                    class="form-control"
-                  />
+                  <Calendar v-model="form.entrance_date" />
                 </div>
 
                 <div class="col-md-4 form-group mb-3">
-                  <label>Member's Types</label>
-                  <select
-                    v-model="form.member_type"
-                    class="form-control"
-                    required
-                  >
-                    <option value="null">-- Select Type--</option>
-                    <option
-                      v-for="option in types"
-                      :value="option.id"
-                      :key="option.id"
-                    >
-                      {{ option.title }}
-                    </option>
-                  </select>
-                </div>
-
-                <div class="col-md-3">
-                  <div class="form-group mb-3">
-                    <label>Photo Image</label>
-                    <input
-                      type="file"
-                      @change="uploadImage"
-                      accept="image/*"
-                      name="image"
-                      class="form-control"
+                  <label
+                    >Member's Types
+                    <MiniSpinner v-if="typesLoader" />
+                  </label>
+                  <div>
+                    <Dropdown
+                      class="w-100"
+                      v-model="form.member_type"
+                      optionLabel="title"
+                      optionValue="id"
+                      :options="types"
+                      placeholder=""
                     />
                   </div>
                 </div>
 
                 <div class="col-md-3 form-group mb-3">
+                  <label
+                    >Photo Image
+                    <a
+                      v-if="form.image && route.query.edit === 'true'"
+                      :href="form.image"
+                      target="_blank"
+                      class="link-primary link-offset-2 link-underline-opacity-25 link-underline-opacity-100-hover"
+                      style="font-size: 14px"
+                      >Click</a
+                    ></label
+                  >
+                  <input
+                    type="file"
+                    @change="uploadImage"
+                    accept="image/*"
+                    name="image"
+                    class="form-control"
+                  />
+                </div>
+
+                <div class="col-md-3 form-group mb-3">
                   <label>Date of Birth</label>
-                  <input v-model="form.dob" type="date" class="form-control" />
+                  <Calendar v-model="form.dob" />
                 </div>
 
                 <div class="col-md-3">
-                  <b-form-group class="">
-                    <label>Gender</label>
-                    <select v-model="form.gender" class="form-control" required>
-                      <option value="null">-- Select Type--</option>
-                      <option
-                        v-for="option in gender"
-                        :value="option.value"
-                        :key="option.value"
-                      >
-                        {{ option.text }}
-                      </option>
-                    </select>
-                  </b-form-group>
+                  <label>Gender</label>
+                  <div>
+                    <Dropdown
+                      class="w-100"
+                      v-model="form.gender"
+                      optionLabel="text"
+                      optionValue="value"
+                      :options="gender"
+                      placeholder=""
+                    />
+                  </div>
                 </div>
 
                 <div class="col-md-3 form-group mb-3">
@@ -128,57 +128,64 @@
                 <div class="col-md-3 form-group mb-3">
                   <label>Phone Number(Home)</label>
                   <input
-                    v-model="form.phone_1"
-                    type="tel"
-                    required
                     class="form-control"
+                    type="text"
+                    name="phone_1"
+                    v-model="form.phone_1"
+                    maxlength="11"
+                    @input="handleInput($error)"
+                    placeholder=""
                   />
                 </div>
 
                 <div class="col-md-3 form-group mb-3">
                   <label>Phone Number (Alt)</label>
                   <input
-                    v-model="form.phone_2"
-                    type="tel"
                     class="form-control"
+                    type="text"
+                    name="phone_2"
+                    v-model="form.phone_2"
+                    maxlength="11"
+                    @input="handleInput2($error)"
+                    placeholder=""
                   />
                 </div>
 
                 <div class="col-md-3">
-                  <b-form-group class="">
-                    <label>State of Origin</label>
-                    <select
+                  <label
+                    >State of Origin
+                    <MiniSpinner v-if="inputLoader3" />
+                  </label>
+                  <div>
+                    <Dropdown
+                      @change="onChange(form.state_of_origin)"
+                      class="w-100"
                       v-model="form.state_of_origin"
-                      class="form-control"
-                      @change="onChange($event)"
-                      required
-                    >
-                      <option value="null">-- Select State --</option>
-                      <option
-                        v-for="option in states"
-                        :value="option.id"
-                        :key="option.id"
-                      >
-                        {{ option.title }}
-                      </option>
-                    </select>
-                  </b-form-group>
+                      optionLabel="title"
+                      optionValue="id"
+                      :options="states"
+                      :disabled="inputLoader3 || states.length === 0"
+                      placeholder=""
+                    />
+                  </div>
                 </div>
 
                 <div class="col-md-3">
-                  <b-form-group class="">
-                    <label>LGA of Origin</label>
-                    <select v-model="form.lga" class="form-control" required>
-                      <option value="null">-- Select LGA --</option>
-                      <option
-                        v-for="option in lgas"
-                        :value="option.id"
-                        :key="option.id"
-                      >
-                        {{ option.name }}
-                      </option>
-                    </select>
-                  </b-form-group>
+                  <label
+                    >LGA of Origin
+                    <MiniSpinner v-if="inputLoader1" />
+                  </label>
+                  <div>
+                    <Dropdown
+                      class="w-100"
+                      v-model="form.lgas"
+                      optionLabel="name"
+                      optionValue="id"
+                      :options="lgas"
+                      :disabled="inputLoader1 || lgas.length === 0"
+                      placeholder=""
+                    />
+                  </div>
                 </div>
 
                 <div class="col-md-3 form-group mb-3">
@@ -204,24 +211,22 @@
                 </div>
 
                 <div class="col-md-3">
-                  <b-form-group class="">
-                    <label>State of Residence</label>
-                    <select
+                  <label>
+                    State of Residence
+                    <MiniSpinner v-if="inputLoader3" />
+                  </label>
+                  <div>
+                    <Dropdown
+                      @change="onChangeState(form.state)"
+                      class="w-100"
                       v-model="form.state"
-                      class="form-control"
-                      required
-                      @change="onChangeState($event)"
-                    >
-                      <option value="null">-- Select State --</option>
-                      <option
-                        v-for="option in states"
-                        :value="option.id"
-                        :key="option.id"
-                      >
-                        {{ option.title }}
-                      </option>
-                    </select>
-                  </b-form-group>
+                      optionLabel="title"
+                      optionValue="id"
+                      :options="states"
+                      :disabled="inputLoader3 || states.length === 0"
+                      placeholder=""
+                    />
+                  </div>
                 </div>
 
                 <div class="col-md-3 form-group mb-3">
@@ -234,17 +239,19 @@
                   />
                 </div>
 
-                <!--<div class="col-md-3">
-                                <b-form-group class="">
-                                    <label>City of Residence</label>
-                                    <select v-model="form.city" class="form-control" required>
-                                    <option value=null> -- Select LGA -- </option>
-                                    <option v-for="option in lgah" :value="option.id" :key="option.id">
-                                        {{ option.name }}
-                                    </option>
-                                    </select>
-                                </b-form-group>
-                            </div>-->
+                <!-- <div class="col-md-3">
+                  <label>City of Residence</label>
+                  <select v-model="form.city" class="form-control" required>
+                    <option value="null">-- Select LGA --</option>
+                    <option
+                      v-for="option in lgah"
+                      :value="option.id"
+                      :key="option.id"
+                    >
+                      {{ option.name }}
+                    </option>
+                  </select>
+                </div> -->
 
                 <div class="col-md-6 form-group mb-3">
                   <label>Residential Address</label>
@@ -269,153 +276,176 @@
               title="Relationship Details"
               icon="fas fa-user-friends"
             >
-              <b-card no-body>
-                <b-card-body>
-                  <div class="row">
-                    <div class="col-md-6 form-group mb-3">
-                      <label>Marital Status</label>
-                      <select
-                        v-model="form.marital_status"
-                        class="form-control"
-                        required
-                      >
-                        <option value="null">-- Select --</option>
-                        <option
-                          v-for="option in marital_status"
-                          :value="option.value"
-                          :key="option.value"
-                        >
-                          {{ option.text }}
-                        </option>
-                      </select>
-                    </div>
-
-                    <div class="col-md-6 form-group mb-3">
-                      <label>Spouse Name</label>
-                      <input
-                        v-model="form.spouse_name"
-                        type="text"
-                        class="form-control"
-                      />
-                    </div>
-
-                    <div class="col-md-12 form-group mb-3">
-                      <label>Children (If any)</label>
-                      <textarea
-                        v-model="form.children"
-                        class="form-control"
-                      ></textarea>
-                    </div>
-
-                    <div class="col-md-6 form-group mb-3">
-                      <label>Next of Kin {{ form.kin_name }}</label>
-                      <input
-                        v-model="form.kin_name"
-                        type="text"
-                        class="form-control"
-                        required
-                      />
-                    </div>
-
-                    <div class="col-md-6 form-group mb-3">
-                      <label>Next of Kin Relationship</label>
-                      <input
-                        v-model="form.kin_relationship"
-                        type="text"
-                        class="form-control"
-                        required
-                      />
-                    </div>
-
-                    <div class="col-md-6 form-group mb-3">
-                      <label>KIN Phone Number 1</label>
-                      <input
-                        v-model="form.kin_phone_1"
-                        type="tel"
-                        required
-                        class="form-control"
-                      />
-                    </div>
-
-                    <div class="col-md-6 form-group mb-3">
-                      <label>KIN Phone Number (Alt)</label>
-                      <input
-                        v-model="form.kin_phone_2"
-                        type="tel"
-                        class="form-control"
-                      />
-                    </div>
-
-                    <div class="col-md-12 form-group mb-3">
-                      <label>Next of Kin Address</label>
-                      <textarea
-                        v-model="form.kin_address"
-                        required
-                        class="form-control"
-                      ></textarea>
-                    </div>
+              <div class="row">
+                <div class="col-md-6 form-group mb-3">
+                  <label>Marital Status</label>
+                  <div>
+                    <Dropdown
+                      class="w-100"
+                      v-model="form.marital_status"
+                      optionLabel="text"
+                      optionValue="value"
+                      :options="marital_status"
+                      :disabled="marital_status.length === 0"
+                      placeholder=""
+                    />
                   </div>
-                </b-card-body>
-              </b-card>
+                </div>
+
+                <div class="col-md-6 form-group mb-3">
+                  <label>Spouse Name</label>
+                  <input
+                    v-model="form.spouse_name"
+                    type="text"
+                    class="form-control"
+                  />
+                </div>
+
+                <div class="col-md-12 form-group mb-3">
+                  <label>Children (If any)</label>
+                  <textarea
+                    v-model="form.children"
+                    class="form-control"
+                  ></textarea>
+                </div>
+
+                <div class="col-md-6 form-group mb-3">
+                  <label>Next of Kin {{ form.kin_name }}</label>
+                  <input
+                    v-model="form.kin_name"
+                    type="text"
+                    class="form-control"
+                    required
+                  />
+                </div>
+
+                <div class="col-md-6 form-group mb-3">
+                  <label>Next of Kin Relationship</label>
+                  <input
+                    v-model="form.kin_relationship"
+                    type="text"
+                    class="form-control"
+                    required
+                  />
+                </div>
+
+                <div class="col-md-6 form-group mb-3">
+                  <label>KIN Phone Number 1</label>
+                  <input
+                    class="form-control"
+                    type="text"
+                    name="kin_phone_1"
+                    v-model="form.kin_phone_1"
+                    maxlength="11"
+                    @input="handleInput3($error)"
+                    placeholder=""
+                  />
+                </div>
+
+                <div class="col-md-6 form-group mb-3">
+                  <label>KIN Phone Number (Alt)</label>
+                  <input
+                    class="form-control"
+                    type="text"
+                    name="kin_phone_2"
+                    v-model="form.kin_phone_2"
+                    maxlength="11"
+                    @input="handleInput4($error)"
+                    placeholder=""
+                  />
+                </div>
+
+                <div class="col-md-12 form-group mb-3">
+                  <label>Next of Kin Address</label>
+                  <textarea
+                    v-model="form.kin_address"
+                    required
+                    class="form-control"
+                  ></textarea>
+                </div>
+              </div>
             </tab-content>
 
             <tab-content
               title="Additional Information"
               icon="fas fa-people-carry"
             >
-              <b-card no-body>
-                <b-card-body>
-                  <div class="row">
-                    <div class="col-md-6 form-group mb-3">
-                      <label>First Sponsor</label>
-                      <input
-                        v-model="form.sponsor_1"
-                        type="text"
-                        class="form-control"
-                      />
-                    </div>
+              <div class="row">
+                <div class="col-md-6 form-group mb-3">
+                  <label>First Sponsor</label>
+                  <input
+                    v-model="form.sponsor_1"
+                    type="text"
+                    class="form-control"
+                  />
+                </div>
 
-                    <div class="col-md-6 form-group mb-3">
-                      <label>Second Sponsor</label>
-                      <input
-                        v-model="form.sponsor_2"
-                        type="text"
-                        class="form-control"
-                      />
-                    </div>
+                <div class="col-md-6 form-group mb-3">
+                  <label>Second Sponsor</label>
+                  <input
+                    v-model="form.sponsor_2"
+                    type="text"
+                    class="form-control"
+                  />
+                </div>
 
-                    <!--<div class="col-md-6 form-group mb-3">
-                                        <label>Beneficiary Name</label>
-                                        <input v-model="form.beneficiary_name" type="text" required class="form-control">
-                                    </div>
+                <!-- <div class="col-md-6 form-group mb-3">
+                  <label>Beneficiary Name</label>
+                  <input
+                    v-model="form.beneficiary_name"
+                    type="text"
+                    required
+                    class="form-control"
+                  />
+                </div>
 
-                                    <div class="col-md-6 form-group mb-3">
-                                        <label>Beneficiary Relationship</label>
-                                        <input v-model="form.beneficiary_relationship" type="text" required class="form-control">
-                                    </div>
+                <div class="col-md-6 form-group mb-3">
+                  <label>Beneficiary Relationship</label>
+                  <input
+                    v-model="form.beneficiary_relationship"
+                    type="text"
+                    required
+                    class="form-control"
+                  />
+                </div>
 
-                                    <div class="col-md-6 form-group mb-3">
-                                        <label>Beneficiary Phone Number 1</label>
-                                        <input v-model="form.beneficiary_phone_1" type="tel" required  class="form-control">
-                                    </div>
+                <div class="col-md-6 form-group mb-3">
+                  <label>Beneficiary Phone Number 1</label>
+                  <input
+                    v-model="form.beneficiary_phone_1"
+                    type="tel"
+                    required
+                    class="form-control"
+                  />
+                </div>
 
-                                    <div class="col-md-6 form-group mb-3">
-                                        <label>Beneficiary Phone Number (Alt)</label>
-                                        <input v-model="form.beneficiary_phone_2" type="tel" class="form-control">
-                                    </div>
+                <div class="col-md-6 form-group mb-3">
+                  <label>Beneficiary Phone Number (Alt)</label>
+                  <input
+                    v-model="form.beneficiary_phone_2"
+                    type="tel"
+                    class="form-control"
+                  />
+                </div>
 
-                                    <div class="col-md-12 form-group mb-3">
-                                        <label>Beneficiary Address</label>
-                                        <textarea v-model="form.beneficiary_address" required class="form-control"></textarea>
-                                    </div>-->
-                  </div>
-                </b-card-body>
-              </b-card>
+                <div class="col-md-12 form-group mb-3">
+                  <label>Beneficiary Address</label>
+                  <textarea
+                    v-model="form.beneficiary_address"
+                    required
+                    class="form-control"
+                  ></textarea>
+                </div> -->
+              </div>
             </tab-content>
 
             <tab-content title="Member Sections" icon="fa fa-check">
               <div class="row">
-                <div class="col-md-3" v-for="section in sections" :key="section.id">
+                <div
+                  class="col-md-3"
+                  v-for="section in sections"
+                  :key="section.id"
+                >
                   <div class="m-1">
                     <input
                       type="checkbox"
@@ -454,7 +484,7 @@ import { ref, reactive, onMounted } from "vue";
 import { FilterMatchMode } from "primevue/api";
 import { useAuthStore } from "@/store/authStore";
 import {
-  formatDate,
+  formatDate2,
   formatPrice,
   swalErrorHandle,
   swalSuccessHandle,
@@ -462,11 +492,16 @@ import {
 import Swal from "sweetalert2";
 // import router from "@/router";
 import { useRoute, useRouter } from "vue-router";
+import MiniSpinner from "@/components/MiniSpinner.vue";
 
 const route = useRoute();
 const router = useRouter();
 const isLoading = ref(false);
 const isLoading2 = ref(false);
+const inputLoader1 = ref(false);
+const inputLoader2 = ref(false);
+const inputLoader3 = ref(false);
+const typesLoader = ref(false);
 const editMode = ref(false);
 const authStore = useAuthStore();
 const loggedInUser = authStore.loggedInUser;
@@ -479,18 +514,19 @@ const selectAll = ref("");
 const currentEditID = ref();
 const lgas = ref([]); // Define reactive reference for lgas
 const lgah = ref([]);
+
 const filters = ref({
   global: { value: null, matchMode: FilterMatchMode.CONTAINS },
 });
 
 const gender = ref([
-  { value: null, text: "Select Gender" },
+  // { value: null, text: "Select Gender" },
   { value: "male", text: "Male" },
   { value: "female", text: "Female" },
 ]);
 
 const marital_status = ref([
-  { value: null, text: "--Select--" },
+  // { value: null, text: "--Select--" },
   { value: "Single", text: "Single" },
   { value: "Married", text: "Married" },
   { value: "Widow", text: "Widow" },
@@ -559,20 +595,38 @@ const form = ref({
   card_number: null,
 });
 
-const toggleAll = () => {
-  if (selectAll.value)
-    for (let i = 0; i < items.value.length; i++)
-      selected.value.push(items.value[i].id);
-  else selected.value = [];
+const handleInput = (event) => {
+  // Remove non-digit characters
+  form.value.phone_1 = event.target.value.replace(/\D/g, "").slice(0, 11);
+};
+
+const handleInput2 = (event) => {
+  // Remove non-digit characters
+  form.value.phone_2 = event.target.value.replace(/\D/g, "").slice(0, 11);
+};
+
+const handleInput3 = (event) => {
+  // Remove non-digit characters
+  form.value.kin_phone_1 = event.target.value.replace(/\D/g, "").slice(0, 11);
+};
+
+const handleInput4 = (event) => {
+  // Remove non-digit characters
+  form.value.kin_phone_2 = event.target.value.replace(/\D/g, "").slice(0, 11);
 };
 
 const getType = async () => {
+  typesLoader.value = true;
   await axiosUrl
     .get("/members/types/all")
     .then((response) => {
       types.value = response.data.data;
+      typesLoader.value = false;
     })
-    .catch((error) => {});
+    .catch((error) => {
+      swalErrorHandle(error);
+      typesLoader.value = false;
+    });
 };
 
 const getSection = async () => {
@@ -581,30 +635,54 @@ const getSection = async () => {
     .then((response) => {
       sections.value = response.data.data;
     })
-    .catch((error) => {});
+    .catch((error) => {
+      swalErrorHandle(error);
+    });
 };
 
 const getStates = async () => {
+  inputLoader3.value = true;
+
   await axiosUrl
     .get("/states")
     .then((response) => {
       states.value = response.data;
+      inputLoader3.value = false;
     })
-    .catch((error) => {});
+    .catch((error) => {
+      inputLoader3.value = false;
+      swalErrorHandle(error);
+    });
 };
 
-const onChange = async (event) => {
-  let id = event.target.value;
-  await axiosUrl.get("/lga/" + id).then(({ data }) => {
-    lgas.value = data; // Update lgas using ref
-  });
+const onChange = async (id) => {
+  if (id === null || id === undefined) return;
+  inputLoader1.value = true;
+  await axiosUrl
+    .get("/lga/" + id)
+    .then(({ data }) => {
+      lgas.value = data; // Update lgas using ref
+      inputLoader1.value = false;
+    })
+    .catch((error) => {
+      inputLoader1.value = false;
+      swalErrorHandle(error);
+    });
 };
 
-const onChangeState = async (event) => {
-  let id = event.target.value;
-  await axiosUrl.get("/lga/" + id).then(({ data }) => {
-    lgah.value = data; // Update lgah using ref
-  });
+const onChangeState = async (id) => {
+  if (id === null || id === undefined) return;
+  inputLoader2.value = true;
+  await axiosUrl
+    .get("/lga/" + id)
+    .then(({ data }) => {
+      lgah.value = data; // Update lgah using ref
+      inputLoader2.value = false;
+    })
+    .catch((error) => {
+      inputLoader2.value = false;
+      swalErrorHandle(error);
+    });
 };
 
 const uploadImage = (e) => {
@@ -629,41 +707,38 @@ const createUser = async () => {
   // console.log(form.value)
   isLoading.value = true;
 
+  form.value["entrance_date"] = formatDate2(form.value["entrance_date"]);
+  form.value["dob"] = formatDate2(form.value["dob"]);
+
   if (route.query.edit === "true") {
     await axiosUrl
-      .post("members/edit/" + route.query.id, form.value)
+      .post("members/edit", form.value)
       .then((response) => {
         isLoading.value = false;
-        swalSuccessHandle("Member Created Successful.");
+        // swalSuccessHandle("Member Created Successful.");
         router.push({
-          path: "/members/view/" + response.data.data.membership_id,
+          path: "/members/view/",
+          query: { id: response.data.data.membership_id },
         });
       })
-      .catch(() => {
+      .catch((error) => {
         isLoading.value = false;
-        Swal.fire(
-          "Failed!",
-          "Ops, Something went wrong, try again. Likely that you need to fill all the inputs",
-          "warning"
-        );
+        swalErrorHandle(error);
       });
   } else {
     await axiosUrl
       .post("members", form.value)
       .then((response) => {
         isLoading.value = false;
-        swalSuccessHandle("Member Created Successful.");
+        // swalSuccessHandle("Member Created Successful.");
         router.push({
-          path: "/members/view/" + response.data.data.membership_id,
+          path: "/members/view/",
+          query: { id: response.data.data.membership_id },
         });
       })
-      .catch(() => {
+      .catch((error) => {
         isLoading.value = false;
-        Swal.fire(
-          "Failed!",
-          "Ops, Something went wrong, try again. Likely that you need to fill all the inputs",
-          "warning"
-        );
+        swalErrorHandle(error);
       });
   }
 };
@@ -675,46 +750,54 @@ const getMember = async (id) => {
     .get("/members/view?member=" + id)
     // .get("/members/" + id)
     .then((response) => {
-      form.value = response.data.data[0].member;
-      form.value["kin_address"] = response.data.data[0].additional.kin_address;
-      form.value["kin_name"] = response.data.data[0].additional.kin_name;
-      form.value["kin_phone_1"] = response.data.data[0].additional.kin_phone_1;
-      form.value["kin_phone_2"] = response.data.data[0].additional.kin_phone_2;
-      form.value["kin_relationship"] =
-        response.data.data[0].additional.kin_relationship;
-      form.value["sponsor_1"] = response.data.data[0].additional.sponsor_1;
-      form.value["sponsor_2"] = response.data.data[0].additional.sponsor_2;
+      let data = response.data.data[0];
+      form.value = data?.member;
 
-      onChange();
-      // additional.value = response.data.data[0].additional;
-      // wallet.value = response.data.data[0].wallet;
-      // totalDebt.value = response.data.data[0].totalDebt;
+      form.value["id"] = data?.member?.id;
+      form.value["kin_address"] = data?.additional?.kin_address;
+      form.value["kin_name"] = data?.additional?.kin_name;
+      form.value["kin_phone_1"] = data?.additional?.kin_phone_1;
+      form.value["kin_phone_2"] = data?.additional?.kin_phone_2;
+      form.value["kin_relationship"] = data?.additional?.kin_relationship;
+      form.value["sponsor_1"] = data?.additional?.sponsor_1;
+      form.value["sponsor_2"] = data?.additional?.sponsor_2;
+      form.value["sections"] = [];
 
-      // payments.value = response.data.data[0].payments;
-      // debts.value = response.data.data[0].debts;
+      if (typeof data?.member?.member_type === "string")
+        form.value["member_type"] = parseInt(data?.member?.member_type);
+
+      onChange(data?.member?.state_of_origin);
+
+      // additional.value = data?.additional;
+      // wallet.value = data?.wallet;
+      // totalDebt.value = data?.totalDebt;
+
+      // payments.value = data?.payments;
+      // debts.value = data?.debts;
       isLoading2.value = false;
     })
     .catch((error) => {
       isLoading2.value = false;
+      Swal.fire("Failed!", "Its not your fault, try again.", "warning");
     });
 };
 
 onMounted(() => {
-  try {
-    if (route.query.edit === "true") {
-      getMember(route.query.id);
-    }
-    isLoading.value = true;
-    getType();
-    getSection();
-    getStates();
-    // isLoading.value = false;
-  } catch (error) {
-    isLoading.value = false;
-    Swal.fire("Failed!", "Its not your fault, try again.", "warning");
+  if (route.query.edit === "true") {
+    getMember(route.query.id);
   }
+  getType();
+  getSection();
+  getStates();
 });
 </script>
 
-<style scoped>
+<style>
+.p-calendar {
+  width: 100% !important;
+}
+
+.p-inputtext {
+  padding: 6px 12px !important;
+}
 </style>

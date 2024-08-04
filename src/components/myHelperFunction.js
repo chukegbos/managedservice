@@ -1,6 +1,11 @@
 import moment from "moment";
 import Swal from "sweetalert2";
 
+export const formatDate2 = (value) => {
+	if (!isNaN(new Date(value))) return moment(value).format("YYYY-MM-DD");
+	else return "N/A";
+};
+
 export const formatDate = (value) => {
 	if (!isNaN(new Date(value))) return moment(value).format("MMMM Do YYYY");
 	// return moment(value).format("dddd, MMMM Do YYYY, h:mm:ss a");
