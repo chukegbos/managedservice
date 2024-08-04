@@ -10,9 +10,9 @@
           <b>Daily Sales: </b> <span v-html="nairaSign"></span>{{ formatPrice(totalDebt) }}
         </div>
       </div>
+
       <TabView>
-        <TabPanel header="Drinks">
-          
+        <TabPanel header="Drinks">  
           <div v-if="drinks.length > 0">
             <div class="row mb-3">
               <div class="col-md-6 mb-3">
@@ -84,21 +84,142 @@
           </div>
         </TabPanel>
 
-        <TabPanel header="Request">
-          <div class="d-flex justify-content-between align-items-center">
-            <div class="d-flex">
-              <div class="me-3">
-                <input
-                  v-model="filters['global'].value"
-                  placeholder="Keyword Search"
-                  class="form-control my-input"
-                />
+        <TabPanel header="My Request Pull">
+          <div class="mt-4">
+            <div v-if="myRequests.length > 0">
+              <div class="row mb-3">
+                <div class="col-md-6 mb-3">
+                  <h4>My Request to other bars</h4>
+                </div>
+                <div class="col-md-6 mb-3">
+                  <input v-model="filters['global'].value" placeholder="Drink Request" class="form-control"/>
+                </div>
+              </div>
+              <div>
+                <DataTable
+                  class="shadow text-center"
+                  v-model:filters="filters"
+                  :value="myRequests"
+                  :sortField="'request_date'"
+                  showGridlines
+                  paginator
+                  :rows="10"
+                  :rowsPerPageOptions="[5, 10, 20, 50]">
+                
+                  <Column field="req_code" header="Ref Code">
+                      <!-- <template #body="slotProps">
+                        <span class="text-info text-center">{{ slotProps.data.req_code }}</span>
+                      </template> -->
+                  </Column>
+
+                  <Column header="Creator">
+                      <template #body="slotProps">
+                          <span class="text-dark">{{ slotProps.data.creator }}</span><br>
+                          {{ formatDate(slotProps.data.created_at) }}
+                      </template>
+                  </Column>
+
+                  <Column field="statusApproved" header="Status"></Column>
+
+                  <Column header="Action">
+                      <template #body="slotProps">
+                        <button @click="onViewRequest(slotProps.data.req_code)" class="btn btn-primary">View</button>
+                      </template>
+                  </Column>
+                </DataTable>
+              </div>
+            </div>
+            <div v-else>
+              <div class="card card-body">
+                <div class="alert alert-warning" role="alert">
+                  <p class="text-center">No request found</p>
+                </div>
               </div>
             </div>
           </div>
+        </TabPanel>
 
+        <TabPanel header="My Request Push">
           <div class="mt-4">
-            
+            <div v-if="pullRequests.length > 0">
+              <div class="row mb-3">
+                <div class="col-md-6 mb-3">
+                  <h4>Other Bar's Requests</h4>
+                </div>
+                <div class="col-md-6 mb-3">
+                  <input v-model="filters['global'].value" placeholder="Drink Request" class="form-control"/>
+                </div>
+              </div>
+
+              <div>
+                <DataTable
+                  class="shadow text-center"
+                  v-model:filters="filters"
+                  :value="pullRequests"
+                  :sortField="'request_date'"
+                  showGridlines
+                  paginator
+                  :rows="10"
+                  :rowsPerPageOptions="[5, 10, 20, 50]">
+                  <Column field="req_code" header="Ref Code"></Column>
+
+                  <Column field="product" header="Product">
+                    <template #body="slotProps">
+                      <span class="text-info text-center">{{ slotProps.data.product }}</span><br>
+                      <span class="text-center">{{ slotProps.data.product_code }}</span>
+                    </template>
+                  </Column>
+
+                  <Column field="quantity" header="Quantity/Available">
+                    <template #body="slotProps">
+                      {{ slotProps.data.quantity }}/{{ slotProps.data.myItem.number }}
+                    </template>
+                  </Column>
+
+                  <Column field="from" header="Request From"></Column>
+
+                  <Column header="Creator">
+                      <template #body="slotProps">
+                          <span class="text-dark">{{ slotProps.data.creator }}</span><br>
+                          {{ formatDate(slotProps.data.created_at) }}
+                      </template>
+                  </Column>
+
+                  <Column header="Approved By">
+                      <template #body="slotProps">
+                          <span v-if="slotProps.data.approved === null" class="text-info text-center p-1">
+                              Pending <br>
+                              <button @click="onApprove(slotProps.data.id)" class="btn btn-primary btn-sm m-1">Approve</button>
+                              <button @click="onReject(slotProps.data.id)" class="btn btn-danger btn-sm">Remove</button>
+                          </span>
+                          <span v-else>
+                            <span class="text-dark">{{ slotProps.data.approved[0] }}</span><br>
+                            {{ formatDate(slotProps.data.approved[1]) }}
+                          </span>
+                      </template>
+                  </Column>
+
+                  <Column header="Accepted By">
+                      <template #body="slotProps">
+                          <span v-if="slotProps.data.accepted=== null" class="text-info">
+                              Pending
+                          </span>
+                          <span v-else>
+                          <span class="text-dark">{{ slotProps.data.accepted[0] }}</span><br>
+                            {{ formatDate(slotProps.data.accepted[1]) }}
+                          </span>
+                      </template>
+                  </Column>
+                </DataTable>
+              </div>
+            </div>
+            <div v-else>
+              <div class="card card-body">
+                <div class="alert alert-warning" role="alert">
+                  <p class="text-center">No request found</p>
+                </div>
+              </div>
+            </div>
           </div>
         </TabPanel>
       </TabView>
@@ -127,6 +248,8 @@
     const bar_code = ref();
     const bar = ref("");
     const request = ref(false);
+    const myRequests =ref([]);
+    const pullRequests =ref([]);
     const drinks = ref({});
     const selected = ref([]);
     const selectAll = ref("");
@@ -141,6 +264,12 @@
           selected.value.push(drinks.value[i].id);
       else selected.value = [];
     };
+
+    const onViewRequest = async (code) => {
+      router.push({
+        path: "/bars/requests/" + code,
+      });
+    }
 
     const onRequest = async () => {
       if(selected.value.length === 0){
@@ -179,6 +308,8 @@
         .then((response) => {
             bar.value = response.data.data.bar;
             drinks.value = response.data.data.drinks;
+            myRequests.value = response.data.data.myRequests;
+            pullRequests.value = response.data.data.pullRequests;
             isLoading.value = false;
           })
           .catch((error) => {
