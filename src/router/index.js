@@ -145,8 +145,17 @@ const routes = [
 			{
 				path: "/bars",
 				name: "Bars",
+				component: () => import("@/views/private/pages/bars/Bars.vue"),
+			},
+
+			//Supply Management
+			{
+				path: "/supply-management",
+				name: "SupplyManagement",
 				component: () =>
-					import("@/views/private/pages/bars/Bars.vue"),
+					import(
+						"@/views/private/pages/supplier management/SupplyManagement.vue"
+					),
 			},
 
 			{

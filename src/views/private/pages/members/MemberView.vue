@@ -13,8 +13,10 @@
           </h2>
         </div>
         <div class="col-md-6">
-          <b class="mr-3">Debt: </b> <span v-html="nairaSign"></span>{{ formatPrice(totalDebt) }} <br> 
-          <b class="mr-3">Wallet Balance: </b> <span v-html="nairaSign"></span>{{ formatPrice(walletBalance) }}
+          <b class="mr-3">Debt: </b> <span v-html="nairaSign"></span
+          >{{ formatPrice(totalDebt) }} <br />
+          <b class="mr-3">Wallet Balance: </b> <span v-html="nairaSign"></span
+          >{{ formatPrice(walletBalance) }}
         </div>
       </div>
       <TabView>
@@ -87,36 +89,34 @@
                     <th class="mr-2">Children:</th>
                     <td>{{ member.children }}</td>
                   </tr>
-                  <span v-if="additional">
-                    <tr>
-                      <th class="mr-2">Kin Name:</th>
-                      <td>{{ additional.kin_name }}</td>
-                    </tr>
-                    <tr>
-                      <th class="mr-2">Kin Address:</th>
-                      <td>{{ additional.kin_address }}</td>
-                    </tr>
-                    <tr>
-                      <th class="mr-2">Kin Phone 1:</th>
-                      <td>{{ additional.kin_phone_1 }}</td>
-                    </tr>
-                    <tr>
-                      <th class="mr-2">Kin Phone 2:</th>
-                      <td>{{ additional.kin_phone_2 }}</td>
-                    </tr>
-                    <tr>
-                      <th class="mr-2">Kin Relationship:</th>
-                      <td>{{ additional.kin_relationship }}</td>
-                    </tr>
-                    <tr>
-                      <th class="mr-2">Sponsor 1:</th>
-                      <td>{{ additional.sponsor_1 }}</td>
-                    </tr>
-                    <tr>
-                      <th class="mr-2">Sponsor 2:</th>
-                      <td>{{ additional.sponsor_2 }}</td>
-                    </tr>
-                  </span>
+                  <tr v-if="additional">
+                    <th class="mr-2">Kin Name:</th>
+                    <td>{{ additional.kin_name }}</td>
+                  </tr>
+                  <tr v-if="additional">
+                    <th class="mr-2">Kin Address:</th>
+                    <td>{{ additional.kin_address }}</td>
+                  </tr>
+                  <tr v-if="additional">
+                    <th class="mr-2">Kin Phone 1:</th>
+                    <td>{{ additional.kin_phone_1 }}</td>
+                  </tr>
+                  <tr v-if="additional">
+                    <th class="mr-2">Kin Phone 2:</th>
+                    <td>{{ additional.kin_phone_2 }}</td>
+                  </tr>
+                  <tr v-if="additional">
+                    <th class="mr-2">Kin Relationship:</th>
+                    <td>{{ additional.kin_relationship }}</td>
+                  </tr>
+                  <tr v-if="additional">
+                    <th class="mr-2">Sponsor 1:</th>
+                    <td>{{ additional.sponsor_1 }}</td>
+                  </tr>
+                  <tr v-if="additional">
+                    <th class="mr-2">Sponsor 2:</th>
+                    <td>{{ additional.sponsor_2 }}</td>
+                  </tr>
                 </table>
               </div>
             </div>
@@ -149,9 +149,9 @@
                 :rowsPerPageOptions="[5, 10, 20, 50]"
                 tableStyle="min-width: 50rem"
               >
-              <Column header="Debt ID" style="width: 10%">
+                <Column header="Debt ID" style="width: 10%">
                   <template #body="slotProps">
-                    #{{ slotProps.data.trans_id}}
+                    #{{ slotProps.data.trans_id }}
                   </template>
                 </Column>
                 <Column header="Product Name" style="width: 20%">
@@ -249,11 +249,11 @@
                 :rowsPerPageOptions="[5, 10, 20, 50]"
                 tableStyle="min-width: 50rem"
               >
-              <Column header="Payment ID" style="width: 10%">
-              <template #body="slotProps">
-                #{{ slotProps.data.trans_id}}
-              </template>
-            </Column>
+                <Column header="Payment ID" style="width: 10%">
+                  <template #body="slotProps">
+                    #{{ slotProps.data.trans_id }}
+                  </template>
+                </Column>
                 <Column header="Product Name" style="width: 20%">
                   <template #body="slotProps">
                     {{
@@ -342,12 +342,12 @@
               >
                 <Column header="Reference ID">
                   <template #body="slotProps">
-                    #{{ slotProps.data.ref_id}}
+                    #{{ slotProps.data.ref_id }}
                   </template>
                 </Column>
                 <Column header="Type">
                   <template #body="slotProps">
-                    {{ slotProps.data.type}}
+                    {{ slotProps.data.type }}
                   </template>
                 </Column>
 
@@ -359,42 +359,47 @@
 
                 <Column header="Payment Method" style="width: 20%">
                   <template #body="slotProps">
-                    {{ slotProps.data.channel }}<br /> {{ slotProps.data.process }}
+                    {{ slotProps.data.channel }}<br />
+                    {{ slotProps.data.process }}
                   </template>
                 </Column>
 
                 <Column header="Status">
                   <template #body="slotProps">
-                    <span v-if="slotProps.data.payment_type==0">
-                      -
-                    </span>
+                    <span v-if="slotProps.data.payment_type == 0"> - </span>
                     <span v-else>
-                      <span v-if="slotProps.data.status==0">
-                        {{ slotProps.data.approval_status }}<br>
-                        <button @click="approve(slotProps.data.id)" class="btn btn-warning btn-sm">Approve</button>
+                      <span v-if="slotProps.data.status == 0">
+                        {{ slotProps.data.approval_status }}<br />
+                        <button
+                          @click="approve(slotProps.data.id)"
+                          class="btn btn-warning btn-sm"
+                        >
+                          Approve
+                        </button>
                       </span>
 
-                      <span v-else>
-                        Approved
-                      </span>
+                      <span v-else> Approved </span>
                     </span>
                   </template>
                 </Column>
 
                 <Column header="Created By">
                   <template #body="slotProps">
-                    {{ slotProps.data.creator }}<br>{{ formatDate(slotProps.data.created_at) }}
+                    {{ slotProps.data.creator }}<br />{{
+                      formatDate(slotProps.data.created_at)
+                    }}
                   </template>
                 </Column>
 
                 <Column header="Updated By">
                   <template #body="slotProps">
                     <span v-if="slotProps.data.updater">
-                      {{ slotProps.data.updater }}<br>{{ formatDate(slotProps.data.updated_at) }}
+                      {{ slotProps.data.updater }}<br />{{
+                        formatDate(slotProps.data.updated_at)
+                      }}
                     </span>
                   </template>
                 </Column>
-
               </DataTable>
             </div>
 
@@ -417,9 +422,8 @@
                   placeholder="Keyword Search"
                   class="form-control my-input"
                 />
-                
               </div>
-              <button @click="openModal()" class="btn btn-primary mb-3 ">
+              <button @click="openModal()" class="btn btn-primary mb-3">
                 <i class="fa-solid fa-plus"></i> Add Card
               </button>
             </div>
@@ -437,35 +441,44 @@
                 :rowsPerPageOptions="[5, 10, 20, 50]"
                 tableStyle="min-width: 50rem"
               >
-                <Column header="Name" style="width: 20%">
-                  <template #body="slotProps">
-                    {{ slotProps.data.name }}
+                <Column
+                  field="name"
+                  :sortable="true"
+                  header="Name"
+                  style="width: 30%"
+                >
+                  <template #body="{ data }">
+                    {{ data["name"] ? data["name"] : "N/A" }}
                   </template>
                 </Column>
-                <Column header="Relationship" style="width: 20%">
-                  <template #body="slotProps">
-                    {{ slotProps.data.relationship }}
+                <Column
+                  field="relationship"
+                  :sortable="true"
+                  header="Relationship"
+                  style="width: 20%"
+                >
+                  <template #body="{ data }">
+                    {{ data["relationship"] ? data["relationship"] : "N/A" }}
                   </template>
                 </Column>
-                <Column header="Card Number" style="width: 20%">
-                  <template #body="slotProps">
-                    {{ slotProps.data.card_number }}
+                <Column
+                  field="card_number"
+                  :sortable="true"
+                  header="Card Number"
+                  style="width: 20%"
+                >
+                  <template #body="{ data }">
+                    {{ data["card_number"] ? data["card_number"] : "N/A" }}
                   </template>
                 </Column>
-                <Column header="Date Created" style="width: 20%">
-                  <template #body="slotProps">
-                    {{ formatDate(slotProps.data.created_at) }}
-                  </template>
-                </Column>
-
-                <Column header="Date Created" style="width: 10%">
-                  <template #body="slotProps">
-                    <button
-                      @click="onRemoveCard(slotProps.data.id)"
-                      class="px-4"
-                    >
-                      <i class="fa-solid fa-times text-danger"></i>
-                    </button>
+                <Column
+                  field=""
+                  :sortable="false"
+                  header="Action"
+                  style="width: 20%"
+                >
+                  <template #body="{}">
+                    <span class="bg-danger btn btn-sm text-white">X</span>
                   </template>
                 </Column>
               </DataTable>
@@ -566,7 +579,8 @@
               <select
                 v-model="modalForm.relationship"
                 class="form-control"
-                required>
+                required
+              >
                 <option value="null">-- Select Type--</option>
                 <option value="Owner">Owner of Account</option>
                 <option value="Father">Father</option>
@@ -591,7 +605,9 @@
       <Modal name="wallet-modal" :title="modalParams.title">
         <ModalContent>
           <form
-            @submit.prevent="onSubmitWallet(modalParams.title, currentEditID)" style="width: 90%; height:100%; margin: 0 auto">
+            @submit.prevent="onSubmitWallet(modalParams.title, currentEditID)"
+            style="width: 90%; height: 100%; margin: 0 auto"
+          >
             <div class="">
               <div class="input-block mb-2">
                 <label class="col-form-label fs-6">Amount</label>
@@ -608,7 +624,8 @@
                 <select
                   v-model="payWalletData.channel_id"
                   class="form-control"
-                  required>
+                  required
+                >
                   <option value="null">-- Select Type--</option>
                   <option v-for="data in channels" :key="data" :value="data.id">
                     {{ data["name"] }}
@@ -616,7 +633,10 @@
                 </select>
               </div>
 
-              <div class="input-block mb-3" v-if="payWalletData.channel_id === 1">
+              <div
+                class="input-block mb-3"
+                v-if="payWalletData.channel_id === 1"
+              >
                 <label class="col-form-label fs-6">POS</label>
                 <select
                   v-model="payWalletData.process_id"
@@ -630,7 +650,10 @@
                 </select>
               </div>
 
-              <div class="input-block mb-3" v-if="payWalletData.channel_id === 3">
+              <div
+                class="input-block mb-3"
+                v-if="payWalletData.channel_id === 3"
+              >
                 <label class="col-form-label fs-6">Bank</label>
                 <select
                   v-model="payWalletData.process_id"
@@ -756,20 +779,20 @@ const checkSelectedAction = (id, data) => {
 };
 
 const approve = async (id) => {
-  let url = 'members/wallet/' + id;
+  let url = "members/wallet/" + id;
 
   isLoading.value = true;
 
   await axiosUrl
-  .get(url)
-  .then(() => {
-    isLoading.value = false;
-    location.reload();
-  })
-  .catch((error) => {
-    isLoading.value = false;
-    swalErrorHandle(error);
-  });
+    .get(url)
+    .then(() => {
+      isLoading.value = false;
+      location.reload();
+    })
+    .catch((error) => {
+      isLoading.value = false;
+      swalErrorHandle(error);
+    });
 };
 
 const onSubmitWallet = async () => {
@@ -780,15 +803,15 @@ const onSubmitWallet = async () => {
   isLoading.value = true;
 
   await axiosUrl
-  .post(url, payWalletData)
-  .then(() => {
-    isLoading.value = false;
-    location.reload();
-  })
-  .catch((error) => {
-    isLoading.value = false;
-    swalErrorHandle(error);
-  });
+    .post(url, payWalletData)
+    .then(() => {
+      isLoading.value = false;
+      location.reload();
+    })
+    .catch((error) => {
+      isLoading.value = false;
+      swalErrorHandle(error);
+    });
 };
 
 const onSubmit = async (type, id) => {
@@ -822,7 +845,7 @@ const onSubmit = async (type, id) => {
         modalParams.title = "";
       }
       swalSuccessHandle("Payment Successful.");
-       location.reload();
+      location.reload();
     })
     .catch((error) => {
       isLoading.value = false;
@@ -838,25 +861,24 @@ const onSubmitCard = async () => {
   isLoading.value = true;
 
   await axiosUrl
-  .post(url, modalForm)
-  .then(() => {
-
-    isLoading.value = false;
-    modalForm.name = "",
-    modalForm.relationship = null,
-    modalForm.card_number = "",
-    location.reload();
-  })
-  .catch((error) => {
-    isLoading.value = false;
-    swalErrorHandle(error);
-  });
+    .post(url, modalForm)
+    .then(() => {
+      isLoading.value = false;
+      (modalForm.name = ""),
+        (modalForm.relationship = null),
+        (modalForm.card_number = ""),
+        location.reload();
+    })
+    .catch((error) => {
+      isLoading.value = false;
+      swalErrorHandle(error);
+    });
 };
 
 const onRemoveCard = async (id) => {
   swalConfirmDelete(
     async () => {
-      let url = 'members/card/' + id;
+      let url = "members/card/" + id;
       isLoading.value = true;
       await axiosUrl
         .delete(url)
@@ -873,7 +895,7 @@ const onRemoveCard = async (id) => {
       return;
     }
   );
-}
+};
 
 const getChannel = async () => {
   await axiosUrl
@@ -914,9 +936,9 @@ const getPOS = async () => {
 
 const getFingerprint = async () => {
   await axiosUrl
-  .get("/members/fingerprint/" + membership_id.value)
+    .get("/members/fingerprint/" + membership_id.value)
     .then((response) => {
-      console.log(response)
+      console.log(response);
     });
 };
 
@@ -928,12 +950,12 @@ const getMember = async () => {
     .then((response) => {
       if (response.data.error) {
         Swal.fire({
-            title: "Error!",
-            text: response.data.error,
-            icon: "error",
-            confirmButtonText: 'OK'
+          title: "Error!",
+          text: response.data.error,
+          icon: "error",
+          confirmButtonText: "OK",
         }).then(() => {
-            router.push({ path: "/members" });
+          router.push({ path: "/members" });
         });
       }
       member.value = response.data.data[0].member;
@@ -944,7 +966,7 @@ const getMember = async () => {
       payments.value = response.data.data[0].payments;
       debts.value = response.data.data[0].debts;
       cards.value = response.data.data[0].cards;
-      
+
       isLoading.value = false;
     })
     .catch((error) => {

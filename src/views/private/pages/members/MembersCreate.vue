@@ -5,13 +5,13 @@
     <div class="container">
       <div class="d-flex justify-content-between align-items-center">
         <h2>
-          <strong v-show="!editMode">New Member</strong>
-          <strong v-show="editMode">Update Member</strong>
+          <strong v-if="!editMode">New Member</strong>
+          <strong v-if="editMode">Update Member</strong>
         </h2>
       </div>
       <div class="card mt-2">
         <div class="card-body">
-          <form-wizard @on-complete="editMode ? updateUser() : createUser()">
+          <form-wizard @on-complete="editMode ? createUser() : createUser()">
             <tab-content title="Login Detail" icon="fa fa-user">
               <div class="row">
                 <div class="col-md-4 form-group mb-3">
@@ -79,7 +79,7 @@
                   <label
                     >Photo Image
                     <a
-                      v-if="form.image && route.query.edit === 'true'"
+                      v-if="form.image && editMode"
                       :href="form.image"
                       target="_blank"
                       class="link-primary link-offset-2 link-underline-opacity-25 link-underline-opacity-100-hover"
@@ -178,7 +178,7 @@
                   <div>
                     <Dropdown
                       class="w-100"
-                      v-model="form.lgas"
+                      v-model="form.lga"
                       optionLabel="name"
                       optionValue="id"
                       :options="lgas"
@@ -647,6 +647,11 @@ const getStates = async () => {
     .get("/states")
     .then((response) => {
       states.value = response.data;
+
+      if (editMode.value) {
+        if (typeof form.value["lga"] === "string")
+          onChange(parseInt(form.value["lga"]));
+      }
       inputLoader3.value = false;
     })
     .catch((error) => {
@@ -704,13 +709,13 @@ const uploadImage = (e) => {
 };
 
 const createUser = async () => {
-  // console.log(form.value)
+  console.log(form.value);
   isLoading.value = true;
 
   form.value["entrance_date"] = formatDate2(form.value["entrance_date"]);
   form.value["dob"] = formatDate2(form.value["dob"]);
 
-  if (route.query.edit === "true") {
+  if (editMode.value) {
     await axiosUrl
       .post("members/edit", form.value)
       .then((response) => {
@@ -778,13 +783,15 @@ const getMember = async (id) => {
     })
     .catch((error) => {
       isLoading2.value = false;
-      Swal.fire("Failed!", "Its not your fault, try again.", "warning");
+      swalErrorHandle(error);
+      // Swal.fire("Failed!", "Its not your fault, try again.", "warning");
     });
 };
 
 onMounted(() => {
   if (route.query.edit === "true") {
     getMember(route.query.id);
+    editMode.value = true;
   }
   getType();
   getSection();

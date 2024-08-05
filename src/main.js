@@ -17,6 +17,7 @@ import Loading from "vue-loading-overlay";
 // Import stylesheet
 import "vue-loading-overlay/dist/css/index.css";
 import "@dimsog/vue-modal/dist/style.css";
+import ModalComp from "./components/ModalComp.vue";
 
 import { LoadingPlugin } from "vue-loading-overlay";
 import "vue-loading-overlay/dist/css/index.css";
@@ -77,4 +78,5 @@ createApp(App)
 	.component("ProgressBar", ProgressBar)
 	.component("RadioButton", RadioButton)
 	.component("Dialog", Dialog)
+	.component("ModalComp", ModalComp)
 	.mount("#app");
