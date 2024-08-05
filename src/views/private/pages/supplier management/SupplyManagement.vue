@@ -1,6 +1,6 @@
 <template>
   <div class="content-wrapper">
-    <loading :active="isLoading || isLoading2" />
+    <loading :active="isLoading" />
 
     <div class="container">
       <div class="">
@@ -160,12 +160,21 @@
             </div>
 
             <div class="input-block col-12 col-md-6">
-              <label class="col-form-label fs-6">Bank Name <span class="text-primary"><small>Lorem, ipsum</small></span></label>
-              <input
-                class="form-control"
-                type="text"
+              <label class="col-form-label fs-6"
+                >Bank Name
+                <MiniSpinner v-if="banksLoading" />
+                <span class="text-primary"
+                  ><small>Lorem, ipsum</small></span
+                ></label
+              >
+              <Dropdown
+                class="w-100"
                 v-model="modalForm.bank_name"
-                required
+                optionLabel="name"
+                optionValue="code"
+                :options="banks"
+                :disabled="banksLoading || banks.length === 0"
+                placeholder=""
               />
             </div>
 
@@ -200,10 +209,11 @@ import { formatDate, swalErrorHandle } from "@/components/myHelperFunction";
 import { Modal, ModalContent, open, close } from "@dimsog/vue-modal";
 
 const isLoading = ref(false);
-const isLoading2 = ref(false);
+const banksLoading = ref(false);
 const authStore = useAuthStore();
 const loggedInUser = authStore.loggedInUser;
 const items = ref([]);
+const banks = ref([]);
 const selected = ref([]);
 const selectAll = ref("");
 const currentEditID = ref();
@@ -258,16 +268,16 @@ const getSupplyManagement = async () => {
 };
 
 const getAllBanks = async () => {
-  isLoading2.value = true;
+  banksLoading.value = true;
 
   await axiosUrl
     .get("/allbanks")
     .then((response) => {
-      banks.value = response.data.data;
-      isLoading2.value = false;
+      banks.value = response.data;
+      banksLoading.value = false;
     })
     .catch((error) => {
-      isLoading2.value = false;
+      banksLoading.value = false;
       swalErrorHandle(error);
     });
 };
