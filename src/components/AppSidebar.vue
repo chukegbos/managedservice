@@ -380,16 +380,6 @@
                           <span class="font-medium">Bars</span>
                         </router-link>
                       </li>
-                      <li>
-                        <router-link
-                          to="/bar/exchange"
-                          v-ripple
-                          class="text-decoration-none flex align-items-center cursor-pointer p-3 border-round text-700 hover:surface-100 transition-duration-150 transition-colors p-ripple"
-                        >
-                          <i class="pi pi-chart-line mr-2"></i>
-                          <span class="font-medium">Drink Exchange</span>
-                        </router-link>
-                      </li>
 
                       <li>
                         <router-link
@@ -398,7 +388,7 @@
                           class="text-decoration-none flex align-items-center cursor-pointer p-3 border-round text-700 hover:surface-100 transition-duration-150 transition-colors p-ripple"
                         >
                           <i class="pi pi-chart-line mr-2"></i>
-                          <span class="font-medium">Inventory Request</span>
+                          <span class="font-medium">ALl Request</span>
                         </router-link>
                       </li>
                     </ul>
