@@ -18,6 +18,7 @@ import Loading from "vue-loading-overlay";
 import "vue-loading-overlay/dist/css/index.css";
 import "@dimsog/vue-modal/dist/style.css";
 import ModalComp from "./components/ModalComp.vue";
+import MiniSpinner from "./components/MiniSpinner.vue"
 
 import { LoadingPlugin } from "vue-loading-overlay";
 import "vue-loading-overlay/dist/css/index.css";
@@ -79,4 +80,5 @@ createApp(App)
 	.component("RadioButton", RadioButton)
 	.component("Dialog", Dialog)
 	.component("ModalComp", ModalComp)
+	.component("MiniSpinner", MiniSpinner)
 	.mount("#app");

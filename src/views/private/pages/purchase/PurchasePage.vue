@@ -3,39 +3,15 @@
     <loading :active="isLoading" />
 
     <div class="container">
-      <div class="">
-        <div class="d-flex justify-content-between align-items-center">
-          <h2>Supply Management</h2>
+      <div class="d-flex justify-content-between align-items-center">
+        <h2>Purchase</h2>
 
-          <div class="d-flex">
-            <div class="me-3">
-              <input
-                v-model="filters['global'].value"
-                placeholder="Keyword Search"
-                class="form-control my-input"
-              />
-            </div>
-
-            <div class="d-flex align-items-end">
-              <!-- <button
-                v-if="selected.length > 0"
-                @click="onSubmit('delete')"
-                class="btn add-btn px-4"
-              > -->
-              <button
-                @click="onSubmit('delete')"
-                class="btn btn-sm btn-danger add-btn px-4 me-2"
-              >
-                <i class="fa-solid fa-minus"></i> Delete Supply
-              </button>
-              <button
-                @click="openModal('add')"
-                class="btn btn-sm btn-success add-btn px-4"
-              >
-                <i class="fa-solid fa-plus"></i> Add Supply
-              </button>
-            </div>
-          </div>
+        <div class="">
+          <input
+            v-model="filters['global'].value"
+            placeholder="Keyword Search"
+            class="form-control my-input"
+          />
         </div>
       </div>
 
@@ -328,7 +304,7 @@ const getSupplyManagement = async () => {
   isLoading.value = true;
 
   await axiosUrl
-    .get("/suppliers")
+    .get("/purchase")
     .then((response) => {
       items.value = response.data.data;
       isLoading.value = false;

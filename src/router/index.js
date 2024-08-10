@@ -171,6 +171,22 @@ const routes = [
 				component: () =>
 					import("@/views/private/pages/bars/BarView.vue"),
 			},
+
+			{
+				path: "/purchase",
+				name: "PurchasePage",
+				component: () =>
+					import("@/views/private/pages/purchase/PurchasePage.vue"),
+			},
+
+			{
+				path: "/create-purchase",
+				name: "CreatePurchasePage",
+				component: () =>
+					import(
+						"@/views/private/pages/purchase/CreatePurchasePage.vue"
+					),
+			},
 		],
 	},
 ];
