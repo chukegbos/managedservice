@@ -84,7 +84,7 @@
           </div>
         </TabPanel>
 
-        <TabPanel header="My Request Pull">
+        <TabPanel header="My Request">
           <div class="mt-4">
             <div v-if="myRequests.length > 0">
               <div class="row mb-3">
@@ -139,7 +139,7 @@
           </div>
         </TabPanel>
 
-        <TabPanel header="My Request Push">
+        <TabPanel header="Bar Request">
           <div class="mt-4">
             <div v-if="pullRequests.length > 0">
               <div class="row mb-3">

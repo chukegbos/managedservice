@@ -163,7 +163,7 @@ const selectedAction = ref([]);
 const actions = ref([
   { label: "Edit", id: 1 },
   { label: "View", id: 2 },
-  { label: "Activate/Deactivate", id: 4 },
+  // { label: "Activate/Deactivate", id: 4 },
   { label: "Delete", id: 3 },
 ]);
 

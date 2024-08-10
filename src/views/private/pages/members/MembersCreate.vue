@@ -766,7 +766,7 @@ const getMember = async (id) => {
       form.value["kin_relationship"] = data?.additional?.kin_relationship;
       form.value["sponsor_1"] = data?.additional?.sponsor_1;
       form.value["sponsor_2"] = data?.additional?.sponsor_2;
-      form.value["sections"] = [];
+      form.value["sections"] = data.memberSection;
 
       if (typeof data?.member?.member_type === "string")
         form.value["member_type"] = parseInt(data?.member?.member_type);
