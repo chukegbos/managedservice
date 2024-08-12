@@ -2,6 +2,7 @@ import { createApp } from "vue";
 // import "./style.css";
 import App from "./App.vue";
 import router from "./router";
+import FontAwesomeIcon from "./components/fontawesome";
 import { createPinia } from "pinia";
 import piniaPluginPersistedstate from "pinia-plugin-persistedstate";
 
@@ -81,4 +82,5 @@ createApp(App)
 	.component("Dialog", Dialog)
 	.component("ModalComp", ModalComp)
 	.component("MiniSpinner", MiniSpinner)
+	.component("font-awesome-icon", FontAwesomeIcon)
 	.mount("#app");

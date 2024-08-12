@@ -74,7 +74,7 @@
             isLoading.value = false;
             Swal.fire(
                 "Failed!",
-                "New passord field and confirm passord field does not match",
+                "New password field and confirm password field does not match",
                 "warning"
             );
         }
@@ -82,7 +82,7 @@
             isLoading.value = false;
             Swal.fire(
                 "Failed!",
-                "Your password must be atleast 6 characters",
+                "Your password must be at least 6 characters",
                 "warning"
             );
         }

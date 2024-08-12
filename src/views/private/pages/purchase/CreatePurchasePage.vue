@@ -3,11 +3,19 @@
     <loading :active="isLoading" />
 
     <div class="container">
-      {{ createPayload }}
       <h2 class="mt-3">Items Purchase</h2>
       <div class="d-flex mb-3">
-        <p class="mb-0">Create Product</p>
-        <p class="mb-0 ms-3">Create Supplier</p>
+        <p class="mb-0 btn btn-sm btn-outline-success">
+          <font-awesome-icon :icon="['fas', 'plus']" class="me-2" />Create
+          Product
+        </p>
+        <p
+          class="mb-0 ms-3 btn btn-sm btn-outline-success"
+          @click="isToggled = true"
+        >
+          <font-awesome-icon :icon="['fas', 'plus']" class="me-2" />Create
+          Supplier
+        </p>
       </div>
 
       <div class="shadow p-4 rounded">
@@ -171,7 +179,8 @@
               createPayload.mode_of_payment_id === null ||
               createPayload.mode_of_payment_id === "" ||
               createPayload.date_of_purchase === null ||
-              createPayload.date_of_purchase === ""
+              createPayload.date_of_purchase === "" ||
+              createPayload.items.length === 0
             }}
           </button>
           <button
@@ -182,7 +191,8 @@
               createPayload.mode_of_payment_id === null ||
               createPayload.mode_of_payment_id === '' ||
               createPayload.date_of_purchase === null ||
-              createPayload.date_of_purchase === ''
+              createPayload.date_of_purchase === '' ||
+              createPayload.items.length === 0
             "
             @click="createPurchase()"
           >
@@ -194,11 +204,11 @@
 
     <ModalComp
       :isToggled="isToggled"
-      :title="modalParams.title"
+      title="Add Supply"
       @close="isToggled = false"
     >
       <form
-        @submit.prevent="onSubmit(modalParams.title, currentEditID)"
+        @submit.prevent="createSupplier()"
         class="container"
       >
         <div class="row fs-14 align-items-end">
@@ -207,7 +217,7 @@
             <input
               class="form-control"
               type="text"
-              v-model="modalForm.supplier_name"
+              v-model="supplierPayload.supplier_name"
               required
             />
           </div>
@@ -217,7 +227,7 @@
             <input
               class="form-control"
               type="text"
-              v-model="modalForm.contact_person"
+              v-model="supplierPayload.contact_person"
               required
             />
           </div>
@@ -227,7 +237,7 @@
             <input
               class="form-control"
               type="email"
-              v-model="modalForm.email"
+              v-model="supplierPayload.email"
               required
             />
           </div>
@@ -237,7 +247,7 @@
             <input
               class="form-control"
               type="text"
-              v-model="modalForm.phone"
+              v-model="supplierPayload.phone"
               maxlength="11"
               @input="handleInput($event)"
               placeholder=""
@@ -249,7 +259,7 @@
             <input
               class="form-control"
               type="text"
-              v-model="modalForm.address"
+              v-model="supplierPayload.address"
               required
             />
           </div>
@@ -267,7 +277,7 @@
             >
             <Dropdown
               class="w-100"
-              v-model="modalForm.bank_name"
+              v-model="supplierPayload.bank_name"
               optionLabel="name"
               optionValue="code"
               :options="banks"
@@ -287,7 +297,7 @@
             <input
               class="form-control"
               type="text"
-              v-model="modalForm.bank_account"
+              v-model="supplierPayload.bank_account"
               maxlength="10"
               @input="handleInput2($event)"
               placeholder=""
@@ -350,15 +360,7 @@ const createPayload = ref({
   ],
 });
 
-const filters = ref({
-  global: { value: null, matchMode: FilterMatchMode.CONTAINS },
-});
-
-const modalParams = reactive({
-  title: "",
-});
-
-const modalForm = reactive({
+const supplierPayload = reactive({
   supplier_name: "",
   contact_person: "",
   email: "",
@@ -367,6 +369,14 @@ const modalForm = reactive({
   bank_name: "",
   bank_account: "",
   account_name: "",
+});
+
+const filters = ref({
+  global: { value: null, matchMode: FilterMatchMode.CONTAINS },
+});
+
+const modalParams = reactive({
+  title: "",
 });
 
 const addField = () => {
@@ -448,15 +458,15 @@ const productInput = (id, type) => {
 
 const handleInput = (event) => {
   // Remove non-digit characters
-  modalForm.phone = event.target.value.replace(/\D/g, "").slice(0, 11);
+  supplierPayload.phone = event.target.value.replace(/\D/g, "").slice(0, 11);
 };
 
 const handleInput2 = (event) => {
   // Remove non-digit characters
-  modalForm.bank_account = event.target.value.replace(/\D/g, "").slice(0, 10);
-  if (modalForm.bank_account.length === 10) {
-    // console.log(modalForm.bank_account);
-    verifyAccDetails(modalForm.bank_account, modalForm.bank_name);
+  supplierPayload.bank_account = event.target.value.replace(/\D/g, "").slice(0, 10);
+  if (supplierPayload.bank_account.length === 10) {
+    // console.log(supplierPayload.bank_account);
+    verifyAccDetails(supplierPayload.bank_account, supplierPayload.bank_name);
   }
 };
 
@@ -485,28 +495,115 @@ const verifyAccDetails = async (a, b) => {
     });
 };
 
+const createSupplier = async () => {
+  isLoading.value = true;
+  bankDetails.value = [];
+  await axiosUrl
+    .post("/suppliers", supplierPayload)
+    .then((response) => {
+      isLoading.value = false;
+      console.log(response.data);
+      if (response.data.status === false) {
+        Swal.fire("Failed!", response.data.message, "warning");
+      } else {
+        bankDetails.value = response.data?.data;
+      }
+    })
+    .catch((error) => {
+      isLoading.value = false;
+      swalErrorHandle(error);
+    });
+};
+
 const createPurchase = async () => {
-  console.log(createPayload.value);
   if (
     createPayload.value.supplier_id === null ||
     createPayload.value.supplier_id === ""
-  )
+  ) {
+    Swal.fire({
+      title: "Failed!",
+      text: `Please fill up Supplier"`,
+      icon: "warning",
+      confirmButtonColor: "#FACEA8",
+    });
     return;
+  }
   if (
     createPayload.value.mode_of_payment_id === null ||
     createPayload.value.mode_of_payment_id === ""
-  )
+  ) {
+    Swal.fire({
+      title: "Failed!",
+      text: `Please fill up Mode of Payment`,
+      icon: "warning",
+      confirmButtonColor: "#FACEA8",
+    });
     return;
+  }
   if (
     createPayload.value.date_of_purchase === null ||
     createPayload.value.date_of_purchase === ""
-  )
+  ) {
+    Swal.fire({
+      title: "Failed!",
+      text: `Please fill up Date of Purchase`,
+      icon: "warning",
+      confirmButtonColor: "#FACEA8",
+    });
     return;
-  // if (
-  //   createPayload.value.amount_paid === null ||
-  //   createPayload.value.amount_paid === ""
-  // )
-  //   return;
+  }
+
+  for (let i = 0; i < createPayload.value.items.length; i++) {
+    const item = createPayload.value.items[i];
+
+    for (let key in item) {
+      if (item.hasOwnProperty(key)) {
+        if (
+          key === "pack" ||
+          key === "unit_cost_price_crate" ||
+          key === "product_name"
+        ) {
+          continue;
+        }
+
+        let title = "";
+        switch (key) {
+          case "product_code":
+            title = "Product";
+            break;
+          case "quantity":
+            title = "Quantity";
+            break;
+          case "unit_cost_price":
+            title = "Unit Cost Price (₦/Bottle)";
+            break;
+          case "unit_sell_price":
+            title = "Unit Selling Price (₦/Bottle)";
+            break;
+          case "total_cost_price":
+            title = "Total Cost Price (₦/Crate)";
+            break;
+          default:
+            break;
+        }
+
+        let y = "th";
+        if (i + 1 == 1) y = "st";
+        else if (i + 1 == 2) y = "nd";
+        else if (i + 1 == 3) y = "rd";
+
+        if (item[key] === "" || item[key] === null || item[key] === undefined) {
+          Swal.fire({
+            title: "Failed!",
+            text: `Please fill up ${i + 1 + y} Product - "${title}"`,
+            icon: "warning",
+            confirmButtonColor: "#FACEA8",
+          });
+          return;
+        }
+      }
+    }
+  }
 
   isLoading.value = true;
   await axiosUrl
@@ -546,7 +643,7 @@ const onSubmit = async (type, id) => {
   if (type === "Add Supply") {
     if (bankDetails.value.length === 0) return;
     url = "suppliers";
-    payload = modalForm;
+    payload = supplierPayload;
   } else if (type === "delete") {
     url = "/suppliers";
     payload = {
@@ -554,7 +651,7 @@ const onSubmit = async (type, id) => {
     };
   } else if (type === "Edit Supply") {
     url = "/suppliers" + id;
-    payload = modalForm;
+    payload = supplierPayload;
   } else return;
 
   close("supply-management-modal");
@@ -578,7 +675,7 @@ const onSubmit = async (type, id) => {
       .then(() => {
         isLoading.value = false;
 
-        modalForm.name = "";
+        supplierPayload.name = "";
         modalParams.title = "";
 
         getSupplyManagement();
@@ -593,7 +690,7 @@ const onSubmit = async (type, id) => {
       .then(() => {
         isLoading.value = false;
 
-        modalForm.name = "";
+        supplierPayload.name = "";
         modalParams.title = "";
 
         isToggled.value = false;
@@ -610,7 +707,7 @@ const openModal = (type, id, name) => {
   if (type === "add") modalParams.title = "Add Supply";
   else if (type === "edit") {
     modalParams.title = "Edit Supply";
-    modalForm.name = name;
+    supplierPayload.name = name;
     currentEditID.value = id;
   }
 
@@ -642,7 +739,7 @@ const getAllBanks = async () => {
 
 onMounted(() => {
   getSupplyManagement();
-  // getAllBanks();
+  getAllBanks();
 });
 </script>
 
