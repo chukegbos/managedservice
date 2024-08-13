@@ -207,10 +207,7 @@
       title="Add Supply"
       @close="isToggled = false"
     >
-      <form
-        @submit.prevent="createSupplier()"
-        class="container"
-      >
+      <form @submit.prevent="createSupplier()" class="container">
         <div class="row fs-14 align-items-end">
           <div class="input-block col-12 col-md-6">
             <label class="col-form-label fs-6">Supplier Name</label>
@@ -251,6 +248,7 @@
               maxlength="11"
               @input="handleInput($event)"
               placeholder=""
+              required
             />
           </div>
 
@@ -268,11 +266,13 @@
             <label class="col-form-label fs-6"
               >Bank Name
               <MiniSpinner v-if="banksLoading" />
-              <span
-                class="text-primary"
-                v-if="bankDetails.account_name"
-                style="font-size: 12px"
-                ><small>({{ bankDetails.account_name }})</small></span
+              <span v-if="!isObjectEmpty(bankDetails)">
+                <span
+                  class="text-primary"
+                  v-if="bankDetails.account_name"
+                  style="font-size: 12px"
+                  ><small>({{ bankDetails.account_name }})</small></span
+                ></span
               ></label
             >
             <Dropdown
@@ -302,6 +302,7 @@
               @input="handleInput2($event)"
               placeholder=""
               :disabled="bankVerifyLoading"
+              required
             />
           </div>
 
@@ -319,28 +320,24 @@
 <script setup>
 import { axiosUrl } from "@/env";
 import { ref, reactive, onMounted } from "vue";
-import { FilterMatchMode } from "primevue/api";
 import Swal from "sweetalert2";
-import { useAuthStore } from "@/store/authStore";
-import { formatDate, swalErrorHandle } from "@/components/myHelperFunction";
-import { Modal, ModalContent, open, close } from "@dimsog/vue-modal";
-// import MiniSpinner from "@/components/MiniSpinner.vue";
+import {
+  swalErrorHandle,
+  findEmptyKeys,
+  formatPayloadErrorKey,
+  isObjectEmpty,
+} from "@/components/myHelperFunction";
 
 const isToggled = ref(false);
 const isLoading = ref(false);
 const bankVerifyLoading = ref(false);
 const banksLoading = ref(false);
-const authStore = useAuthStore();
-const loggedInUser = authStore.loggedInUser;
 const payment_channels = ref([]);
 const products = ref([]);
 const suppliers = ref([]);
 const items = ref([]);
 const banks = ref([]);
 const bankDetails = ref([]);
-const selected = ref([]);
-const selectAll = ref("");
-const currentEditID = ref();
 const createPayload = ref({
   supplier_id: null,
   mode_of_payment_id: null, //Cash Payment or Credit Payment
@@ -369,14 +366,6 @@ const supplierPayload = reactive({
   bank_name: "",
   bank_account: "",
   account_name: "",
-});
-
-const filters = ref({
-  global: { value: null, matchMode: FilterMatchMode.CONTAINS },
-});
-
-const modalParams = reactive({
-  title: "",
 });
 
 const addField = () => {
@@ -463,7 +452,9 @@ const handleInput = (event) => {
 
 const handleInput2 = (event) => {
   // Remove non-digit characters
-  supplierPayload.bank_account = event.target.value.replace(/\D/g, "").slice(0, 10);
+  supplierPayload.bank_account = event.target.value
+    .replace(/\D/g, "")
+    .slice(0, 10);
   if (supplierPayload.bank_account.length === 10) {
     // console.log(supplierPayload.bank_account);
     verifyAccDetails(supplierPayload.bank_account, supplierPayload.bank_name);
@@ -482,9 +473,15 @@ const verifyAccDetails = async (a, b) => {
     })
     .then((response) => {
       bankVerifyLoading.value = false;
-      console.log(response.data);
+      // console.log(response.data);
+      bankDetails.value = {};
       if (response.data.status === false) {
-        Swal.fire("Failed!", response.data.message, "warning");
+        Swal.fire({
+          title: "Failed!",
+          text: response.data.message,
+          icon: "warning",
+          confirmButtonColor: "#FACEA8",
+        });
       } else {
         bankDetails.value = response.data?.data;
       }
@@ -496,17 +493,56 @@ const verifyAccDetails = async (a, b) => {
 };
 
 const createSupplier = async () => {
+  if (!isObjectEmpty(bankDetails.value)) {
+    supplierPayload.account_name = bankDetails.value?.account_name;
+  }
+
+  const emptyKeys = findEmptyKeys(supplierPayload);
+  if (emptyKeys) {
+    if (emptyKeys === "account_name") {
+      Swal.fire({
+        title: "Verify Bank Details !",
+        text: `Please enter correct bank name and account number to proceed`,
+        icon: "warning",
+        confirmButtonColor: "#FACEA8",
+      });
+      return;
+    } else {
+      Swal.fire({
+        title: "Failed!",
+        text: `Please fill up ${formatPayloadErrorKey(emptyKeys)}`,
+        icon: "warning",
+        confirmButtonColor: "#FACEA8",
+      });
+      return;
+    }
+  }
+
   isLoading.value = true;
-  bankDetails.value = [];
   await axiosUrl
     .post("/suppliers", supplierPayload)
     .then((response) => {
       isLoading.value = false;
-      console.log(response.data);
+      // console.log(response.data);
       if (response.data.status === false) {
-        Swal.fire("Failed!", response.data.message, "warning");
+        Swal.fire({
+          title: "Failed!",
+          text: response.data?.message,
+          icon: "warning",
+          confirmButtonColor: "#FACEA8",
+        });
       } else {
-        bankDetails.value = response.data?.data;
+        bankDetails.value = {};
+        supplierPayload.supplier_name = "";
+        supplierPayload.contact_person = "";
+        supplierPayload.email = "";
+        supplierPayload.phone = null;
+        supplierPayload.address = "";
+        supplierPayload.bank_name = "";
+        supplierPayload.bank_account = "";
+        supplierPayload.account_name = "";
+
+        isToggled.value = false;
       }
     })
     .catch((error) => {
@@ -610,7 +646,23 @@ const createPurchase = async () => {
     .post("/purchase", createPayload.value)
     .then((response) => {
       isLoading.value = false;
-      console.log(response.data);
+      // console.log(response.data);
+      createPayload.value.supplier_id = null;
+      createPayload.value.mode_of_payment_id = null;
+      createPayload.value.date_of_purchase = "";
+      createPayload.value.amount_paid = null;
+      createPayload.value.items = [
+        {
+          product_code: "",
+          product_name: "",
+          quantity: null,
+          pack: null,
+          unit_cost_price: null,
+          unit_cost_price_crate: null,
+          unit_sell_price: null,
+          total_cost_price: null,
+        },
+      ];
     })
     .catch((error) => {
       isLoading.value = false;
@@ -635,91 +687,6 @@ const getSupplyManagement = async () => {
       isLoading.value = false;
       swalErrorHandle(error);
     });
-};
-
-const onSubmit = async (type, id) => {
-  let url = "/suppliers";
-  let payload = {};
-  if (type === "Add Supply") {
-    if (bankDetails.value.length === 0) return;
-    url = "suppliers";
-    payload = supplierPayload;
-  } else if (type === "delete") {
-    url = "/suppliers";
-    payload = {
-      ids: selected.value,
-    };
-  } else if (type === "Edit Supply") {
-    url = "/suppliers" + id;
-    payload = supplierPayload;
-  } else return;
-
-  close("supply-management-modal");
-  isLoading.value = true;
-  if (type === "delete") {
-    await axiosUrl
-      .delete(url, { data: payload })
-      .then(() => {
-        isLoading.value = false;
-        selected.value = [];
-        selectAll.value = false;
-        getSupplyManagement();
-      })
-      .catch((error) => {
-        isLoading.value = false;
-        swalErrorHandle(error);
-      });
-  } else if (type === "Edit Supply") {
-    await axiosUrl
-      .put(url, payload)
-      .then(() => {
-        isLoading.value = false;
-
-        supplierPayload.name = "";
-        modalParams.title = "";
-
-        getSupplyManagement();
-      })
-      .catch((error) => {
-        isLoading.value = false;
-        swalErrorHandle(error);
-      });
-  } else {
-    await axiosUrl
-      .post(url, payload)
-      .then(() => {
-        isLoading.value = false;
-
-        supplierPayload.name = "";
-        modalParams.title = "";
-
-        isToggled.value = false;
-        getSupplyManagement();
-      })
-      .catch((error) => {
-        isLoading.value = false;
-        swalErrorHandle(error);
-      });
-  }
-};
-
-const openModal = (type, id, name) => {
-  if (type === "add") modalParams.title = "Add Supply";
-  else if (type === "edit") {
-    modalParams.title = "Edit Supply";
-    supplierPayload.name = name;
-    currentEditID.value = id;
-  }
-
-  // open("supply-management-modal");
-  isToggled.value = true;
-};
-
-const toggleAll = () => {
-  if (selectAll.value)
-    for (let i = 0; i < items.value.length; i++)
-      selected.value.push(items.value[i].id);
-  else selected.value = [];
 };
 
 const getAllBanks = async () => {

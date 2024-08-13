@@ -1,6 +1,51 @@
 import moment from "moment";
 import Swal from "sweetalert2";
 
+export const findEmptyKeys = (obj) => {
+	return Object.keys(obj).find(
+		(key) => obj[key] === null || obj[key] === "" || obj[key] === undefined
+	);
+};
+
+export const formatPayloadErrorKey = (key) => {
+	let name = "";
+	switch (key) {
+		case "supplier_name":
+			name = "Supplier Name";
+			break;
+		case "contact_person":
+			name = "Contact Person";
+			break;
+		case "email":
+			name = "Email";
+			break;
+		case "phone":
+			name = "Phone Number";
+			break;
+		case "address":
+			name = "Address";
+			break;
+		case "bank_name":
+			name = "Bank Name";
+			break;
+		case "bank_account":
+			name = "Account Number";
+			break;
+		default:
+			break;
+	}
+
+	return name;
+};
+
+export const isObjectEmpty = (obj) => {
+	if (obj != undefined) {
+		return Object.keys(obj).length === 0;
+	} else {
+		return true;
+	}
+};
+
 export const formatDate2 = (value) => {
 	if (!isNaN(new Date(value))) return moment(value).format("YYYY-MM-DD");
 	else return "N/A";
@@ -91,13 +136,6 @@ export const swalConfirmDelete = (
 		cancelButtonColor: "#d33",
 		confirmButtonText: "Yes, delete it!",
 	}).then((result) => {
-		// if (result.isConfirmed) {
-		// 	Swal.fire({
-		// 		title: "Deleted!",
-		// 		text: deleteText,
-		// 		icon: "success",
-		// 	});
-		// }
 		if (result.isConfirmed) {
 			confirmCallback();
 		} else if (result.isDismissed) {
