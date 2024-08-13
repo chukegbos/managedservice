@@ -1,7 +1,7 @@
 <template>
   <div class="mx-3 pt-3">
     <Loading :active="loading" />
-    
+
     <div class="container-fluid pb-0">
       <div class="page-header mb-3 text-center">
         <h2 class="page-title">
@@ -11,9 +11,15 @@
       </div>
 
       <div class="row mb-xl-4">
-        <router-link v-for="bar, index in bars" :key="bar" :to="{ name: 'BarPage', params: { id: index } }"
-          class="col-12 mb-3 p-3 d-flex align-items-center shadow-lg text-decoration-none">
-          <div class="dash-widget-icon me-3"><i class="fa-solid fa-wine-bottle"></i></div>
+        <router-link
+          v-for="(bar, index) in bars"
+          :key="bar"
+          :to="{ name: 'BarPage', params: { id: index } }"
+          class="col-12 mb-3 p-3 d-flex align-items-center shadow-lg text-decoration-none"
+        >
+          <div class="dash-widget-icon me-3">
+            <i class="fa-solid fa-wine-bottle"></i>
+          </div>
           <div>
             <h4 class="mb-0">{{ bar["name"] }}</h4>
           </div>
@@ -35,35 +41,14 @@ const loading = ref(false);
 const authStore = useAuthStore();
 const barsStore = useBarsStore();
 const loggedInUser = authStore.loggedInUser;
-const { bars } = storeToRefs(barsStore)
-
-onMounted(() => {
-  if (window.innerWidth >= 1100)
-    document.querySelectorAll(".page-header")[0].style.width = "1000px";
-
-    
-  if (JSON.parse(localStorage.getItem("bars"))) {
-    bars.value = JSON.parse(localStorage.getItem("bars"));
-    console.log(JSON.parse(localStorage.getItem("bars")))
-  }  
-  else{
-    getData();
-  }
-  
-
-});
+const { bars } = storeToRefs(barsStore);
 
 const getData = async () => {
-
-    loading.value = true;
-
-    await axiosUrl
+  loading.value = true;
+  await axiosUrl
     .get("/bars/mobile")
     .then((response) => {
-      
-      bars.value = response.data?.data
-      // localStorage.setItem("bars", JSON.stringify(response.data?.data));
-      console.log(JSON.stringify(response.data?.data))
+      bars.value = response.data?.data;
       loading.value = false;
     })
     .catch((error) => {
@@ -72,12 +57,20 @@ const getData = async () => {
     });
 };
 
+onMounted(() => {
+  if (window.innerWidth >= 1100)
+    document.querySelectorAll(".page-header")[0].style.width = "1000px";
+
+  if (bars.value.length === 0) {
+    getData();
+  }
+});
 </script>
 
 <style scoped>
 .dash-widget-icon {
   background-color: #004aad;
-  color: #FFFFFF;
+  color: #ffffff;
   font-size: 20px;
   height: 40px;
   line-height: 60px;
