@@ -1,5 +1,5 @@
 <template>
-  <div class="mx-3 pt-3">
+  <div class="pt-3">
     <Loading :active="loading" />
 
     <div class="container-fluid pb-0">
@@ -40,16 +40,7 @@
       </div>
     </div>
 
-    <div class="fixed-bottom">
-      <div class="d-flex bg-secondary">
-        <router-link :to="{ name: 'OrderPage', params: { id } }" class="w-50 border-end py-2 text-decoration-none">
-          <p class="text-center text-white mb-0">Order</p>
-        </router-link>
-        <div class="w-50 h-100 py-2">
-          <p class="text-center text-white mb-0">Sale</p>
-        </div>
-      </div>
-    </div>
+    <MobileFooter />
   </div>
 </template>
 
@@ -60,6 +51,7 @@ import { useBarsStore } from "@/store/barsStore";
 import { axiosUrl } from "@/env";
 import { useRoute } from "vue-router";
 import { storeToRefs } from "pinia";
+import MobileFooter from "@/components/MobileFooter.vue";
 import { swalErrorHandle } from "@/components/myHelperFunction";
 
 const loading = ref(false);

@@ -3,15 +3,11 @@
     <Loading :active="loading" />
     
     <div class="container-fluid pb-0">
-      <div class="page-header mb-sm-0">
-        <div class="row">
-          <div class="col-sm-12">
-            <h3 class="page-title">
-              Welcome {{ loggedInUser["username"].toUpperCase() }}
-            </h3>
-            <p>Bars </p>
-          </div>
-        </div>
+      <div class="page-header mb-3 text-center">
+        <h2 class="page-title">
+          Welcome {{ loggedInUser["username"].toUpperCase() }}
+        </h2>
+        <h4>Manage a bar</h4>
       </div>
 
       <div class="row mb-xl-4">
@@ -44,16 +40,30 @@ const { bars } = storeToRefs(barsStore)
 onMounted(() => {
   if (window.innerWidth >= 1100)
     document.querySelectorAll(".page-header")[0].style.width = "1000px";
+
+    
+  if (JSON.parse(localStorage.getItem("bars"))) {
+    bars.value = JSON.parse(localStorage.getItem("bars"));
+    console.log(JSON.parse(localStorage.getItem("bars")))
+  }  
+  else{
+    getData();
+  }
+  
+
 });
 
 const getData = async () => {
-  loading.value = true;
 
-  await axiosUrl
+    loading.value = true;
+
+    await axiosUrl
     .get("/bars/mobile")
     .then((response) => {
-      // console.log(response.data.data)
+      
       bars.value = response.data?.data
+      // localStorage.setItem("bars", JSON.stringify(response.data?.data));
+      console.log(JSON.stringify(response.data?.data))
       loading.value = false;
     })
     .catch((error) => {
@@ -62,9 +72,6 @@ const getData = async () => {
     });
 };
 
-onMounted(() => {
-  getData();
-});
 </script>
 
 <style scoped>
