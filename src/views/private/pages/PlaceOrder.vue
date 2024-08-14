@@ -7,7 +7,7 @@
         <input v-model="filters['global'].value" placeholder="Keyword Search" class="form-control my-input" />
       </div>
 
-      <DataTable v-if="bars[id]?.items.length > 0" class="shadow mb-5" v-model:filters="filters" :value="bars[id].items"
+      <DataTable v-if="bars[bar_id]?.items.length > 0" class="shadow mb-5" v-model:filters="filters" :value="bars[bar_id].items"
         :sortField="'name'" :sortOrder="1" stripedRows paginator :rows="10" :rowsPerPageOptions="[5, 10, 20, 50]" >
         <Column field="name" :sortable="true" header="All Drinks">
           <template #body="{ data }" class="text-center">
@@ -42,7 +42,7 @@ import { swalErrorHandle } from "@/components/myHelperFunction";
 const loading = ref(false);
 const barsStore = useBarsStore();
 const route = useRoute()
-const id = ref(null)
+// const id = ref(null)
 const { bars, bar_id } = storeToRefs(barsStore)
 
 const filters = ref({

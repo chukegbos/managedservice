@@ -13,21 +13,34 @@
             <i class="fas fa-dollar-sign"></i>
             <span>Sales</span>
         </div>
-        <div class="tab-item" @click="goToSearch">
-            <i class="fas fa-beer"></i>
-            <span>Inventory</span>
+        <div class="tab-item">
+            <router-link :to="{ name: 'BarPage', params: { id: bar_id } }" >
+                <i class="fas fa-beer"></i>
+                <span>Inventory</span>
+            </router-link>
         </div>
-        <div class="tab-item" @click="goToProfile">
-        <i class="fas fa-shopping-cart"></i>
-        <span>Book</span>
+        <div class="tab-item">
+            <router-link :to="{ name: 'PlaceOrder' }" >
+                <i class="fas fa-shopping-cart"></i>
+                <span>Place Order</span>
+            </router-link>
         </div>
     </div>
 </template>
 
 <script setup>
+    import { useBarsStore } from "@/store/barsStore";
+    import { storeToRefs } from "pinia";
+    const barsStore = useBarsStore();
+    const { bar_id } = storeToRefs(barsStore)
 </script>
 
 <style scoped>
+    a {
+        font-weight: bolder;
+        text-decoration: none !important;
+    }
+    
     .footer-tab-menu {
     display: flex;
     justify-content: space-around;

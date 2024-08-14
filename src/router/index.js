@@ -38,6 +38,13 @@ const routes = [
 			},
 
 			{
+				path: "/place-order",
+				name: "PlaceOrder",
+				component: () =>
+					import("@/views/private/pages/PlaceOrder.vue"),
+			},
+
+			{
 				path: "/order/:id",
 				name: "OrderPage",
 				component: () =>
