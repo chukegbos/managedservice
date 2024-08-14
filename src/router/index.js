@@ -31,24 +31,21 @@ const routes = [
 			},
 
 			{
-				path: "/bar/:id",
+				path: "/bar",
 				name: "BarPage",
-				component: () =>
-					import("@/views/private/pages/BarPage.vue"),
+				component: () => import("@/views/private/pages/BarPage.vue"),
 			},
 
 			{
 				path: "/place-order",
 				name: "PlaceOrder",
-				component: () =>
-					import("@/views/private/pages/PlaceOrder.vue"),
+				component: () => import("@/views/private/pages/PlaceOrder.vue"),
 			},
 
 			{
 				path: "/order/:id",
 				name: "OrderPage",
-				component: () =>
-					import("@/views/private/pages/OrderPage.vue"),
+				component: () => import("@/views/private/pages/OrderPage.vue"),
 			},
 
 			{
@@ -57,7 +54,6 @@ const routes = [
 				component: () =>
 					import("@/views/private/pages/PasswordView.vue"),
 			},
-
 		],
 	},
 ];

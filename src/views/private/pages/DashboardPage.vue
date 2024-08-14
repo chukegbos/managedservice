@@ -14,7 +14,7 @@
         <router-link
           v-for="(bar, index) in bars"
           :key="bar"
-          :to="{ name: 'BarPage', params: { id: index} }"
+          :to="'bar?id=' + index"
           class="col-12 mb-3 p-3 d-flex align-items-center shadow-lg text-decoration-none"
         >
           <div class="dash-widget-icon me-3">
@@ -35,7 +35,7 @@ import { useAuthStore } from "@/store/authStore";
 import { useBarsStore } from "@/store/barsStore";
 import { axiosUrl } from "@/env";
 import { storeToRefs } from "pinia";
-// import { formatDate, swalErrorHandle } from "@/components/myHelperFunction";
+import { formatDate, swalErrorHandle } from "@/components/myHelperFunction";
 
 const loading = ref(false);
 const authStore = useAuthStore();
@@ -58,12 +58,11 @@ const getData = async () => {
 };
 
 const getMembers = async () => {
-
   await axiosUrl
     .get("/members/mobile")
     .then((response) => {
       members.value = response.data?.data;
-      console.log(members.value)
+      console.log(members.value);
     })
     .catch((error) => {
       swalErrorHandle(error);
@@ -74,13 +73,12 @@ onMounted(() => {
   if (window.innerWidth >= 1100)
     document.querySelectorAll(".page-header")[0].style.width = "1000px";
 
-    if (bars.value.length === 0) {
+  if (bars.value.length === 0) {
     getData();
   }
   if (members.value.length === 0) {
     getMembers();
   }
-  
 });
 </script>
 
