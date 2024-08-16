@@ -3,25 +3,10 @@
     <Loading :active="loading" />
 
     <div>
-      <div class="mb-3">
-        <input v-model="filters['global'].value" placeholder="Keyword Search" class="form-control my-input" />
-      </div>
-
-      <DataTable v-if="bars[bar_id]?.items.length > 0" class="shadow mb-5" v-model:filters="filters" :value="bars[bar_id].items"
-        :sortField="'name'" :sortOrder="1" stripedRows paginator :rows="10" :rowsPerPageOptions="[5, 10, 20, 50]" >
-        <Column field="name" :sortable="true" header="All Drinks">
-          <template #body="{ data }" class="text-center">
-            <span class="text-info"><b>{{ data["name"] }} </b></span>
-            <br>Amount: <NairaSymbol /> {{ data["amount_sold"] }}
-            <br>
-            Quantity: <span class="text-success">{{ data["number"] }}</span>
-          </template>
-        </Column>
-       
-      </DataTable>
-
-      <div v-else class="mt-2 text-center text-danger">
-        <span v-if="!loading">No Drink Available</span>
+      <h4 class="text-center my-2"><b>Create Order</b></h4>
+      <div v-for="item in bars[id]?.items" :key="item.id" class="item">
+        <span>{{ item.name }} - ${{ item.price }}</span>
+        <button @click="addToCart(item)">Add to Cart</button>
       </div>
     </div>
 
@@ -38,7 +23,7 @@ import { useRoute } from "vue-router";
 import { storeToRefs } from "pinia";
 import MobileFooter from "@/components/MobileFooter.vue";
 import { swalErrorHandle } from "@/components/myHelperFunction";
-
+const id = ref()
 const loading = ref(false);
 const barsStore = useBarsStore();
 const route = useRoute()
@@ -51,7 +36,7 @@ const filters = ref({
 
 
 onMounted(() => {
-  bar_id.value = route.params.id
+  id.value = route.query.id
 });
 </script>
 

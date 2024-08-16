@@ -41,6 +41,11 @@ const routes = [
 				name: "PlaceOrder",
 				component: () => import("@/views/private/pages/PlaceOrder.vue"),
 			},
+			{
+				path: "/shopping-cart",
+				name: "ShoppingCart",
+				component: () => import("@/views/private/pages/ShoppingCart.vue"),
+			},
 
 			{
 				path: "/order/:id",

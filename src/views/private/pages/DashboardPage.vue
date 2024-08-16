@@ -11,11 +11,11 @@
       </div>
 
       <div class="row mb-xl-4">
-        <router-link
+        <div
           v-for="(bar, index) in bars"
           :key="bar"
-          :to="'bar?id=' + index"
-          class="col-12 mb-3 p-3 d-flex align-items-center shadow-lg text-decoration-none"
+          @click="navigateToBar(index)"
+          class="col-12 mb-3 p-3 d-flex align-items-center shadow-lg text-decoration-none cursor-pointer"
         >
           <div class="dash-widget-icon me-3">
             <i class="fa-solid fa-wine-bottle"></i>
@@ -23,7 +23,7 @@
           <div>
             <h4 class="mb-0">{{ bar["name"] }}</h4>
           </div>
-        </router-link>
+        </div>
       </div>
     </div>
   </div>
@@ -36,8 +36,11 @@ import { useBarsStore } from "@/store/barsStore";
 import { axiosUrl } from "@/env";
 import { storeToRefs } from "pinia";
 import { formatDate, swalErrorHandle } from "@/components/myHelperFunction";
+import { useRoute, useRouter } from "vue-router";
 
 const loading = ref(false);
+const route = useRoute();
+const router = useRouter();
 const authStore = useAuthStore();
 const barsStore = useBarsStore();
 const loggedInUser = authStore.loggedInUser;
@@ -67,6 +70,13 @@ const getMembers = async () => {
     .catch((error) => {
       swalErrorHandle(error);
     });
+};
+
+const navigateToBar = (index) => {
+  localStorage.setItem("bar_id", index);
+  router.push({
+    path: 'bar', query: { id: index }
+  });
 };
 
 onMounted(() => {
