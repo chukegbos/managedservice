@@ -12,47 +12,10 @@
                 </div>
             
                 <div class="col-12">
-                    <div v-if="allItems.length > 0">
-                        <div class="mb-2">
-                            <label>Select Member Type</label>
-                            <select v-model="memberType" class="form-control">
-                                <option value="0">Guest</option>
-                                <option value="1">Member</option>
-                            </select>
-                        </div>
-                        <div class="mb-2">
-                            <Dropdown
-                                v-if="memberType==1"
-                                v-model="membership_id"
-                                :options="members"
-                                filter="true"
-                                optionLabel="fullname"
-                                optionValue="membership_id"
-                                placeholder="---Select Member --"
-                                class="w-100" 
-                            />
-                        </div>
-                        <div class="mb-2">
-                            <label>Select Member Type</label>
-                            <select v-model="memberType" class="form-control">
-                                <option value="0">Guest</option>
-                                <option value="1">Member</option>
-                            </select>
-                        </div>
-                        <div class="mb-2">
-                            <Dropdown
-                                v-if="memberType==1"
-                                v-model="membership_id"
-                                :options="members"
-                                filter="true"
-                                optionLabel="fullname"
-                                optionValue="membership_id"
-                                placeholder="---Select Member --"
-                                class="w-100" 
-                            />
-                        </div>
+                    <div v-if="payData.allItems.length > 0">
+                        
                         <div class="list-all mb-2">
-                            <div v-for="item in allItems" :key="item.id" class="list-item">
+                            <div v-for="item in payData.allItems" :key="item.id" class="list-item">
                                 <div class="item-details">
                                     <div class="item-name">{{ item.name }}</div>
                                     <div class="item-info">
@@ -71,9 +34,69 @@
                                 </div>
                             </div>
                         </div>
-                        
+                        <div class="mb-2">
+                            <label>Select Member Type</label>
+                            <select v-model="payData.memberType" class="form-control">
+                                <option value="0">Guest</option>
+                                <option value="1">Member</option>
+                            </select>
+                        </div>
+                        <div class="mb-2" v-if="payData.memberType==1">
+                            <Dropdown
+                                v-model="payData.membership_id"
+                                :options="members"
+                                filter="true"
+                                optionLabel="fullname"
+                                optionValue="membership_id"
+                                placeholder="---Select Member --"
+                                class="w-100" 
+                            />
+                        </div>
+
+                        <div class="mb-2">
+                            <label class="col-form-label fs-6">Channel</label>
+                            <select
+                                v-model="payData.channel_id"
+                                class="form-control"
+                                required
+                            >
+                                <option value="null">-- Select Type--</option>
+                                <option v-for="data in channels" :key="data" :value="data.id">
+                                {{ data["name"] }}
+                                </option>
+                            </select>
+                        </div>
+
+                        <div class="mb-2" v-if="payData.channel_id === 1">
+                            <label class="col-form-label fs-6">POS</label>
+                            <select
+                                v-model="payData.process_id"
+                                class="form-control"
+                                required
+                            >
+                                <option value="null">-- Select Type--</option>
+                                <option v-for="data in pos" :key="data" :value="data.id">
+                                {{ data["name"] }}
+                                </option>
+                            </select>
+                        </div>
+
+                        <div class="mb-2" v-if="payData.channel_id === 3">
+                            <label class="col-form-label fs-6">Bank</label>
+                            <select
+                                v-model="payData.process_id"
+                                class="form-control"
+                                required
+                            >
+                                <option value="null">-- Select Type--</option>
+                                <option v-for="data in banks" :key="data" :value="data.id">
+                                {{ data["bank_name"] }} - {{ data["account_number"] }}
+                                </option>
+                            </select>
+                        </div>
+
                         <div class="d-grid mb-2">
-                            <button class="btn btn-info">Submit</button>
+                            <button class="btn btn-info" @click="onSubmit()">Submit</button>
                         </div>
                     </div>
 
@@ -89,27 +112,22 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from "vue";
+import { ref, reactive, onMounted } from "vue";
 import { FilterMatchMode } from 'primevue/api';
 import { useBarsStore } from "@/store/barsStore";
 import { axiosUrl } from "@/env";
-import { useRoute } from "vue-router";
 import { storeToRefs } from "pinia";
 import { computed } from 'vue';
 import MobileFooter from "@/components/MobileFooter.vue";
-import { swalErrorHandle } from "@/components/myHelperFunction";
+import { swalErrorHandle, swalSuccessHandle } from "@/components/myHelperFunction";
+import { useRoute, useRouter } from "vue-router";
 
 
+const route = useRoute();
+const router = useRouter();
 const loading = ref(false);
 const barsStore = useBarsStore();
-const route = useRoute();
-
-const memberType = ref(0);
-const allItems = ref([]);
-const membership_id = ref();
-
-const nairaSign = ref("&#x20A6;")
-const { bars, members } = storeToRefs(barsStore);
+const { bars, members, channels, banks, pos, sales } = storeToRefs(barsStore);
 const inventory = computed(() => {
     const carts = JSON.parse(localStorage.getItem('cart'));
     const groupedById = carts.reduce((acc, item) => {
@@ -128,8 +146,17 @@ const inventory = computed(() => {
     return Object.values(groupedById).map(group => group.items[0]);
 });
 
+const payData = ref({
+    memberType: ref(0),
+    membership_id: ref(),
+    transaction_code: ref(),
+    channel_id: null,
+    process_id: null,
+    allItems: ref([]) 
+});
+
 const totalSum = computed(() => {
-    return allItems.value.reduce((sum, item) => {
+    return payData.value.allItems.reduce((sum, item) => {
         return sum + (item.amount_sold * item.qty);
     }, 0);
 });
@@ -143,8 +170,79 @@ const formatCurrency = (value) => {
     }).format(value).replace('NGN', '');
 }
 
+const onSubmit = async (type, id) => {
+    // console.log(payData.value);
+    const url = "/sale";
+    let payload = {
+        items: payData.value.allItems,
+        memberType: payData.value.memberType,
+        membership_id: payData.value.membership_id,
+        channel_id: payData.value.channel_id,
+        process_id: payData.value.process_id,
+        totalSum: totalSum.value
+    };
+    loading.value = true;
+
+    await axiosUrl
+    .post(url, payload)
+    .then((response) => {
+        loading.value = false;
+        getData();
+        getMembers();
+        getSales();
+        const code = response.data.data
+        
+        swalSuccessHandle('Sale done successfully');
+        router.push({
+            path: "/receipt/" + code,
+        });
+    
+    })
+    .catch((error) => {
+        console.log(error)
+        loading.value = false;
+        swalErrorHandle(error);
+    });
+};
+
+const getData = async () => {
+  loading.value = true;
+  await axiosUrl
+    .get("/bars/mobile")
+    .then((response) => {
+      bars.value = response.data?.data;
+      loading.value = false;
+    })
+    .catch((error) => {
+      loading.value = false;
+      swalErrorHandle(error);
+    });
+};
+
+const getMembers = async () => {
+  await axiosUrl
+    .get("/members/mobile")
+    .then((response) => {
+      members.value = response.data?.data;
+    })
+    .catch((error) => {
+      swalErrorHandle(error);
+    });
+};
+
+const getSales = async () => {
+  await axiosUrl
+    .get("/sale")
+    .then((response) => {
+      sales.value = response.data.data;
+    })
+    .catch((error) => {
+      swalErrorHandle(error);
+    });
+};
+
 onMounted(() => {
-    allItems.value = inventory.value;
+    payData.value.allItems = inventory.value;
 });
 </script>
 

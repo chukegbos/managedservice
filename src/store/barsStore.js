@@ -5,6 +5,10 @@ export const useBarsStore = defineStore("bars", {
 		bars: [],
 		members: [],
 		orders: [],
+		channels: [],
+		pos: [],
+		banks: [],
+		sales: [],
 		bar_id: '',
 	}),
 

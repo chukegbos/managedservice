@@ -1,22 +1,17 @@
 <template>
     <div class="footer-tab-menu">
-        <div class="tab-item" @click="goToHome">
-            <i class="fas fa-dollar-sign"></i>
-            <span>Sales</span>
-        </div>
         <div class="tab-item">
-            {{bar_id}}
-            <router-link   :to="'bar?id=' + id">
+            <router-link :to="'bar?id=' + id">
                 <i class="fas fa-beer"></i>
                 <span>Inventory</span>
             </router-link>
         </div>
-        <!-- <div class="tab-item">
-            <router-link  :to="'place-order?id=' + id">
-                <i class="fas fa-shopping-cart"></i>
-                <span>Place Order</span>
+        <div class="tab-item">
+            <router-link :to="'sales?id=' + id">
+                <i class="fas fa-dollar-sign"></i>
+                <span>Sales</span>
             </router-link>
-        </div> -->
+        </div>
     </div>
 </template>
 

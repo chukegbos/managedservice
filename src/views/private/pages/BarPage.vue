@@ -22,7 +22,7 @@
               <template #body="{ data }">
                 <div class="float-start">
                   <span class="text-info"><b>{{ data["name"] }} </b></span>
-                  <br>Amount: <NairaSymbol /> {{ data["amount_sold"] }}
+                  <br>Amount: {{ formatCurrency(data["amount_sold"]) }}
                 </div>
                 <div class="float-end">
                     Available: <span class="text-success">{{ data.number }}</span><br>
@@ -69,6 +69,14 @@ const getArray = () => {
   const cart = localStorage.getItem('cart');
   return cart ? JSON.parse(cart) : [];
 };
+const formatCurrency = (value) => {
+    return new Intl.NumberFormat('en-NG', {
+    style: 'currency',
+    currency: 'NGN',
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2
+    }).format(value).replace('NGN', '');
+}
 
 const addToCart = (data) => {
   const cart = getArray();

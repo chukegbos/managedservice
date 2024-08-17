@@ -44,7 +44,7 @@ const router = useRouter();
 const authStore = useAuthStore();
 const barsStore = useBarsStore();
 const loggedInUser = authStore.loggedInUser;
-const { bars, members } = storeToRefs(barsStore);
+const { bars, members, channels, banks, pos, sales } = storeToRefs(barsStore);
 
 const getData = async () => {
   loading.value = true;
@@ -72,6 +72,47 @@ const getMembers = async () => {
     });
 };
 
+const getSales = async () => {
+  await axiosUrl
+    .get("/sale")
+    .then((response) => {
+      sales.value = response.data.data;
+    })
+    .catch((error) => {
+      swalErrorHandle(error);
+    });
+};
+
+const getChannel = async () => {
+  await axiosUrl
+    .get("/payments/channels")
+    .then((response) => {
+      channels.value = response.data.data;
+    })
+    .catch((error) => {
+    });
+};
+
+const getBanks = async () => {
+  await axiosUrl
+    .get("/payments/bank")
+    .then((response) => {
+      banks.value = response.data.data;
+    })
+    .catch((error) => {
+    });
+};
+
+const getPOS = async () => {
+  await axiosUrl
+    .get("/payments/pos")
+    .then((response) => {
+      pos.value = response.data.data;
+    })
+    .catch((error) => {
+    });
+};
+
 const navigateToBar = (index) => {
   localStorage.setItem("bar_id", index);
   router.push({
@@ -88,6 +129,20 @@ onMounted(() => {
   }
   if (members.value.length === 0) {
     getMembers();
+  }
+
+  if (sales.value.length === 0) {
+    getSales();
+  }
+
+  if (channels.value.length === 0) {
+    getChannel();
+  }
+  if (banks.value.length === 0) {
+    getBanks();
+  }
+  if (pos.value.length === 0) {
+    getPOS();
   }
 });
 </script>

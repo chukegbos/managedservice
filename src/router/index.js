@@ -37,6 +37,13 @@ const routes = [
 			},
 
 			{
+				path: "/sales",
+				name: "SalesPage",
+				component: () => import("@/views/private/pages/Sales.vue"),
+			},
+
+
+			{
 				path: "/place-order",
 				name: "PlaceOrder",
 				component: () => import("@/views/private/pages/PlaceOrder.vue"),
@@ -53,6 +60,12 @@ const routes = [
 				component: () => import("@/views/private/pages/OrderPage.vue"),
 			},
 
+			{
+				path: "/receipt/:code",
+				name: "Receipt",
+				component: () => import("@/views/private/pages/Receipt.vue"),
+			},
+			
 			{
 				path: "/change-password",
 				name: "ChangePassword",
