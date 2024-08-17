@@ -3,21 +3,29 @@
         <div class="container content">
             <Loading :active="loading" />
             <div class="row">
-                <div class="col-6">
+                <div class="col-12">
                     <h4 class="mx-1">Shopping Cart</h4>
                 </div>
                 
                 <div class="col-6">
-                    <h4 class="mx-1"><b>{{ formatCurrency(totalSum) }}</b></h4>
+                    <h4 class="">Total: <b>{{ formatCurrency(totalSum) }}</b></h4>
                 </div>
-            
+                
+                <div class="col-6">
+                    <button class="btn btn-info btn-sm float-end text-white">Add More</button>
+                </div>
+
                 <div class="col-12">
                     <div v-if="payData.allItems.length > 0">
                         
                         <div class="list-all mb-2">
                             <div v-for="item in payData.allItems" :key="item.id" class="list-item">
                                 <div class="item-details">
-                                    <div class="item-name">{{ item.name }}</div>
+                                    <div class="item-info">
+                                        <b>{{ item.name }}</b>
+                                        <span class="item-price" @click="removeItem(index)"><i class="fa fa-times text-danger"></i></span>
+                                    </div>
+                                    
                                     <div class="item-info">
                                         <span class="item-available">Available: {{ item.number }}</span>
                                         <span class="item-price">Unit Price: {{ formatCurrency(item.amount_sold) }}</span>
@@ -145,6 +153,14 @@ const inventory = computed(() => {
 
     return Object.values(groupedById).map(group => group.items[0]);
 });
+
+const removeItem = (index) => {
+    // Remove the item from the items array
+    payData.value.allItems.splice(index, 1);
+    
+    // Update the items in localStorage
+    localStorage.setItem('cart', JSON.stringify(payData.value.allItems));
+}
 
 const payData = ref({
     memberType: ref(0),
