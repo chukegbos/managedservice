@@ -35,7 +35,7 @@ import { useAuthStore } from "@/store/authStore";
 import { useBarsStore } from "@/store/barsStore";
 import { axiosUrl } from "@/env";
 import { storeToRefs } from "pinia";
-import { formatDate, swalErrorHandle } from "@/components/myHelperFunction";
+import { swalErrorHandle } from "@/components/myHelperFunction";
 import { useRoute, useRouter } from "vue-router";
 
 const loading = ref(false);
