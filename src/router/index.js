@@ -178,6 +178,19 @@ const routes = [
 				component: () =>
 					import("@/views/private/pages/bars/BarView.vue"),
 			},
+
+			{
+				path: "/sales",
+				name: "Sales",
+				component: () =>
+					import("@/views/private/pages/sales/Allsales.vue"),
+			},
+			// {
+			// 	path: "/members/view/:membershipID",
+			// 	name: "MemberView",
+			// 	component: () =>
+			// 		import("@/views/private/pages/members/MemberView.vue"),
+			// },
 		],
 	},
 ];
