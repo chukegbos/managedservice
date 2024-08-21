@@ -189,7 +189,7 @@
                           <span class="font-medium">Wallet</span>
                         </router-link>
                       </li>
-<!-- 
+                      <!-- 
                       <li>
                         <router-link
                           to="/wallet/pending"
@@ -341,22 +341,22 @@
                     >
                       <li>
                         <router-link
-                          to="/payment/products"
+                          to="/inventory/product-categories"
                           v-ripple
                           class="text-decoration-none flex align-items-center cursor-pointer p-3 border-round text-700 hover:surface-100 transition-duration-150 transition-colors p-ripple"
                         >
                           <i class="pi pi-chart-line mr-2"></i>
-                          <span class="font-medium">Product List</span>
+                          <span class="font-medium">Product Category</span>
                         </router-link>
                       </li>
                       <li>
                         <router-link
-                          to="/payment/debits"
+                          to="/inventories/products"
                           v-ripple
                           class="text-decoration-none flex align-items-center cursor-pointer p-3 border-round text-700 hover:surface-100 transition-duration-150 transition-colors p-ripple"
                         >
                           <i class="pi pi-chart-line mr-2"></i>
-                          <span class="font-medium">Product Group</span>
+                          <span class="font-medium">Product Inventories</span>
                         </router-link>
                       </li>
                     </ul>
@@ -454,6 +454,48 @@
                           <span class="font-medium">Sales Order</span>
                         </router-link>
                       </li>
+                    </ul>
+                  </li>
+
+                  <li>
+                    <a
+                      v-ripple
+                      v-styleclass="{
+                        selector: '@next',
+                        enterClass: 'hidden',
+                        enterActiveClass: 'slidedown',
+                        leaveToClass: 'hidden',
+                        leaveActiveClass: 'slideup',
+                      }"
+                      class="text-decoration-none flex align-items-center cursor-pointer p-3 border-round text-700 hover:surface-100 transition-duration-150 transition-colors p-ripple"
+                    >
+                      <i class="pi pi-comments mr-2"></i>
+                      <span class="font-medium">Purchase Management</span>
+                      <i class="pi pi-chevron-down ml-auto"></i>
+                    </a>
+                    <ul
+                      class="list-none py-0 pl-3 pr-0 m-0 hidden overflow-y-hidden transition-all transition-duration-400 transition-ease-in-out"
+                    >
+                      <li>
+                        <router-link
+                          to="/purchase"
+                          v-ripple
+                          class="text-decoration-none flex align-items-center cursor-pointer p-3 border-round text-700 hover:surface-100 transition-duration-150 transition-colors p-ripple"
+                        >
+                          <i class="pi pi-chart-line mr-2"></i>
+                          <span class="font-medium">Purchases</span>
+                        </router-link>
+                      </li>
+                      <!-- <li>
+                        <router-link
+                          to="/payment/debits"
+                          v-ripple
+                          class="text-decoration-none flex align-items-center cursor-pointer p-3 border-round text-700 hover:surface-100 transition-duration-150 transition-colors p-ripple"
+                        >
+                          <i class="pi pi-chart-line mr-2"></i>
+                          <span class="font-medium">Sales Order</span>
+                        </router-link>
+                      </li> -->
                     </ul>
                   </li>
                 </ul>

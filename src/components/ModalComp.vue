@@ -6,7 +6,7 @@
           <header
             class="d-flex justify-content-between align-items-center px-3 py-3 border-bottom"
           >
-            <p class="fw-bold text-secondary">{{ title }}</p>
+            <p class="fw-bold text-secondary mb-0">{{ title }}</p>
             <div class="cursor-pointer" @click="$emit('close')">
               <svg
                 width="15"

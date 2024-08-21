@@ -1,0 +1,656 @@
+<template>
+  <div class="content-wrapper">
+    <loading :active="isLoading" />
+
+    <div class="container">
+      {{ createPayload }}
+      <h2 class="mt-3">Items Purchase</h2>
+      <div class="d-flex mb-3">
+        <p class="mb-0">Create Product</p>
+        <p class="mb-0 ms-3">Create Supplier</p>
+      </div>
+
+      <div class="shadow p-4 rounded">
+        <div class="d-flex justify-content-between border-bottom pb-3">
+          <div class="w-25">
+            <label class="form-label fs-6">Select Supplier</label>
+            <Dropdown
+              class="w-100"
+              v-model="createPayload.supplier_id"
+              optionLabel="supplier_name"
+              optionValue="id"
+              :options="suppliers"
+              :disabled="isLoading || suppliers.length === 0"
+              filter
+              placeholder=""
+            />
+          </div>
+
+          <div class="w-25">
+            <label class="form-label fs-6">Type of Purchase </label>
+            <Dropdown
+              class="w-100"
+              v-model="createPayload.mode_of_payment_id"
+              optionLabel="name"
+              optionValue="id"
+              :options="payment_channels"
+              :disabled="isLoading || payment_channels.length === 0"
+              filter
+              placeholder=""
+            />
+          </div>
+
+          <div class="w-25">
+            <label class="form-label fs-6">Date of Purchase</label>
+            <div>
+              <Calendar
+                v-model="createPayload.date_of_purchase"
+                class="w-100"
+              />
+            </div>
+          </div>
+        </div>
+
+        <div class="mt-4">
+          <table class="table" style="font-size: 14px">
+            <thead>
+              <tr>
+                <th scope="col" style="width: 20%">Product</th>
+                <th scope="col" style="width: 10%">Pack</th>
+                <th scope="col" style="width: 10%">Quantity</th>
+                <th scope="col" style="width: 15%">
+                  Unit Cost Price (₦/Crate)
+                </th>
+                <th scope="col" style="width: 15%">
+                  Unit Cost Price (₦/Bottle)
+                </th>
+                <th scope="col" style="width: 15%">
+                  Unit Selling Price (₦/Bottle)
+                </th>
+                <th scope="col" style="width: 10%">
+                  Total Cost Price (₦/Crate)
+                </th>
+                <th scope="col" style="width: 5%"></th>
+              </tr>
+            </thead>
+            <tbody v-for="(item, i) in createPayload.items" :key="item">
+              <tr>
+                <td>
+                  <Dropdown
+                    class="w-100"
+                    @change="
+                      updateField(i, createPayload.items[i].product_code)
+                    "
+                    v-model="createPayload.items[i].product_code"
+                    optionLabel="product_name"
+                    optionValue="product_code"
+                    :options="products"
+                    :disabled="isLoading || products.length === 0"
+                    filter
+                    placeholder=""
+                  />
+                </td>
+                <td>
+                  <input
+                    type="number"
+                    class="form-control"
+                    @input="productInput(i, 'pack')"
+                    v-model="createPayload.items[i].pack"
+                    :disabled="createPayload.items[i].product_code === ''"
+                  />
+                </td>
+                <td>
+                  <p
+                    class="bg-secondary text-white p-2 rounded mb-0 text-center"
+                    style="width: fit-content"
+                  >
+                    {{
+                      createPayload.items[i].quantity
+                        ? createPayload.items[i].quantity
+                        : "0"
+                    }}
+                  </p>
+                </td>
+                <td>
+                  <input
+                    type="number"
+                    class="form-control"
+                    @input="productInput(i, 'crate')"
+                    v-model="createPayload.items[i].unit_cost_price_crate"
+                    :disabled="createPayload.items[i].product_code === ''"
+                  />
+                </td>
+                <td>
+                  <input
+                    type="number"
+                    class="form-control"
+                    @input="productInput(i, 'bottle')"
+                    v-model="createPayload.items[i].unit_cost_price"
+                    :disabled="createPayload.items[i].product_code === ''"
+                  />
+                </td>
+                <td>
+                  <input
+                    type="number"
+                    class="form-control"
+                    v-model="createPayload.items[i].unit_sell_price"
+                    :disabled="createPayload.items[i].product_code === ''"
+                  />
+                </td>
+                <td>
+                  <p
+                    class="bg-secondary text-white p-2 rounded mb-0 text-center"
+                    style="width: fit-content"
+                  >
+                    {{
+                      createPayload.items[i].total_cost_price
+                        ? createPayload.items[i].total_cost_price
+                        : "0.00"
+                    }}
+                  </p>
+                </td>
+                <td>
+                  <button
+                    @click="deleteField(i)"
+                    class="btn btn-sm btn-danger rounded py-2"
+                  >
+                    Delete
+                  </button>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="d-flex justify-content-between">
+          <button class="btn btn-sm btn-warning text-white" @click="addField()">
+            Add Field
+            {{
+              createPayload.supplier_id === null ||
+              createPayload.supplier_id === "" ||
+              createPayload.mode_of_payment_id === null ||
+              createPayload.mode_of_payment_id === "" ||
+              createPayload.date_of_purchase === null ||
+              createPayload.date_of_purchase === ""
+            }}
+          </button>
+          <button
+            class="btn btn-sm btn-success"
+            :disabled="
+              createPayload.supplier_id === null ||
+              createPayload.supplier_id === '' ||
+              createPayload.mode_of_payment_id === null ||
+              createPayload.mode_of_payment_id === '' ||
+              createPayload.date_of_purchase === null ||
+              createPayload.date_of_purchase === ''
+            "
+            @click="createPurchase()"
+          >
+            Save
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <ModalComp
+      :isToggled="isToggled"
+      :title="modalParams.title"
+      @close="isToggled = false"
+    >
+      <form
+        @submit.prevent="onSubmit(modalParams.title, currentEditID)"
+        class="container"
+      >
+        <div class="row fs-14 align-items-end">
+          <div class="input-block col-12 col-md-6">
+            <label class="col-form-label fs-6">Supplier Name</label>
+            <input
+              class="form-control"
+              type="text"
+              v-model="modalForm.supplier_name"
+              required
+            />
+          </div>
+
+          <div class="input-block col-12 col-md-6">
+            <label class="col-form-label fs-6">Contact Person</label>
+            <input
+              class="form-control"
+              type="text"
+              v-model="modalForm.contact_person"
+              required
+            />
+          </div>
+
+          <div class="input-block col-12 col-md-6">
+            <label class="col-form-label fs-6">Email</label>
+            <input
+              class="form-control"
+              type="email"
+              v-model="modalForm.email"
+              required
+            />
+          </div>
+
+          <div class="input-block col-12 col-md-6">
+            <label class="col-form-label fs-6">Phone Number</label>
+            <input
+              class="form-control"
+              type="text"
+              v-model="modalForm.phone"
+              maxlength="11"
+              @input="handleInput($event)"
+              placeholder=""
+            />
+          </div>
+
+          <div class="input-block col-12">
+            <label class="col-form-label fs-6">Address</label>
+            <input
+              class="form-control"
+              type="text"
+              v-model="modalForm.address"
+              required
+            />
+          </div>
+
+          <div class="input-block col-12 col-md-6">
+            <label class="col-form-label fs-6"
+              >Bank Name
+              <MiniSpinner v-if="banksLoading" />
+              <span
+                class="text-primary"
+                v-if="bankDetails.account_name"
+                style="font-size: 12px"
+                ><small>({{ bankDetails.account_name }})</small></span
+              ></label
+            >
+            <Dropdown
+              class="w-100"
+              v-model="modalForm.bank_name"
+              optionLabel="name"
+              optionValue="code"
+              :options="banks"
+              :disabled="
+                banksLoading || banks.length === 0 || bankVerifyLoading
+              "
+              filter
+              placeholder=""
+            />
+          </div>
+
+          <div class="input-block col-12 col-md-6">
+            <label class="col-form-label fs-6"
+              >Account Number
+              <MiniSpinner v-if="bankVerifyLoading" />
+            </label>
+            <input
+              class="form-control"
+              type="text"
+              v-model="modalForm.bank_account"
+              maxlength="10"
+              @input="handleInput2($event)"
+              placeholder=""
+              :disabled="bankVerifyLoading"
+            />
+          </div>
+
+          <div class="col-12">
+            <button class="btn btn-primary account-btn w-100" type="submit">
+              Submit
+            </button>
+          </div>
+        </div>
+      </form>
+    </ModalComp>
+  </div>
+</template>
+
+<script setup>
+import { axiosUrl } from "@/env";
+import { ref, reactive, onMounted } from "vue";
+import { FilterMatchMode } from "primevue/api";
+import Swal from "sweetalert2";
+import { useAuthStore } from "@/store/authStore";
+import { formatDate, swalErrorHandle } from "@/components/myHelperFunction";
+import { Modal, ModalContent, open, close } from "@dimsog/vue-modal";
+// import MiniSpinner from "@/components/MiniSpinner.vue";
+
+const isToggled = ref(false);
+const isLoading = ref(false);
+const bankVerifyLoading = ref(false);
+const banksLoading = ref(false);
+const authStore = useAuthStore();
+const loggedInUser = authStore.loggedInUser;
+const payment_channels = ref([]);
+const products = ref([]);
+const suppliers = ref([]);
+const items = ref([]);
+const banks = ref([]);
+const bankDetails = ref([]);
+const selected = ref([]);
+const selectAll = ref("");
+const currentEditID = ref();
+const createPayload = ref({
+  supplier_id: null,
+  mode_of_payment_id: null, //Cash Payment or Credit Payment
+  date_of_purchase: "",
+  amount_paid: null,
+  items: [
+    {
+      product_code: "",
+      product_name: "",
+      quantity: null,
+      pack: null,
+      unit_cost_price: null,
+      unit_cost_price_crate: null,
+      unit_sell_price: null,
+      total_cost_price: null,
+    },
+  ],
+});
+
+const filters = ref({
+  global: { value: null, matchMode: FilterMatchMode.CONTAINS },
+});
+
+const modalParams = reactive({
+  title: "",
+});
+
+const modalForm = reactive({
+  supplier_name: "",
+  contact_person: "",
+  email: "",
+  phone: null,
+  address: "",
+  bank_name: "",
+  bank_account: "",
+  account_name: "",
+});
+
+const addField = () => {
+  let newField = {
+    product_code: "",
+    product_name: "",
+    quantity: null,
+    pack: null,
+    unit_cost_price: null,
+    unit_cost_price_crate: null,
+    unit_sell_price: null,
+    total_cost_price: null,
+  };
+  createPayload.value.items.push(newField);
+};
+
+const deleteField = (id) => {
+  createPayload.value.items.splice(id, 1);
+};
+
+const updateField = (id, productCode) => {
+  let filteredItems = products.value.filter(
+    (item) => item.product_code === productCode
+  );
+  // console.log(filteredItems[0].product_name);
+
+  createPayload.value.items[id].product_code = productCode;
+  createPayload.value.items[id].product_name = filteredItems[0].product_name;
+  if (createPayload.value.items[id].pack === null)
+    createPayload.value.items[id].pack = 1;
+
+  createPayload.value.items[id].quantity =
+    filteredItems[0].number_per_pack * createPayload.value.items[id].pack;
+  createPayload.value.items[id].unit_cost_price = filteredItems[0].cost_price;
+  createPayload.value.items[id].unit_sell_price = filteredItems[0].sell_price;
+  createPayload.value.items[id].unit_cost_price_crate =
+    createPayload.value.items[id].unit_cost_price *
+    filteredItems[0].number_per_pack;
+  createPayload.value.items[id].total_cost_price =
+    createPayload.value.items[id].unit_cost_price_crate *
+    createPayload.value.items[id].pack;
+};
+
+const productInput = (id, type) => {
+  let filteredItems = products.value.filter(
+    (item) => item.product_code === createPayload.value.items[id].product_code
+  );
+
+  switch (type) {
+    case "pack":
+      createPayload.value.items[id].quantity =
+        filteredItems[id].number_per_pack * createPayload.value.items[id].pack;
+      createPayload.value.items[id].total_cost_price =
+        createPayload.value.items[id].unit_cost_price_crate *
+        createPayload.value.items[id].pack;
+      break;
+    case "crate":
+      createPayload.value.items[id].total_cost_price =
+        createPayload.value.items[id].unit_cost_price_crate *
+        createPayload.value.items[id].pack;
+      createPayload.value.items[id].unit_cost_price = parseInt(
+        createPayload.value.items[id].unit_cost_price_crate /
+          filteredItems[0].number_per_pack
+      );
+      break;
+    case "bottle":
+      createPayload.value.items[id].unit_cost_price_crate = parseInt(
+        createPayload.value.items[id].unit_cost_price *
+          filteredItems[0].number_per_pack
+      );
+      createPayload.value.items[id].total_cost_price =
+        createPayload.value.items[id].unit_cost_price_crate *
+        createPayload.value.items[id].pack;
+      break;
+    default:
+      break;
+  }
+};
+
+const handleInput = (event) => {
+  // Remove non-digit characters
+  modalForm.phone = event.target.value.replace(/\D/g, "").slice(0, 11);
+};
+
+const handleInput2 = (event) => {
+  // Remove non-digit characters
+  modalForm.bank_account = event.target.value.replace(/\D/g, "").slice(0, 10);
+  if (modalForm.bank_account.length === 10) {
+    // console.log(modalForm.bank_account);
+    verifyAccDetails(modalForm.bank_account, modalForm.bank_name);
+  }
+};
+
+const verifyAccDetails = async (a, b) => {
+  if (a.toString().length < 10 || b === "" || b === null || b === undefined)
+    return;
+  bankVerifyLoading.value = true;
+  bankDetails.value = [];
+  await axiosUrl
+    .post("/get-bank", {
+      account_number: a,
+      bank_id: b,
+    })
+    .then((response) => {
+      bankVerifyLoading.value = false;
+      console.log(response.data);
+      if (response.data.status === false) {
+        Swal.fire("Failed!", response.data.message, "warning");
+      } else {
+        bankDetails.value = response.data?.data;
+      }
+    })
+    .catch((error) => {
+      bankVerifyLoading.value = false;
+      swalErrorHandle(error);
+    });
+};
+
+const createPurchase = async () => {
+  console.log(createPayload.value);
+  if (
+    createPayload.value.supplier_id === null ||
+    createPayload.value.supplier_id === ""
+  )
+    return;
+  if (
+    createPayload.value.mode_of_payment_id === null ||
+    createPayload.value.mode_of_payment_id === ""
+  )
+    return;
+  if (
+    createPayload.value.date_of_purchase === null ||
+    createPayload.value.date_of_purchase === ""
+  )
+    return;
+  // if (
+  //   createPayload.value.amount_paid === null ||
+  //   createPayload.value.amount_paid === ""
+  // )
+  //   return;
+
+  isLoading.value = true;
+  await axiosUrl
+    .post("/purchase", createPayload.value)
+    .then((response) => {
+      isLoading.value = false;
+      console.log(response.data);
+    })
+    .catch((error) => {
+      isLoading.value = false;
+      swalErrorHandle(error);
+    });
+};
+
+const getSupplyManagement = async () => {
+  isLoading.value = true;
+
+  await axiosUrl
+    .get("/purchase/list")
+    .then((response) => {
+      items.value = response.data.data;
+
+      payment_channels.value = response.data.data.payment_channels;
+      products.value = response.data.data.products;
+      suppliers.value = response.data.data.suppliers;
+      isLoading.value = false;
+    })
+    .catch((error) => {
+      isLoading.value = false;
+      swalErrorHandle(error);
+    });
+};
+
+const onSubmit = async (type, id) => {
+  let url = "/suppliers";
+  let payload = {};
+  if (type === "Add Supply") {
+    if (bankDetails.value.length === 0) return;
+    url = "suppliers";
+    payload = modalForm;
+  } else if (type === "delete") {
+    url = "/suppliers";
+    payload = {
+      ids: selected.value,
+    };
+  } else if (type === "Edit Supply") {
+    url = "/suppliers" + id;
+    payload = modalForm;
+  } else return;
+
+  close("supply-management-modal");
+  isLoading.value = true;
+  if (type === "delete") {
+    await axiosUrl
+      .delete(url, { data: payload })
+      .then(() => {
+        isLoading.value = false;
+        selected.value = [];
+        selectAll.value = false;
+        getSupplyManagement();
+      })
+      .catch((error) => {
+        isLoading.value = false;
+        swalErrorHandle(error);
+      });
+  } else if (type === "Edit Supply") {
+    await axiosUrl
+      .put(url, payload)
+      .then(() => {
+        isLoading.value = false;
+
+        modalForm.name = "";
+        modalParams.title = "";
+
+        getSupplyManagement();
+      })
+      .catch((error) => {
+        isLoading.value = false;
+        swalErrorHandle(error);
+      });
+  } else {
+    await axiosUrl
+      .post(url, payload)
+      .then(() => {
+        isLoading.value = false;
+
+        modalForm.name = "";
+        modalParams.title = "";
+
+        isToggled.value = false;
+        getSupplyManagement();
+      })
+      .catch((error) => {
+        isLoading.value = false;
+        swalErrorHandle(error);
+      });
+  }
+};
+
+const openModal = (type, id, name) => {
+  if (type === "add") modalParams.title = "Add Supply";
+  else if (type === "edit") {
+    modalParams.title = "Edit Supply";
+    modalForm.name = name;
+    currentEditID.value = id;
+  }
+
+  // open("supply-management-modal");
+  isToggled.value = true;
+};
+
+const toggleAll = () => {
+  if (selectAll.value)
+    for (let i = 0; i < items.value.length; i++)
+      selected.value.push(items.value[i].id);
+  else selected.value = [];
+};
+
+const getAllBanks = async () => {
+  banksLoading.value = true;
+
+  await axiosUrl
+    .get("/allbanks")
+    .then((response) => {
+      banks.value = response.data;
+      banksLoading.value = false;
+    })
+    .catch((error) => {
+      banksLoading.value = false;
+      swalErrorHandle(error);
+    });
+};
+
+onMounted(() => {
+  getSupplyManagement();
+  // getAllBanks();
+});
+</script>
+
+<style scoped>
+</style>
+
+<style>
+.p-inputtext {
+  padding: 6px 12px !important;
+}
+</style>
