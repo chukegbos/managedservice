@@ -436,7 +436,7 @@
                     >
                       <li>
                         <router-link
-                          to="/payment/products"
+                          to="/purchase"
                           v-ripple
                           class="text-decoration-none flex align-items-center cursor-pointer p-3 border-round text-700 hover:surface-100 transition-duration-150 transition-colors p-ripple"
                         >
@@ -457,7 +457,7 @@
                     </ul>
                   </li>
 
-                  <li>
+                  <!-- <li>
                     <a
                       v-ripple
                       v-styleclass="{
@@ -497,7 +497,7 @@
                         </router-link>
                       </li>
                     </ul>
-                  </li>
+                  </li> -->
                 </ul>
               </li>
             </ul>

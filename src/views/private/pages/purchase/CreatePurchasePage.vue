@@ -6,14 +6,14 @@
       <h2 class="mt-3">Items Purchase</h2>
       <div class="d-flex mb-3">
         <p class="mb-0 btn btn-sm btn-outline-success">
-          <font-awesome-icon :icon="['fas', 'plus']" class="me-2" />Create
+          <font-awesome-icon :icon="['fas', 'plus']" class="me-2" />Add New
           Product
         </p>
         <p
           class="mb-0 ms-3 btn btn-sm btn-outline-success"
           @click="isToggled = true"
         >
-          <font-awesome-icon :icon="['fas', 'plus']" class="me-2" />Create
+          <font-awesome-icon :icon="['fas', 'plus']" class="me-2" />Add New
           Supplier
         </p>
       </div>
@@ -63,22 +63,22 @@
           <table class="table" style="font-size: 14px">
             <thead>
               <tr>
-                <th scope="col" style="width: 20%">Product</th>
-                <th scope="col" style="width: 10%">Pack</th>
-                <th scope="col" style="width: 10%">Quantity</th>
-                <th scope="col" style="width: 15%">
-                  Unit Cost Price (₦/Crate)
+                <th scope="col" style="width: 14%">Product</th>
+                <th scope="col" style="width: 8%">Pack</th>
+                <th scope="col" style="width: 8%">Quantity</th>
+                <th scope="col" style="width: 17%">
+                  Unit Cost Price <br> (₦/Crate)
                 </th>
-                <th scope="col" style="width: 15%">
-                  Unit Cost Price (₦/Bottle)
+                <th scope="col" style="width: 17%">
+                  Unit Cost Price <br> (₦/Bottle)
                 </th>
-                <th scope="col" style="width: 15%">
-                  Unit Selling Price (₦/Bottle)
+                <th scope="col" style="width: 17%">
+                  Unit Selling Price <br> (₦/Bottle)
                 </th>
-                <th scope="col" style="width: 10%">
-                  Total Cost Price (₦/Crate)
+                <th scope="col" style="width: 17%">
+                  Total Cost Price <br> (₦/Crate)
                 </th>
-                <th scope="col" style="width: 5%"></th>
+                <th scope="col" style="width: 2%"></th>
               </tr>
             </thead>
             <tbody v-for="(item, i) in createPayload.items" :key="item">
@@ -158,12 +158,9 @@
                   </p>
                 </td>
                 <td>
-                  <button
-                    @click="deleteField(i)"
-                    class="btn btn-sm btn-danger rounded py-2"
-                  >
-                    Delete
-                  </button>
+                  <a href="#" @click="deleteField(i)" class="text-danger">
+                    <i class="fa fa-times"></i>
+                  </a>
                 </td>
               </tr>
             </tbody>

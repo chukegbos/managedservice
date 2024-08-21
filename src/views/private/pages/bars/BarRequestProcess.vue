@@ -64,7 +64,7 @@
                             <tr v-for="(item) in productItems">
                                 <td>{{ item.product_name }} ({{ item.product_code }})</td>
                                 <td>{{ item.quantity }}</td>
-                                <td>{{ item.sourceBar }} <span class="text-info" style="font-weight:bold; font-size:16px">-></span> {{ theBar.name }}</td>
+                                <td>{{ item.sourceBar }} <span class="text-info" style="font-weight:bold; font-size:16px"> -> </span> {{ theBar.name }}</td>
                                 <td>{{ item.creator }}<br>
                                     {{ formatDate(item.created_at) }}
                                 </td>

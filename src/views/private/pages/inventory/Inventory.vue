@@ -100,7 +100,7 @@
                   {{
                     slotProps.data.quantity
                       ? slotProps.data.quantity
-                      : ""
+                      : 0
                   }}
                 </template>
               </Column>
@@ -135,8 +135,8 @@
                 <template #body="slotProps">
                   {{
                     slotProps.data.cost_price
-                      ? slotProps.data.cost_price
-                      : ""
+                      ? formatCurrency(slotProps.data.cost_price)
+                      : formatCurrency(0)
                   }}
                 </template>
               </Column>
@@ -144,8 +144,8 @@
                 <template #body="slotProps">
                   {{
                     slotProps.data.sell_price
-                      ? slotProps.data.sell_price
-                      : ""
+                      ? formatCurrency(slotProps.data.sell_price)
+                      : formatCurrency(0)
                   }}
                 </template>
               </Column>
@@ -223,7 +223,7 @@
                     <label class="col-form-label fs-6">No. Per Crate</label>
                     <input
                     class="form-control"
-                    type="text"
+                    type="number"
                     v-model="inventoryData.number_per_pack"
                     required
                     placeholder="e.g 12"
@@ -243,7 +243,7 @@
                     <label class="col-form-label fs-6">Threshold</label>
                     <input
                     class="form-control"
-                    type="text"
+                    type="number"
                     v-model="inventoryData.threshold"
                     required
                     />
@@ -358,7 +358,15 @@
     else selected.value = [];
   };
 
-  
+  const formatCurrency = (value) => {
+    return new Intl.NumberFormat('en-NG', {
+    style: 'currency',
+    currency: 'NGN',
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2
+    }).format(value).replace('NGN', '');
+}
+
   const getInventoryProducts = async () => {
     isLoading.value = true;
   
@@ -367,7 +375,7 @@
       .then((response) => {
         items.value = response.data.data;
         console.log(items.value)
-        debugger;
+        // debugger;
         isLoading.value = false;
       })
       .catch((error) => {
@@ -426,7 +434,8 @@
       payload = inventoryData;
     } else return;
   
-    close("inventory-modal");
+    // close("inventory-modal");
+   
     isLoading.value = true;
   
     if (type === "Edit Inventory") {
@@ -434,6 +443,7 @@
         .put(url, payload)
         .then(() => {
           isLoading.value = false;
+          isToggled = false;
           loadFun(type);
           swalSuccessHandle("Inventory Updated Successfully");
           getInventoryProducts();
@@ -447,6 +457,7 @@
         .delete(url, { data: payload })
         .then(() => {
           isLoading.value = false;
+          isToggled = false;
           loadFun(type);
           swalSuccessHandle("Inventory Deleted Successfully");
           getInventoryProducts();
@@ -460,6 +471,7 @@
         .post(url, payload)
         .then(() => {
           isLoading.value = false;
+          isToggled = false;
           loadFun(type);
           getInventoryProducts();
         })
@@ -468,6 +480,7 @@
           swalErrorHandle(error);
         });
     }
+    
   };
   
   onMounted(() => {

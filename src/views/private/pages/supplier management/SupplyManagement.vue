@@ -444,7 +444,7 @@ const onSubmit = async (type, id) => {
     }
 
     const emptyKeys = findEmptyKeys(modalForm);
-    console.log(emptyKeys);
+
     if (emptyKeys) {
       if (emptyKeys === "account_name") {
         Swal.fire({
@@ -477,6 +477,7 @@ const onSubmit = async (type, id) => {
   } else return;
 
   close("supply-management-modal");
+
   if (type !== "delete") {
     isLoading.value = true;
   }
@@ -549,6 +550,7 @@ const onSubmit = async (type, id) => {
         swalErrorHandle(error);
       });
   }
+  isToggled.value = true;
 };
 
 onMounted(() => {

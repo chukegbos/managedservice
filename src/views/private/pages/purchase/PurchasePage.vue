@@ -22,6 +22,8 @@
           >
             <i class="fa-solid fa-minus"></i> Delete
           </button>
+          <router-link to="/create-purchase" class="btn btn-success add-btn mx-1 px-4">Create Purchase</router-link>
+       
         </div>
       </div>
 
@@ -73,7 +75,7 @@
               style="width: 15%"
             >
               <template #body="{ data }">
-                {{ data.initiated_by ? data.initiated_by : "N/A" }}
+                {{ data.initiated_by ? data.initiated_by : "N/A" }} <br>   {{ formatDate(data.purchase_date) }}
               </template>
             </Column>
             <Column
@@ -83,30 +85,27 @@
               style="width: 15%"
             >
               <template #body="{ data }">
-                N{{ data.total_amount ? data.total_amount : "N/A" }}
-                <small class="text-primary"
-                  >({{ data.mop ? data.mop : "" }})</small
-                >
+                {{ data.total_amount ? formatCurrency(data.total_amount) : "N/A" }}
               </template>
             </Column>
             <Column
-              field="status"
+              field="statusCode"
               header="Status"
               :sortable="true"
               style="width: 10%"
             >
               <template #body="{ data }">
-                {{ data.status ? data.status : "N/A" }}
+                {{ data.statusCode ? data.statusCode : "N/A" }}
               </template>
             </Column>
             <Column
-              field="purchase_date"
-              header="Purchase Date"
+              field="approved_date"
+              header="A/R"
               :sortable="true"
               style="width: 15%"
             >
               <template #body="{ data }">
-                {{ formatDate(data.purchase_date) }}
+                {{ data.approved_by ? data.approved_by : "N/A" }} <br>   {{ formatDate(data.approved_date) }}
               </template>
             </Column>
             <Column
@@ -123,7 +122,7 @@
               <template #body="{ data }">
                 <Dropdown
                   @change="checkSelectedAction(selectedAction[data.id], data)"
-                  v-if="data.status === 'Pendiong'"
+                  v-if="data.status === 0"
                   v-model="selectedAction[data.id]"
                   optionLabel="label"
                   optionValue="id"
@@ -168,6 +167,15 @@ const selectAll = ref("");
 const filters = ref({
   global: { value: null, matchMode: FilterMatchMode.CONTAINS },
 });
+
+const formatCurrency = (value) => {
+    return new Intl.NumberFormat('en-NG', {
+    style: 'currency',
+    currency: 'NGN',
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2
+    }).format(value).replace('NGN', '');
+}
 
 const actions = ref([
   { label: "Approve", id: 1 },
