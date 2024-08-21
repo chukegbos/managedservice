@@ -187,6 +187,25 @@ const routes = [
 						"@/views/private/pages/purchase/CreatePurchasePage.vue"
 					),
 			},
+			
+			{
+				path: "/inventory/product-categories",
+				name: "InventoryCategory",
+				component: () =>
+					import(
+						"@/views/private/pages/inventory/InventoryCategory.vue"
+					),
+			},
+
+			{
+				path: "/inventories/products",
+				name: "Inventory",
+				component: () =>
+					import(
+						"@/views/private/pages/inventory/Inventory.vue"
+					),
+			},
+			
 		],
 	},
 ];
