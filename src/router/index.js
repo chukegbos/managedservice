@@ -73,6 +73,21 @@ const routes = [
 				component: () =>
 					import("@/views/private/pages/members/Type.vue"),
 			},
+
+			{
+				path: "/members/debts",
+				name: "Debtedness",
+				component: () =>
+					import("@/views/private/pages/members/MemberDebt.vue"),
+			},
+
+			{
+				path: "/members/debt-free",
+				name: "DebtFree",
+				component: () =>
+					import("@/views/private/pages/members/MemberDebtFree.vue"),
+			},
+
 			{
 				path: "/payment/banks",
 				name: "PaymentBanks",
@@ -185,12 +200,12 @@ const routes = [
 				component: () =>
 					import("@/views/private/pages/sales/Allsales.vue"),
 			},
-			// {
-			// 	path: "/members/view/:membershipID",
-			// 	name: "MemberView",
-			// 	component: () =>
-			// 		import("@/views/private/pages/members/MemberView.vue"),
-			// },
+			{
+				path: "/receipt/:code",
+				name: "Receipt",
+				component: () =>
+					import("@/views/private/pages/sales/Receipt.vue"),
+			},
 		],
 	},
 ];

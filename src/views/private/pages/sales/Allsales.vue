@@ -20,57 +20,45 @@
         </div>
   
         <div class="mt-4">
-          <div v-if="sales.length > 0">
-            <DataTable
-              class="shadow"
-              v-model:filters="filters"
-              :value="sales"
-              :sortField="'created_at'"
-              showGridlines
-              paginator
-              :rows="10"
-              :rowsPerPageOptions="[5, 10, 20, 50]"
-              tableStyle="min-width: 50rem"
-            >
-              <Column style="width: 5%">
-                <template #header="">
-                  <input
-                    type="checkbox"
-                    v-model="selectAll"
-                    @change="toggleAll()"
-                  />
-                </template>
-                <template #body="{ data }">
-                  <input
-                    type="checkbox"
-                    v-model="selected"
-                    :value="data.id"
-                    number
-                  />
-                </template>
-              </Column>
-              <Column field="name" header="Name" style="width: 40%">
-                <template #body="{ data }">
-                  {{ data.payment_name ? data.payment_name : "N/A" }}
-                </template>
-              </Column>
-              <Column header="Date Created" style="width: 35%">
-                <template #body="{ data }">
-                  {{ formatDate(data.created_at) }}
-                </template>
-              </Column>
-              <Column header="Action" style="width: 20%">
-                <template #body="{ data }">
-                  <button
-                    @click="openModal('edit', data.id, data.name)"
-                    class="btn btn-warning btn-sm m-1 text-white px-4"
-                  >
-                    Edit
-                  </button>
-                </template>
-              </Column>
+            <DataTable v-if="sales.length > 0" class="shadow mb-5" v-model:filters="filters" :value="sales"
+            :sortField="'number'" :sortOrder="-1" stripedRows paginator :rows="10" :rowsPerPageOptions="[5, 10, 20, 50]" >
+                <Column field="sale_code" :sortable="false" header="Sale Code">
+                    <template #body="{ data }">
+                        <span class="text-info"><b>#{{ data["sale_code"] }} </b></span>
+                    </template>
+                </Column>
+                
+                <Column field="bar" :sortable="false" header="Sale Code">
+                    <template #body="{ data }">
+                        <span class="text-success"><b>{{ data["bar"].name }}</b></span><br>
+                        {{ data["bar"].bar_code }}
+                    </template>
+                </Column>
+
+                <Column field="channel" :sortable="false" header="Mode of payment">
+                    <template #body="{ data }">
+                        <span class="text-success"><b>{{ data["channel"].name }}</b></span><br>
+                        {{ data["mode_of_payment"] }}
+                    </template>
+                </Column>
+                <Column field="total" :sortable="false" header="Total">
+                    <template #body="{ data }">
+                        {{ formatCurrency(data["total"]) }}
+                    </template>
+                </Column>  
+                <Column field="created_at" :sortable="false" header="Date Created">
+                    <template #body="{ data }">
+                            <span class="text-success">{{ formatDate(data.created_at) }}</span>
+                    </template>
+                </Column>  
+                <Column field="sale_code" :sortable="false" header="Action">
+                    <template #body="{ data }">
+                        <router-link :to="'/receipt/' + data.sale_code" class="btn btn-info btn-sm text-white">
+                            View
+                        </router-link>
+                    </template>
+                </Column>  
             </DataTable>
-          </div>
   
           <div v-else>
             <div class="card card-body">
@@ -89,7 +77,7 @@
   import { ref, reactive, onMounted } from "vue";
   import { FilterMatchMode } from "primevue/api";
   import { useAuthStore } from "@/store/authStore";
-  import { formatDate, swalErrorHandle } from "@/components/myHelperFunction";
+  import { swalErrorHandle } from "@/components/myHelperFunction";
   
   const isLoading = ref(false);
   const isLoading2 = ref(false);
@@ -118,6 +106,30 @@
       });
   };
 
+  const formatCurrency = (value) => {
+        return new Intl.NumberFormat('en-NG', {
+        style: 'currency',
+        currency: 'NGN',
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2
+        }).format(value).replace('NGN', '');
+    }
+   
+    const formatDate = (dateString) => {
+        const date = new Date(dateString);
+
+        const day = date.getDate();
+        const month = date.toLocaleString('default', { month: 'long' });
+        const year = date.getFullYear();
+
+        const ordinalSuffix = (n) => {
+            const s = ["th", "st", "nd", "rd"];
+            const v = n % 100;
+            return s[(v - 20) % 10] || s[v] || s[0];
+        };
+
+        return `${day}${ordinalSuffix(day)} ${month}, ${year}`;
+    }
   
   onMounted(() => {
     getSales();
