@@ -241,7 +241,13 @@
                       >
                         Pending <br />
                         <button
-                          @click="onApprove(slotProps.data.id)"
+                          @click="
+                            onApprove(
+                              slotProps.data.id,
+                              slotProps.data.quantity,
+                              slotProps.data.myItem.number
+                            )
+                          "
                           class="btn btn-primary btn-sm m-1"
                         >
                           Approve
@@ -309,6 +315,7 @@ import {
   swalErrorHandle,
   swalSuccessHandle,
   swalConfirmDelete,
+  swalHandler,
 } from "@/components/myHelperFunction";
 import { useRoute, useRouter } from "vue-router";
 
@@ -376,6 +383,30 @@ const getBar = async () => {
       drinks.value = response.data.data.drinks;
       myRequests.value = response.data.data.myRequests;
       pullRequests.value = response.data.data.pullRequests;
+      isLoading.value = false;
+    })
+    .catch((error) => {
+      isLoading.value = false;
+      swalErrorHandle(error);
+    });
+};
+
+const onApprove = async (id, quantity, number) => {
+  if (quantity > number) {
+    swalHandler(
+      "Warning !!",
+      "You do not have upto that number of drinks.",
+      "warning",
+      "#FACEA8"
+    );
+    return;
+  }
+  isLoading.value = true;
+  await axiosUrl
+    .get("/bars/requests/approve/" + id)
+    .then((response) => {
+      console.log(response.data);
+      getBar();
       isLoading.value = false;
     })
     .catch((error) => {
