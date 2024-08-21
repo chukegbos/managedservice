@@ -3,11 +3,19 @@
     <loading :active="isLoading" />
 
     <div class="container">
-      {{ createPayload }}
       <h2 class="mt-3">Items Purchase</h2>
       <div class="d-flex mb-3">
-        <p class="mb-0">Create Product</p>
-        <p class="mb-0 ms-3">Create Supplier</p>
+        <p class="mb-0 btn btn-sm btn-outline-success">
+          <font-awesome-icon :icon="['fas', 'plus']" class="me-2" />Create
+          Product
+        </p>
+        <p
+          class="mb-0 ms-3 btn btn-sm btn-outline-success"
+          @click="isToggled = true"
+        >
+          <font-awesome-icon :icon="['fas', 'plus']" class="me-2" />Create
+          Supplier
+        </p>
       </div>
 
       <div class="shadow p-4 rounded">
@@ -171,7 +179,8 @@
               createPayload.mode_of_payment_id === null ||
               createPayload.mode_of_payment_id === "" ||
               createPayload.date_of_purchase === null ||
-              createPayload.date_of_purchase === ""
+              createPayload.date_of_purchase === "" ||
+              createPayload.items.length === 0
             }}
           </button>
           <button
@@ -182,7 +191,8 @@
               createPayload.mode_of_payment_id === null ||
               createPayload.mode_of_payment_id === '' ||
               createPayload.date_of_purchase === null ||
-              createPayload.date_of_purchase === ''
+              createPayload.date_of_purchase === '' ||
+              createPayload.items.length === 0
             "
             @click="createPurchase()"
           >
@@ -194,20 +204,17 @@
 
     <ModalComp
       :isToggled="isToggled"
-      :title="modalParams.title"
+      title="Add Supply"
       @close="isToggled = false"
     >
-      <form
-        @submit.prevent="onSubmit(modalParams.title, currentEditID)"
-        class="container"
-      >
+      <form @submit.prevent="createSupplier()" class="container">
         <div class="row fs-14 align-items-end">
           <div class="input-block col-12 col-md-6">
             <label class="col-form-label fs-6">Supplier Name</label>
             <input
               class="form-control"
               type="text"
-              v-model="modalForm.supplier_name"
+              v-model="supplierPayload.supplier_name"
               required
             />
           </div>
@@ -217,7 +224,7 @@
             <input
               class="form-control"
               type="text"
-              v-model="modalForm.contact_person"
+              v-model="supplierPayload.contact_person"
               required
             />
           </div>
@@ -227,7 +234,7 @@
             <input
               class="form-control"
               type="email"
-              v-model="modalForm.email"
+              v-model="supplierPayload.email"
               required
             />
           </div>
@@ -237,10 +244,11 @@
             <input
               class="form-control"
               type="text"
-              v-model="modalForm.phone"
+              v-model="supplierPayload.phone"
               maxlength="11"
               @input="handleInput($event)"
               placeholder=""
+              required
             />
           </div>
 
@@ -249,7 +257,7 @@
             <input
               class="form-control"
               type="text"
-              v-model="modalForm.address"
+              v-model="supplierPayload.address"
               required
             />
           </div>
@@ -258,16 +266,18 @@
             <label class="col-form-label fs-6"
               >Bank Name
               <MiniSpinner v-if="banksLoading" />
-              <span
-                class="text-primary"
-                v-if="bankDetails.account_name"
-                style="font-size: 12px"
-                ><small>({{ bankDetails.account_name }})</small></span
+              <span v-if="!isObjectEmpty(bankDetails)">
+                <span
+                  class="text-primary"
+                  v-if="bankDetails.account_name"
+                  style="font-size: 12px"
+                  ><small>({{ bankDetails.account_name }})</small></span
+                ></span
               ></label
             >
             <Dropdown
               class="w-100"
-              v-model="modalForm.bank_name"
+              v-model="supplierPayload.bank_name"
               optionLabel="name"
               optionValue="code"
               :options="banks"
@@ -287,11 +297,12 @@
             <input
               class="form-control"
               type="text"
-              v-model="modalForm.bank_account"
+              v-model="supplierPayload.bank_account"
               maxlength="10"
               @input="handleInput2($event)"
               placeholder=""
               :disabled="bankVerifyLoading"
+              required
             />
           </div>
 
@@ -309,28 +320,24 @@
 <script setup>
 import { axiosUrl } from "@/env";
 import { ref, reactive, onMounted } from "vue";
-import { FilterMatchMode } from "primevue/api";
 import Swal from "sweetalert2";
-import { useAuthStore } from "@/store/authStore";
-import { formatDate, swalErrorHandle } from "@/components/myHelperFunction";
-import { Modal, ModalContent, open, close } from "@dimsog/vue-modal";
-// import MiniSpinner from "@/components/MiniSpinner.vue";
+import {
+  swalErrorHandle,
+  findEmptyKeys,
+  formatPayloadErrorKey,
+  isObjectEmpty,
+} from "@/components/myHelperFunction";
 
 const isToggled = ref(false);
 const isLoading = ref(false);
 const bankVerifyLoading = ref(false);
 const banksLoading = ref(false);
-const authStore = useAuthStore();
-const loggedInUser = authStore.loggedInUser;
 const payment_channels = ref([]);
 const products = ref([]);
 const suppliers = ref([]);
 const items = ref([]);
 const banks = ref([]);
 const bankDetails = ref([]);
-const selected = ref([]);
-const selectAll = ref("");
-const currentEditID = ref();
 const createPayload = ref({
   supplier_id: null,
   mode_of_payment_id: null, //Cash Payment or Credit Payment
@@ -350,15 +357,7 @@ const createPayload = ref({
   ],
 });
 
-const filters = ref({
-  global: { value: null, matchMode: FilterMatchMode.CONTAINS },
-});
-
-const modalParams = reactive({
-  title: "",
-});
-
-const modalForm = reactive({
+const supplierPayload = reactive({
   supplier_name: "",
   contact_person: "",
   email: "",
@@ -448,15 +447,17 @@ const productInput = (id, type) => {
 
 const handleInput = (event) => {
   // Remove non-digit characters
-  modalForm.phone = event.target.value.replace(/\D/g, "").slice(0, 11);
+  supplierPayload.phone = event.target.value.replace(/\D/g, "").slice(0, 11);
 };
 
 const handleInput2 = (event) => {
   // Remove non-digit characters
-  modalForm.bank_account = event.target.value.replace(/\D/g, "").slice(0, 10);
-  if (modalForm.bank_account.length === 10) {
-    // console.log(modalForm.bank_account);
-    verifyAccDetails(modalForm.bank_account, modalForm.bank_name);
+  supplierPayload.bank_account = event.target.value
+    .replace(/\D/g, "")
+    .slice(0, 10);
+  if (supplierPayload.bank_account.length === 10) {
+    // console.log(supplierPayload.bank_account);
+    verifyAccDetails(supplierPayload.bank_account, supplierPayload.bank_name);
   }
 };
 
@@ -472,9 +473,15 @@ const verifyAccDetails = async (a, b) => {
     })
     .then((response) => {
       bankVerifyLoading.value = false;
-      console.log(response.data);
+      // console.log(response.data);
+      bankDetails.value = {};
       if (response.data.status === false) {
-        Swal.fire("Failed!", response.data.message, "warning");
+        Swal.fire({
+          title: "Failed!",
+          text: response.data.message,
+          icon: "warning",
+          confirmButtonColor: "#FACEA8",
+        });
       } else {
         bankDetails.value = response.data?.data;
       }
@@ -485,35 +492,177 @@ const verifyAccDetails = async (a, b) => {
     });
 };
 
+const createSupplier = async () => {
+  if (!isObjectEmpty(bankDetails.value)) {
+    supplierPayload.account_name = bankDetails.value?.account_name;
+  }
+
+  const emptyKeys = findEmptyKeys(supplierPayload);
+  if (emptyKeys) {
+    if (emptyKeys === "account_name") {
+      Swal.fire({
+        title: "Verify Bank Details !",
+        text: `Please enter correct bank name and account number to proceed`,
+        icon: "warning",
+        confirmButtonColor: "#FACEA8",
+      });
+      return;
+    } else {
+      Swal.fire({
+        title: "Failed!",
+        text: `Please fill up ${formatPayloadErrorKey(emptyKeys)}`,
+        icon: "warning",
+        confirmButtonColor: "#FACEA8",
+      });
+      return;
+    }
+  }
+
+  isLoading.value = true;
+  await axiosUrl
+    .post("/suppliers", supplierPayload)
+    .then((response) => {
+      isLoading.value = false;
+      // console.log(response.data);
+      if (response.data.status === false) {
+        Swal.fire({
+          title: "Failed!",
+          text: response.data?.message,
+          icon: "warning",
+          confirmButtonColor: "#FACEA8",
+        });
+      } else {
+        bankDetails.value = {};
+        supplierPayload.supplier_name = "";
+        supplierPayload.contact_person = "";
+        supplierPayload.email = "";
+        supplierPayload.phone = null;
+        supplierPayload.address = "";
+        supplierPayload.bank_name = "";
+        supplierPayload.bank_account = "";
+        supplierPayload.account_name = "";
+
+        isToggled.value = false;
+      }
+    })
+    .catch((error) => {
+      isLoading.value = false;
+      swalErrorHandle(error);
+    });
+};
+
 const createPurchase = async () => {
-  console.log(createPayload.value);
   if (
     createPayload.value.supplier_id === null ||
     createPayload.value.supplier_id === ""
-  )
+  ) {
+    Swal.fire({
+      title: "Failed!",
+      text: `Please fill up Supplier"`,
+      icon: "warning",
+      confirmButtonColor: "#FACEA8",
+    });
     return;
+  }
   if (
     createPayload.value.mode_of_payment_id === null ||
     createPayload.value.mode_of_payment_id === ""
-  )
+  ) {
+    Swal.fire({
+      title: "Failed!",
+      text: `Please fill up Mode of Payment`,
+      icon: "warning",
+      confirmButtonColor: "#FACEA8",
+    });
     return;
+  }
   if (
     createPayload.value.date_of_purchase === null ||
     createPayload.value.date_of_purchase === ""
-  )
+  ) {
+    Swal.fire({
+      title: "Failed!",
+      text: `Please fill up Date of Purchase`,
+      icon: "warning",
+      confirmButtonColor: "#FACEA8",
+    });
     return;
-  // if (
-  //   createPayload.value.amount_paid === null ||
-  //   createPayload.value.amount_paid === ""
-  // )
-  //   return;
+  }
+
+  for (let i = 0; i < createPayload.value.items.length; i++) {
+    const item = createPayload.value.items[i];
+
+    for (let key in item) {
+      if (item.hasOwnProperty(key)) {
+        if (
+          key === "pack" ||
+          key === "unit_cost_price_crate" ||
+          key === "product_name"
+        ) {
+          continue;
+        }
+
+        let title = "";
+        switch (key) {
+          case "product_code":
+            title = "Product";
+            break;
+          case "quantity":
+            title = "Quantity";
+            break;
+          case "unit_cost_price":
+            title = "Unit Cost Price (₦/Bottle)";
+            break;
+          case "unit_sell_price":
+            title = "Unit Selling Price (₦/Bottle)";
+            break;
+          case "total_cost_price":
+            title = "Total Cost Price (₦/Crate)";
+            break;
+          default:
+            break;
+        }
+
+        let y = "th";
+        if (i + 1 == 1) y = "st";
+        else if (i + 1 == 2) y = "nd";
+        else if (i + 1 == 3) y = "rd";
+
+        if (item[key] === "" || item[key] === null || item[key] === undefined) {
+          Swal.fire({
+            title: "Failed!",
+            text: `Please fill up ${i + 1 + y} Product - "${title}"`,
+            icon: "warning",
+            confirmButtonColor: "#FACEA8",
+          });
+          return;
+        }
+      }
+    }
+  }
 
   isLoading.value = true;
   await axiosUrl
     .post("/purchase", createPayload.value)
     .then((response) => {
       isLoading.value = false;
-      console.log(response.data);
+      // console.log(response.data);
+      createPayload.value.supplier_id = null;
+      createPayload.value.mode_of_payment_id = null;
+      createPayload.value.date_of_purchase = "";
+      createPayload.value.amount_paid = null;
+      createPayload.value.items = [
+        {
+          product_code: "",
+          product_name: "",
+          quantity: null,
+          pack: null,
+          unit_cost_price: null,
+          unit_cost_price_crate: null,
+          unit_sell_price: null,
+          total_cost_price: null,
+        },
+      ];
     })
     .catch((error) => {
       isLoading.value = false;
@@ -540,91 +689,6 @@ const getSupplyManagement = async () => {
     });
 };
 
-const onSubmit = async (type, id) => {
-  let url = "/suppliers";
-  let payload = {};
-  if (type === "Add Supply") {
-    if (bankDetails.value.length === 0) return;
-    url = "suppliers";
-    payload = modalForm;
-  } else if (type === "delete") {
-    url = "/suppliers";
-    payload = {
-      ids: selected.value,
-    };
-  } else if (type === "Edit Supply") {
-    url = "/suppliers" + id;
-    payload = modalForm;
-  } else return;
-
-  close("supply-management-modal");
-  isLoading.value = true;
-  if (type === "delete") {
-    await axiosUrl
-      .delete(url, { data: payload })
-      .then(() => {
-        isLoading.value = false;
-        selected.value = [];
-        selectAll.value = false;
-        getSupplyManagement();
-      })
-      .catch((error) => {
-        isLoading.value = false;
-        swalErrorHandle(error);
-      });
-  } else if (type === "Edit Supply") {
-    await axiosUrl
-      .put(url, payload)
-      .then(() => {
-        isLoading.value = false;
-
-        modalForm.name = "";
-        modalParams.title = "";
-
-        getSupplyManagement();
-      })
-      .catch((error) => {
-        isLoading.value = false;
-        swalErrorHandle(error);
-      });
-  } else {
-    await axiosUrl
-      .post(url, payload)
-      .then(() => {
-        isLoading.value = false;
-
-        modalForm.name = "";
-        modalParams.title = "";
-
-        isToggled.value = false;
-        getSupplyManagement();
-      })
-      .catch((error) => {
-        isLoading.value = false;
-        swalErrorHandle(error);
-      });
-  }
-};
-
-const openModal = (type, id, name) => {
-  if (type === "add") modalParams.title = "Add Supply";
-  else if (type === "edit") {
-    modalParams.title = "Edit Supply";
-    modalForm.name = name;
-    currentEditID.value = id;
-  }
-
-  // open("supply-management-modal");
-  isToggled.value = true;
-};
-
-const toggleAll = () => {
-  if (selectAll.value)
-    for (let i = 0; i < items.value.length; i++)
-      selected.value.push(items.value[i].id);
-  else selected.value = [];
-};
-
 const getAllBanks = async () => {
   banksLoading.value = true;
 
@@ -642,7 +706,7 @@ const getAllBanks = async () => {
 
 onMounted(() => {
   getSupplyManagement();
-  // getAllBanks();
+  getAllBanks();
 });
 </script>
 

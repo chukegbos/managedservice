@@ -409,7 +409,7 @@
                           class="text-decoration-none flex align-items-center cursor-pointer p-3 border-round text-700 hover:surface-100 transition-duration-150 transition-colors p-ripple"
                         >
                           <i class="pi pi-chart-line mr-2"></i>
-                          <span class="font-medium">ALl Request</span>
+                          <span class="font-medium">All Request</span>
                         </router-link>
                       </li>
                     </ul>
@@ -486,16 +486,16 @@
                           <span class="font-medium">Purchases</span>
                         </router-link>
                       </li>
-                      <!-- <li>
+                      <li>
                         <router-link
-                          to="/payment/debits"
+                          to="/create-purchase"
                           v-ripple
                           class="text-decoration-none flex align-items-center cursor-pointer p-3 border-round text-700 hover:surface-100 transition-duration-150 transition-colors p-ripple"
                         >
                           <i class="pi pi-chart-line mr-2"></i>
-                          <span class="font-medium">Sales Order</span>
+                          <span class="font-medium">Create Purchase</span>
                         </router-link>
-                      </li> -->
+                      </li>
                     </ul>
                   </li>
                 </ul>

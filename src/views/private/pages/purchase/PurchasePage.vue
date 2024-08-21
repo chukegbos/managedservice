@@ -2,16 +2,26 @@
   <div class="content-wrapper">
     <loading :active="isLoading" />
 
-    <div class="container">
+    <div class="container mt-3">
       <div class="d-flex justify-content-between align-items-center">
-        <h2>Purchase</h2>
+        <h2 class="mb-0">Purchase</h2>
 
-        <div class="">
-          <input
-            v-model="filters['global'].value"
-            placeholder="Keyword Search"
-            class="form-control my-input"
-          />
+        <div class="d-flex align-items-end">
+          <div class="me-3">
+            <input
+              v-model="filters['global'].value"
+              placeholder="Keyword Member"
+              class="form-control my-input"
+            />
+          </div>
+
+          <button
+            @click="deletePurchase()"
+            class="btn btn-danger"
+            :disabled="selected.length === 0"
+          >
+            <i class="fa-solid fa-minus"></i> Delete
+          </button>
         </div>
       </div>
 
@@ -21,7 +31,7 @@
             class="shadow"
             v-model:filters="filters"
             :value="items"
-            :sortField="'created_at'"
+            :sortField="'created_At'"
             showGridlines
             paginator
             :sortOrder="-1"
@@ -47,33 +57,80 @@
               </template>
             </Column>
             <Column
-              field="contact_person"
-              header="Name"
+              field="supplier"
+              header="Supplier"
               :sortable="true"
-              style="width: 40%"
+              style="width: 20%"
             >
               <template #body="{ data }">
-                {{ data.contact_person ? data.contact_person : "N/A" }}
+                {{ data.supplier ? data.supplier : "N/A" }}
+              </template>
+            </Column>
+            <Column
+              field="initiated_by"
+              header="Initiator"
+              :sortable="true"
+              style="width: 15%"
+            >
+              <template #body="{ data }">
+                {{ data.initiated_by ? data.initiated_by : "N/A" }}
+              </template>
+            </Column>
+            <Column
+              field="total_amount"
+              header="Total Amount"
+              :sortable="true"
+              style="width: 15%"
+            >
+              <template #body="{ data }">
+                N{{ data.total_amount ? data.total_amount : "N/A" }}
+                <small class="text-primary"
+                  >({{ data.mop ? data.mop : "" }})</small
+                >
+              </template>
+            </Column>
+            <Column
+              field="status"
+              header="Status"
+              :sortable="true"
+              style="width: 10%"
+            >
+              <template #body="{ data }">
+                {{ data.status ? data.status : "N/A" }}
+              </template>
+            </Column>
+            <Column
+              field="purchase_date"
+              header="Purchase Date"
+              :sortable="true"
+              style="width: 15%"
+            >
+              <template #body="{ data }">
+                {{ formatDate(data.purchase_date) }}
               </template>
             </Column>
             <Column
               field="created_At"
               header="Date Created"
               :sortable="true"
-              style="width: 35%"
+              style="width: 15%"
             >
               <template #body="{ data }">
                 {{ formatDate(data.created_at) }}
               </template>
             </Column>
-            <Column header="Action" style="width: 20%">
+            <Column header="Action" style="width: 5%">
               <template #body="{ data }">
-                <button
-                  @click="openModal('edit', data.id, data.name)"
-                  class="btn btn-warning btn-sm m-1 text-white px-4"
-                >
-                  Edit
-                </button>
+                <Dropdown
+                  @change="checkSelectedAction(selectedAction[data.id], data)"
+                  v-if="data.status === 'Pendiong'"
+                  v-model="selectedAction[data.id]"
+                  optionLabel="label"
+                  optionValue="id"
+                  :options="actions"
+                  placeholder="Action"
+                />
+                <span v-else>N/A</span>
               </template>
             </Column>
           </DataTable>
@@ -88,209 +145,47 @@
         </div>
       </div>
     </div>
-
-    <ModalComp
-      :isToggled="isToggled"
-      :title="modalParams.title"
-      @close="isToggled = false"
-    >
-      <form
-        @submit.prevent="onSubmit(modalParams.title, currentEditID)"
-        class="container"
-      >
-        <div class="row fs-14 align-items-end">
-          <div class="input-block col-12 col-md-6">
-            <label class="col-form-label fs-6">Supplier Name</label>
-            <input
-              class="form-control"
-              type="text"
-              v-model="modalForm.supplier_name"
-              required
-            />
-          </div>
-
-          <div class="input-block col-12 col-md-6">
-            <label class="col-form-label fs-6">Contact Person</label>
-            <input
-              class="form-control"
-              type="text"
-              v-model="modalForm.contact_person"
-              required
-            />
-          </div>
-
-          <div class="input-block col-12 col-md-6">
-            <label class="col-form-label fs-6">Email</label>
-            <input
-              class="form-control"
-              type="email"
-              v-model="modalForm.email"
-              required
-            />
-          </div>
-
-          <div class="input-block col-12 col-md-6">
-            <label class="col-form-label fs-6">Phone Number</label>
-            <input
-              class="form-control"
-              type="text"
-              v-model="modalForm.phone"
-              maxlength="11"
-              @input="handleInput($event)"
-              placeholder=""
-            />
-          </div>
-
-          <div class="input-block col-12">
-            <label class="col-form-label fs-6">Address</label>
-            <input
-              class="form-control"
-              type="text"
-              v-model="modalForm.address"
-              required
-            />
-          </div>
-
-          <div class="input-block col-12 col-md-6">
-            <label class="col-form-label fs-6"
-              >Bank Name
-              <MiniSpinner v-if="banksLoading" />
-              <span
-                class="text-primary"
-                v-if="bankDetails.account_name"
-                style="font-size: 12px"
-                ><small>({{ bankDetails.account_name }})</small></span
-              ></label
-            >
-            <Dropdown
-              class="w-100"
-              v-model="modalForm.bank_name"
-              optionLabel="name"
-              optionValue="code"
-              :options="banks"
-              :disabled="
-                banksLoading || banks.length === 0 || bankVerifyLoading
-              "
-              filter
-              placeholder=""
-            />
-          </div>
-
-          <div class="input-block col-12 col-md-6">
-            <label class="col-form-label fs-6"
-              >Account Number
-              <MiniSpinner v-if="bankVerifyLoading" />
-            </label>
-            <input
-              class="form-control"
-              type="text"
-              v-model="modalForm.bank_account"
-              maxlength="10"
-              @input="handleInput2($event)"
-              placeholder=""
-              :disabled="bankVerifyLoading"
-            />
-          </div>
-
-          <div class="col-12">
-            <button class="btn btn-primary account-btn w-100" type="submit">
-              Submit
-            </button>
-          </div>
-        </div>
-      </form>
-    </ModalComp>
   </div>
 </template>
 
 <script setup>
 import { axiosUrl } from "@/env";
-import { ref, reactive, onMounted } from "vue";
+import { ref, onMounted } from "vue";
 import { FilterMatchMode } from "primevue/api";
 import Swal from "sweetalert2";
-import { useAuthStore } from "@/store/authStore";
-import { formatDate, swalErrorHandle } from "@/components/myHelperFunction";
-import { Modal, ModalContent, open, close } from "@dimsog/vue-modal";
-// import MiniSpinner from "@/components/MiniSpinner.vue";
+import {
+  formatDate,
+  swalErrorHandle,
+  swalConfirmDelete,
+} from "@/components/myHelperFunction";
 
-const isToggled = ref(false);
 const isLoading = ref(false);
-const bankVerifyLoading = ref(false);
 const banksLoading = ref(false);
-const authStore = useAuthStore();
-const loggedInUser = authStore.loggedInUser;
 const items = ref([]);
 const banks = ref([]);
-const bankDetails = ref([]);
 const selected = ref([]);
 const selectAll = ref("");
-const currentEditID = ref();
 const filters = ref({
   global: { value: null, matchMode: FilterMatchMode.CONTAINS },
 });
-const modalParams = reactive({
-  title: "",
-});
-const modalForm = reactive({
-  supplier_name: "",
-  contact_person: "",
-  email: "",
-  phone: null,
-  address: "",
-  bank_name: "",
-  bank_account: "",
-  account_name: "",
-});
 
-const handleInput = (event) => {
-  // Remove non-digit characters
-  modalForm.phone = event.target.value.replace(/\D/g, "").slice(0, 11);
-};
+const actions = ref([
+  { label: "Approve", id: 1 },
+  { label: "Reject", id: 2 },
+]);
+const selectedAction = ref([]);
 
-const handleInput2 = (event) => {
-  // Remove non-digit characters
-  modalForm.bank_account = event.target.value.replace(/\D/g, "").slice(0, 10);
-  if (modalForm.bank_account.length === 10) {
-    // console.log(modalForm.bank_account);
-    verifyAccDetails(modalForm.bank_account, modalForm.bank_name);
-  }
-};
-
-const verifyAccDetails = async (a, b) => {
-  if (a.toString().length < 10 || b === "" || b === null || b === undefined)
-    return;
-  bankVerifyLoading.value = true;
-  bankDetails.value = [];
-  await axiosUrl
-    .post("/get-bank", {
-      account_number: a,
-      bank_id: b,
-    })
-    .then((response) => {
-      bankVerifyLoading.value = false;
-      console.log(response.data);
-      if (response.data.status === false) {
-        Swal.fire("Failed!", response.data.message, "warning");
-      } else {
-        bankDetails.value = response.data?.data;
-      }
-    })
-    .catch((error) => {
-      bankVerifyLoading.value = false;
-      swalErrorHandle(error);
+const checkSelectedAction = (id, data) => {
+  if (id === 1 || id === 2) {
+    approve_reject(id, data?.purchase_code);
+  } else {
+    Swal.fire({
+      title: "Failed!",
+      text: "Invalid Purchase Code",
+      icon: "warning",
+      confirmButtonColor: "#FACEA8",
     });
-};
-
-const openModal = (type, id, name) => {
-  if (type === "add") modalParams.title = "Add Supply";
-  else if (type === "edit") {
-    modalParams.title = "Edit Supply";
-    modalForm.name = name;
-    currentEditID.value = id;
   }
-
-  // open("supply-management-modal");
-  isToggled.value = true;
 };
 
 const toggleAll = () => {
@@ -300,7 +195,7 @@ const toggleAll = () => {
   else selected.value = [];
 };
 
-const getSupplyManagement = async () => {
+const getPurchase = async () => {
   isLoading.value = true;
 
   await axiosUrl
@@ -313,6 +208,60 @@ const getSupplyManagement = async () => {
       isLoading.value = false;
       swalErrorHandle(error);
     });
+};
+
+const approve_reject = async (id, purchaseCode) => {
+  isLoading.value = true;
+
+  let url = "";
+  switch (id) {
+    case 1:
+      url = `purchase/approve/${purchaseCode}`;
+      break;
+    case 2:
+      url = `purchase/reject/${purchaseCode}`;
+      break;
+    default:
+      return;
+  }
+  await axiosUrl
+    .post(url)
+    .then((response) => {
+      console.log(response.data);
+      getPurchase();
+    })
+    .catch((error) => {
+      isLoading.value = false;
+      swalErrorHandle(error);
+    });
+};
+
+const deletePurchase = async () => {
+  if (selected.value.length <= 0) return;
+  swalConfirmDelete(
+    async () => {
+      isLoading.value = true;
+      await axiosUrl
+        .delete("/purchase", {
+          data: {
+            purchase_ids: selected.value,
+          },
+        })
+        .then((response) => {
+          // console.log(response.data);
+          selected.value = [];
+          selectAll.value = false;
+          getPurchase();
+        })
+        .catch((error) => {
+          isLoading.value = false;
+          swalErrorHandle(error);
+        });
+    },
+    () => {
+      return;
+    }
+  );
 };
 
 const getAllBanks = async () => {
@@ -330,74 +279,8 @@ const getAllBanks = async () => {
     });
 };
 
-const onSubmit = async (type, id) => {
-  let url = "/suppliers";
-  let payload = {};
-  if (type === "Add Supply") {
-    if (bankDetails.value.length === 0) return;
-    url = "suppliers";
-    payload = modalForm;
-  } else if (type === "delete") {
-    url = "/suppliers";
-    payload = {
-      ids: selected.value,
-    };
-  } else if (type === "Edit Supply") {
-    url = "/suppliers" + id;
-    payload = modalForm;
-  } else return;
-
-  close("supply-management-modal");
-  isLoading.value = true;
-  if (type === "delete") {
-    await axiosUrl
-      .delete(url, { data: payload })
-      .then(() => {
-        isLoading.value = false;
-        selected.value = [];
-        selectAll.value = false;
-        getSupplyManagement();
-      })
-      .catch((error) => {
-        isLoading.value = false;
-        swalErrorHandle(error);
-      });
-  } else if (type === "Edit Supply") {
-    await axiosUrl
-      .put(url, payload)
-      .then(() => {
-        isLoading.value = false;
-
-        modalForm.name = "";
-        modalParams.title = "";
-
-        getSupplyManagement();
-      })
-      .catch((error) => {
-        isLoading.value = false;
-        swalErrorHandle(error);
-      });
-  } else {
-    await axiosUrl
-      .post(url, payload)
-      .then(() => {
-        isLoading.value = false;
-
-        modalForm.name = "";
-        modalParams.title = "";
-
-        isToggled.value = false;
-        getSupplyManagement();
-      })
-      .catch((error) => {
-        isLoading.value = false;
-        swalErrorHandle(error);
-      });
-  }
-};
-
 onMounted(() => {
-  getSupplyManagement();
+  getPurchase();
   getAllBanks();
 });
 </script>

@@ -2,10 +2,10 @@
   <div class="content-wrapper">
     <loading :active="isLoading" />
 
-    <div class="container">
+    <div class="container mt-3">
       <div class="">
         <div class="d-flex justify-content-between align-items-center">
-          <h2>Supply Management</h2>
+          <h2 class="mb-0">Supply Management</h2>
 
           <div class="d-flex">
             <div class="me-3">
@@ -17,20 +17,16 @@
             </div>
 
             <div class="d-flex align-items-end">
-              <!-- <button
-                v-if="selected.length > 0"
-                @click="onSubmit('delete')"
-                class="btn add-btn px-4"
-              > -->
               <button
                 @click="onSubmit('delete')"
-                class="btn btn-sm btn-danger add-btn px-4 me-2"
+                class="btn btn-danger add-btn px-4 me-2"
+                :disabled="selected.length === 0"
               >
                 <i class="fa-solid fa-minus"></i> Delete Supply
               </button>
               <button
                 @click="openModal('add')"
-                class="btn btn-sm btn-success add-btn px-4"
+                class="btn btn-success add-btn px-4"
               >
                 <i class="fa-solid fa-plus"></i> Add Supply
               </button>
@@ -45,7 +41,7 @@
             class="shadow"
             v-model:filters="filters"
             :value="items"
-            :sortField="'created_at'"
+            :sortField="'created_At'"
             showGridlines
             paginator
             :sortOrder="-1"
@@ -72,28 +68,94 @@
             </Column>
             <Column
               field="contact_person"
-              header="Name"
+              header="Contact"
               :sortable="true"
-              style="width: 40%"
+              style="width: 25%"
             >
               <template #body="{ data }">
-                {{ data.contact_person ? data.contact_person : "N/A" }}
+                <small
+                  ><span class="text-primary">Name: </span>
+                  {{ data.contact_person ? data.contact_person : "N/A" }}</small
+                >
+                <br />
+                <small
+                  ><span class="text-primary">Email: </span>
+                  {{ data.email ? data.email : "N/A" }}</small
+                >
+                <br />
+                <small
+                  ><span class="text-primary">Mobile Number: </span>
+                  {{ data.phone ? data.phone : "N/A" }}</small
+                >
+              </template>
+            </Column>
+            <Column
+              field="phone"
+              header="Mobile Number"
+              :sortable="true"
+              style="width: 10%"
+            >
+              <template #body="{ data }">
+                {{ data.phone ? data.phone : "N/A" }}
+              </template>
+            </Column>
+            <Column
+              field="address"
+              header="Address"
+              :sortable="true"
+              style="width: 10%"
+            >
+              <template #body="{ data }">
+                {{ data.address ? data.address : "N/A" }}
+              </template>
+            </Column>
+            <Column
+              field="supplier_name"
+              header="Supplier Name"
+              :sortable="true"
+              style="width: 10%"
+            >
+              <template #body="{ data }">
+                {{ data.supplier_name ? data.supplier_name : "N/A" }}
+              </template>
+            </Column>
+            <Column
+              field="bank_name"
+              header="Bank"
+              :sortable="true"
+              style="width: 25%"
+            >
+              <template #body="{ data }">
+                <small
+                  ><span class="text-primary">Bank Name: </span>
+                  {{ data.bank_name ? data.bank_name : "N/A" }}</small
+                >
+                <br />
+                <small
+                  ><span class="text-primary">Bank Account: </span>
+                  {{ data.account_name ? data.account_name : "N/A" }}</small
+                >
+                <br />
+                <small
+                  ><span class="text-primary">Account Number: </span>
+                  {{ data.bank_account ? data.bank_account : "N/A" }}</small
+                >
               </template>
             </Column>
             <Column
               field="created_At"
               header="Date Created"
               :sortable="true"
-              style="width: 35%"
+              style="width: 10%"
             >
               <template #body="{ data }">
                 {{ formatDate(data.created_at) }}
               </template>
             </Column>
-            <Column header="Action" style="width: 20%">
+            <Column header="Action" style="width: 5%">
               <template #body="{ data }">
                 <button
-                  @click="openModal('edit', data.id, data.name)"
+                  @click="openModal('edit', data)"
                   class="btn btn-warning btn-sm m-1 text-white px-4"
                 >
                   Edit
@@ -162,6 +224,7 @@
               maxlength="11"
               @input="handleInput($event)"
               placeholder=""
+              required
             />
           </div>
 
@@ -179,11 +242,13 @@
             <label class="col-form-label fs-6"
               >Bank Name
               <MiniSpinner v-if="banksLoading" />
-              <span
-                class="text-primary"
-                v-if="bankDetails.account_name"
-                style="font-size: 12px"
-                ><small>({{ bankDetails.account_name }})</small></span
+              <span v-if="!isObjectEmpty(bankDetails)">
+                <span
+                  class="text-primary"
+                  v-if="bankDetails.account_name"
+                  style="font-size: 12px"
+                  ><small>({{ bankDetails.account_name }})</small>
+                </span></span
               ></label
             >
             <Dropdown
@@ -213,6 +278,7 @@
               @input="handleInput2($event)"
               placeholder=""
               :disabled="bankVerifyLoading"
+              required
             />
           </div>
 
@@ -232,20 +298,22 @@ import { axiosUrl } from "@/env";
 import { ref, reactive, onMounted } from "vue";
 import { FilterMatchMode } from "primevue/api";
 import Swal from "sweetalert2";
-import { useAuthStore } from "@/store/authStore";
-import { formatDate, swalErrorHandle } from "@/components/myHelperFunction";
-import { Modal, ModalContent, open, close } from "@dimsog/vue-modal";
-// import MiniSpinner from "@/components/MiniSpinner.vue";
+import {
+  formatDate,
+  swalErrorHandle,
+  formatPayloadErrorKey,
+  findEmptyKeys,
+  isObjectEmpty,
+  swalConfirmDelete,
+} from "@/components/myHelperFunction";
 
 const isToggled = ref(false);
 const isLoading = ref(false);
 const bankVerifyLoading = ref(false);
 const banksLoading = ref(false);
-const authStore = useAuthStore();
-const loggedInUser = authStore.loggedInUser;
 const items = ref([]);
 const banks = ref([]);
-const bankDetails = ref([]);
+const bankDetails = ref({});
 const selected = ref([]);
 const selectAll = ref("");
 const currentEditID = ref();
@@ -284,7 +352,7 @@ const verifyAccDetails = async (a, b) => {
   if (a.toString().length < 10 || b === "" || b === null || b === undefined)
     return;
   bankVerifyLoading.value = true;
-  bankDetails.value = [];
+  bankDetails.value = {};
   await axiosUrl
     .post("/get-bank", {
       account_number: a,
@@ -292,9 +360,15 @@ const verifyAccDetails = async (a, b) => {
     })
     .then((response) => {
       bankVerifyLoading.value = false;
-      console.log(response.data);
+      // console.log(response.data);
       if (response.data.status === false) {
-        Swal.fire("Failed!", response.data.message, "warning");
+        bankDetails.value = {};
+        Swal.fire({
+          title: "Failed!",
+          text: response.data.message,
+          icon: "warning",
+          confirmButtonColor: "#FACEA8",
+        });
       } else {
         bankDetails.value = response.data?.data;
       }
@@ -305,15 +379,22 @@ const verifyAccDetails = async (a, b) => {
     });
 };
 
-const openModal = (type, id, name) => {
+const openModal = (type, data) => {
   if (type === "add") modalParams.title = "Add Supply";
   else if (type === "edit") {
     modalParams.title = "Edit Supply";
-    modalForm.name = name;
-    currentEditID.value = id;
+    currentEditID.value = data.id;
+    modalForm.supplier_name = data.supplier_name;
+    modalForm.contact_person = data.contact_person;
+    modalForm.email = data.email;
+    modalForm.phone = data.phone;
+    modalForm.address = data.address;
+    modalForm.bank_name = data.bank_name;
+    modalForm.bank_account = data.bank_account;
+    modalForm.account_name = data.account_name;
+    verifyAccDetails(modalForm.bank_account, modalForm.bank_name);
   }
 
-  // open("supply-management-modal");
   isToggled.value = true;
 };
 
@@ -358,7 +439,31 @@ const onSubmit = async (type, id) => {
   let url = "/suppliers";
   let payload = {};
   if (type === "Add Supply") {
-    if (bankDetails.value.length === 0) return;
+    if (!isObjectEmpty(bankDetails.value)) {
+      modalForm.account_name = bankDetails.value?.account_name;
+    }
+
+    const emptyKeys = findEmptyKeys(modalForm);
+    console.log(emptyKeys);
+    if (emptyKeys) {
+      if (emptyKeys === "account_name") {
+        Swal.fire({
+          title: "Verify Bank Details !",
+          text: `Please enter correct bank name and account number to proceed`,
+          icon: "warning",
+          confirmButtonColor: "#FACEA8",
+        });
+        return;
+      } else {
+        Swal.fire({
+          title: "Failed!",
+          text: `Please fill up ${formatPayloadErrorKey(emptyKeys)}`,
+          icon: "warning",
+          confirmButtonColor: "#FACEA8",
+        });
+        return;
+      }
+    }
     url = "suppliers";
     payload = modalForm;
   } else if (type === "delete") {
@@ -367,34 +472,53 @@ const onSubmit = async (type, id) => {
       ids: selected.value,
     };
   } else if (type === "Edit Supply") {
-    url = "/suppliers" + id;
+    url = "/suppliers/" + id;
     payload = modalForm;
   } else return;
 
   close("supply-management-modal");
-  isLoading.value = true;
+  if (type !== "delete") {
+    isLoading.value = true;
+  }
   if (type === "delete") {
-    await axiosUrl
-      .delete(url, { data: payload })
-      .then(() => {
-        isLoading.value = false;
-        selected.value = [];
-        selectAll.value = false;
-        getSupplyManagement();
-      })
-      .catch((error) => {
-        isLoading.value = false;
-        swalErrorHandle(error);
-      });
+    if (selected.value.length <= 0) return;
+    swalConfirmDelete(
+      async () => {
+        isLoading.value = true;
+        await axiosUrl
+          .delete(url, { data: payload })
+          .then((response) => {
+            // console.log(response.data);
+            selected.value = [];
+            selectAll.value = false;
+            getSupplyManagement();
+          })
+          .catch((error) => {
+            isLoading.value = false;
+            swalErrorHandle(error);
+          });
+      },
+      () => {
+        return;
+      }
+    );
   } else if (type === "Edit Supply") {
     await axiosUrl
       .put(url, payload)
       .then(() => {
         isLoading.value = false;
 
-        modalForm.name = "";
         modalParams.title = "";
-
+        bankDetails.value = {};
+        modalForm.supplier_name = "";
+        modalForm.contact_person = "";
+        modalForm.email = "";
+        modalForm.phone = null;
+        modalForm.address = "";
+        modalForm.bank_name = "";
+        modalForm.bank_account = "";
+        modalForm.account_name = "";
+        isToggled.value = false;
         getSupplyManagement();
       })
       .catch((error) => {
@@ -406,11 +530,18 @@ const onSubmit = async (type, id) => {
       .post(url, payload)
       .then(() => {
         isLoading.value = false;
-
-        modalForm.name = "";
         modalParams.title = "";
 
-        isToggled.value = false;
+        bankDetails.value = {};
+        modalForm.supplier_name = "";
+        modalForm.contact_person = "";
+        modalForm.email = "";
+        modalForm.phone = null;
+        modalForm.address = "";
+        modalForm.bank_name = "";
+        modalForm.bank_account = "";
+        modalForm.account_name = "";
+
         getSupplyManagement();
       })
       .catch((error) => {
