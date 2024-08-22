@@ -10,7 +10,8 @@
           </h4>
           <b>Current Manager: </b>{{ bar.manager }}<br />
           <b>Daily Sales: </b> <span v-html="nairaSign"></span
-          >{{ formatPrice(totalDebt) }}
+          >
+          <!-- {{ formatPrice(totalDebt) }} -->
         </div>
       </div>
 

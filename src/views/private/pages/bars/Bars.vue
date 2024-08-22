@@ -1,138 +1,152 @@
 <template>
-    <div class="content-wrapper">
-        <loading :active="isLoading" />
-        <div class="container">
-            <div class="d-flex justify-content-between align-items-center">
-                <h2>Bars</h2>
+  <div class="content-wrapper">
+    <loading :active="isLoading" />
+    <div class="container">
+      <div class="d-flex justify-content-between align-items-center">
+        <h2>Bars</h2>
 
-                <div class="d-flex">
-                    <div class="me-3">
-                        <input
-                            v-model="filters['global'].value"
-                            placeholder="Search Bar"
-                            class="form-control my-input"
-                        />
-                    </div>
-                    <button
-                        v-if="selected.length > 0"
-                        @click="onSubmit('delete')"
-                        class="btn add-btn btn-danger px-4 m-1"
-                    >
-                        <i class="fa-solid fa-minus"></i> Delete Bar
-                    </button>
-                    <button @click="openModal('add')" class="btn add-btn m-1 px-4">
-                        <i class="fa-solid fa-plus"></i> Add Bar
-                    </button>
-                </div>
-            </div>
+        <div class="d-flex">
+          <div class="me-3">
+            <input
+              v-model="filters['global'].value"
+              placeholder="Search Bar"
+              class="form-control my-input"
+            />
+          </div>
+          <button
+            v-if="selected.length > 0"
+            @click="onSubmit('delete')"
+            class="btn add-btn btn-danger px-4 m-1"
+          >
+            <i class="fa-solid fa-minus"></i> Delete Bar
+          </button>
+          <button @click="openModal('add')" class="btn btn-success add-btn px-4">
+            <i class="fa-solid fa-plus"></i> Add Bar
+          </button>
+        </div>
+      </div>
 
-            <div class="mt-4">
-                <div v-if="items.length > 0">
-                    <DataTable
-                        class="shadow"
-                        v-model:filters="filters"
-                        :value="items"
-                        :sortField="'created_at'"
-                        showGridlines
-                        paginator
-                        :rows="10"
-                        :rowsPerPageOptions="[5, 10, 20, 50]"
-                        tableStyle="min-width: 50rem"
-                    >
-                        <Column style="width: 5%">
-                            <template #header="">
-                                <input
-                                type="checkbox"
-                                v-model="selectAll"
-                                @change="toggleAll()"
-                                />
-                            </template>
-                            <template #body="slotProps">
-                                <input
-                                type="checkbox"
-                                v-model="selected"
-                                :value="slotProps.data.id"
-                                number
-                                />
-                            </template>
-                        </Column>
+      <div class="mt-4">
+        <div v-if="items.length > 0">
+          <DataTable
+            class="shadow"
+            v-model:filters="filters"
+            :value="items"
+            :sortField="'created_at'"
+            showGridlines
+            paginator
+            :rows="10"
+            :rowsPerPageOptions="[5, 10, 20, 50]"
+            tableStyle="min-width: 50rem"
+          >
+            <Column style="width: 5%">
+              <template #header="">
+                <input
+                  type="checkbox"
+                  v-model="selectAll"
+                  @change="toggleAll()"
+                />
+              </template>
+              <template #body="slotProps">
+                <input
+                  type="checkbox"
+                  v-model="selected"
+                  :value="slotProps.data.id"
+                  number
+                />
+              </template>
+            </Column>
 
-                      
-                        <Column field="name" header="Name">
-                            <template #body="slotProps">
-                                {{ slotProps.data.name ? slotProps.data.name : "N/A" }}
-                            </template>
-                        </Column>
+            <Column field="name" header="Name">
+              <template #body="slotProps">
+                {{ slotProps.data.name ? slotProps.data.name : "N/A" }}
+              </template>
+            </Column>
 
-                        <Column field="bar_code" header="Bar Code"></Column>
-                        <Column field="manager" header="Manager"></Column>
+            <Column field="bar_code" header="Bar Code">
+              <template #body="slotProps">
+                {{ slotProps.data.bar_code ? slotProps.data.bar_code : "N/A" }}
+              </template>
+            </Column>
 
-                        <Column header="Date Created">
-                            <template #body="slotProps">
-                                {{ formatDate(slotProps.data.created_at) }}
-                            </template>
-                        </Column>
+            <Column field="manager" header="Manager">
+              <template #body="slotProps">
+                {{ slotProps.data.manager ? slotProps.data.manager : "N/A" }}
+              </template>
+            </Column>
 
-                        <Column header="Action">
-                            <template #body="slotProps">
-                                <Dropdown
-                                @change="
-                                    checkSelectedAction(
-                                    selectedAction[slotProps.data.id],
-                                    slotProps.data
-                                    )
-                                "
-                                v-model="selectedAction[slotProps.data.id]"
-                                optionLabel="label"
-                                optionValue="id"
-                                :options="actions"
-                                placeholder="Action"
-                                />
-                            </template>
-                        </Column>
-                    </DataTable>
-                </div>
+            <Column header="Date Created">
+              <template #body="slotProps">
+                {{ formatDate(slotProps.data.created_at) }}
+              </template>
+            </Column>
 
-                <div v-else>
-                <div class="card card-body">
-                    <div class="alert alert-warning" role="alert">
-                    <p class="text-center">No Bar Available</p>
-                    </div>
-                </div>
-                </div>
-            </div>
+            <Column header="Action">
+              <template #body="slotProps">
+                <Dropdown
+                  @change="
+                    checkSelectedAction(
+                      selectedAction[slotProps.data.id],
+                      slotProps.data
+                    )
+                  "
+                  v-model="selectedAction[slotProps.data.id]"
+                  optionLabel="label"
+                  optionValue="id"
+                  :options="actions"
+                  placeholder="Action"
+                />
+              </template>
+            </Column>
+          </DataTable>
         </div>
 
-        <Modal name="section-modal" :title="modalParams.title">
-            <ModalContent>
-                <form @submit.prevent="onSubmit(modalParams.title, currentEditID)">
-                    <div class="form-group mb-3">
-                        <label class="col-form-label fs-6">Name of Bar</label>
-                        <input
-                        class="form-control"
-                        type="text"
-                        v-model="modalForm.name"
-                        required
-                        />
-                    </div>
-
-                    <div class="form-group mb-3">
-                        <label>Select Manager</label>
-                        <select v-model="modalForm.manager_id" class="form-control">
-                            <option value="null" selected>-- Select Manager --</option>
-                            <option v-for="option in manager" :value="option.id" :key="option.id">
-                                {{ option.username }}
-                            </option>
-                        </select>
-                    </div>
-
-                    <div class="my-3">
-                        <button class="btn btn-primary account-btn w-100" type="submit">Submit</button>
-                    </div>
-                </form>
-            </ModalContent>
-        </Modal>
+        <div v-else>
+          <div class="card card-body">
+            <div class="alert alert-warning" role="alert">
+              <p class="text-center">No Bar Available</p>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
+
+    <Modal name="section-modal" :title="modalParams.title">
+      <ModalContent>
+        <form @submit.prevent="onSubmit(modalParams.title, currentEditID)">
+          <div class="form-group mb-3">
+            <label class="col-form-label fs-6">Name of Bar</label>
+            <input
+              class="form-control"
+              type="text"
+              v-model="modalForm.name"
+              required
+            />
+          </div>
+
+          <div class="form-group mb-3">
+            <label>Select Manager</label>
+            <select v-model="modalForm.manager_id" class="form-control">
+              <option value="null" selected>-- Select Manager --</option>
+              <option
+                v-for="option in managers"
+                :value="option.id"
+                :key="option.id"
+              >
+                {{ option.username }}
+              </option>
+            </select>
+          </div>
+
+          <div class="my-3">
+            <button class="btn btn-primary account-btn w-100" type="submit">
+              Submit
+            </button>
+          </div>
+        </form>
+      </ModalContent>
+    </Modal>
+  </div>
 </template>
 
 <script setup>
@@ -159,13 +173,13 @@ const actions = ref([
 ]);
 
 const checkSelectedAction = (id, data) => {
-    if (id === 1) {
-        openModal('edit', data.id, data.name)
-    } else if (id == 2) {
-        router.push({ path: "/bars/" + data.bar_code });
-    } else if (id === 3) {
-        onSubmit("delete", id);
-    }
+  if (id === 1) {
+    openModal("edit", data.id, data.name);
+  } else if (id == 2) {
+    router.push({ path: "/bars/" + data.bar_code });
+  } else if (id === 3) {
+    onSubmit("delete", id);
+  }
 };
 
 const filters = ref({
@@ -245,7 +259,7 @@ const onSubmit = async (type, id) => {
       .catch((error) => {
         isLoading.value = false;
         swalErrorHandle(error);
-    });
+      });
   } else {
     await axiosUrl
       .post(url, payload)

@@ -34,7 +34,7 @@
             />
           </div>
 
-          <div class="w-25">
+          <!-- <div class="w-25">
             <label class="form-label fs-6">Type of Purchase </label>
             <Dropdown
               class="w-100"
@@ -46,7 +46,7 @@
               filter
               placeholder=""
             />
-          </div>
+          </div> -->
 
           <div class="w-25">
             <label class="form-label fs-6">Date of Purchase</label>
@@ -173,8 +173,8 @@
             {{
               createPayload.supplier_id === null ||
               createPayload.supplier_id === "" ||
-              createPayload.mode_of_payment_id === null ||
-              createPayload.mode_of_payment_id === "" ||
+              // createPayload.mode_of_payment_id === null ||
+              // createPayload.mode_of_payment_id === "" ||
               createPayload.date_of_purchase === null ||
               createPayload.date_of_purchase === "" ||
               createPayload.items.length === 0
@@ -185,8 +185,8 @@
             :disabled="
               createPayload.supplier_id === null ||
               createPayload.supplier_id === '' ||
-              createPayload.mode_of_payment_id === null ||
-              createPayload.mode_of_payment_id === '' ||
+              // createPayload.mode_of_payment_id === null ||
+              // createPayload.mode_of_payment_id === '' ||
               createPayload.date_of_purchase === null ||
               createPayload.date_of_purchase === '' ||
               createPayload.items.length === 0
@@ -337,7 +337,7 @@ const banks = ref([]);
 const bankDetails = ref([]);
 const createPayload = ref({
   supplier_id: null,
-  mode_of_payment_id: null, //Cash Payment or Credit Payment
+  // mode_of_payment_id: null, //Cash Payment or Credit Payment
   date_of_purchase: "",
   amount_paid: null,
   items: [
@@ -561,18 +561,18 @@ const createPurchase = async () => {
     });
     return;
   }
-  if (
-    createPayload.value.mode_of_payment_id === null ||
-    createPayload.value.mode_of_payment_id === ""
-  ) {
-    Swal.fire({
-      title: "Failed!",
-      text: `Please fill up Mode of Payment`,
-      icon: "warning",
-      confirmButtonColor: "#FACEA8",
-    });
-    return;
-  }
+  // if (
+  //   createPayload.value.mode_of_payment_id === null ||
+  //   createPayload.value.mode_of_payment_id === ""
+  // ) {
+  //   Swal.fire({
+  //     title: "Failed!",
+  //     text: `Please fill up Mode of Payment`,
+  //     icon: "warning",
+  //     confirmButtonColor: "#FACEA8",
+  //   });
+  //   return;
+  // }
   if (
     createPayload.value.date_of_purchase === null ||
     createPayload.value.date_of_purchase === ""
@@ -645,7 +645,7 @@ const createPurchase = async () => {
       isLoading.value = false;
       // console.log(response.data);
       createPayload.value.supplier_id = null;
-      createPayload.value.mode_of_payment_id = null;
+      // createPayload.value.mode_of_payment_id = null;
       createPayload.value.date_of_purchase = "";
       createPayload.value.amount_paid = null;
       createPayload.value.items = [
