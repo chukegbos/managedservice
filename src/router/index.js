@@ -200,17 +200,26 @@ const routes = [
 				component: () =>
 					import("@/views/private/pages/sales/Allsales.vue"),
 			},
+
 			{
 				path: "/receipt/:code",
 				name: "Receipt",
 				component: () =>
 					import("@/views/private/pages/sales/Receipt.vue"),
 			},
+
 			{
 				path: "/purchase",
 				name: "PurchasePage",
 				component: () =>
 					import("@/views/private/pages/purchase/PurchasePage.vue"),
+			},
+
+			{
+				path: "/purchase-single/:id",
+				name: "PurchaseSingle",
+				component: () =>
+					import("@/views/private/pages/purchase/PurchaseSingle.vue"),
 			},
 
 			{
@@ -221,7 +230,7 @@ const routes = [
 						"@/views/private/pages/purchase/CreatePurchasePage.vue"
 					),
 			},
-			
+
 			{
 				path: "/inventory/product-categories",
 				name: "InventoryCategory",
@@ -235,11 +244,8 @@ const routes = [
 				path: "/inventories/products",
 				name: "Inventory",
 				component: () =>
-					import(
-						"@/views/private/pages/inventory/Inventory.vue"
-					),
+					import("@/views/private/pages/inventory/Inventory.vue"),
 			},
-			
 		],
 	},
 ];

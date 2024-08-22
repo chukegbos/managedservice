@@ -544,13 +544,13 @@ const onSubmit = async (type, id) => {
         modalForm.account_name = "";
 
         getSupplyManagement();
+        isToggled.value = false
       })
       .catch((error) => {
         isLoading.value = false;
         swalErrorHandle(error);
       });
   }
-  isToggled.value = true;
 };
 
 onMounted(() => {

@@ -165,15 +165,16 @@ import {
   swalErrorHandle,
   swalConfirmDelete,
 } from "@/components/myHelperFunction";
-import { useRouter } from "vue-router";
+import { useRoute } from "vue-router";
 
-const router = useRouter();
+const route = useRoute();
 const isLoading = ref(false);
 const banksLoading = ref(false);
 const items = ref([]);
 const banks = ref([]);
 const selected = ref([]);
-const selectAll = ref("");
+const selectAll = ref();
+const id = ref("");
 const filters = ref({
   global: { value: null, matchMode: FilterMatchMode.CONTAINS },
 });
@@ -202,7 +203,7 @@ const dynamicOptions = (data) => {
     data["status"] === "2" ||
     data["status"] === 2
   ) {
-    return [{ label: "View", id: 3 }];
+    return [];
   }
 };
 
@@ -212,10 +213,6 @@ const checkSelectedAction = (id, data) => {
   if (id === 1 || id === 2) {
     approve_reject(id, data?.purchase_code);
   } else if (id === 3) {
-    router.push({
-      name: "PurchaseSingle",
-      params: { id: data.id },
-    });
   } else {
     Swal.fire({
       title: "Failed!",
@@ -233,13 +230,13 @@ const toggleAll = () => {
   else selected.value = [];
 };
 
-const getPurchase = async () => {
+const getPurchaseSingle = async (id) => {
   isLoading.value = true;
 
   await axiosUrl
-    .get("/purchase")
+    .get("/purchase/single/" + id)
     .then((response) => {
-      items.value = response.data.data;
+      items.value.push(response.data?.data);
       isLoading.value = false;
     })
     .catch((error) => {
@@ -266,7 +263,7 @@ const approve_reject = async (id, purchaseCode) => {
     .post(url)
     .then((response) => {
       console.log(response.data);
-      getPurchase();
+      getPurchaseSingle(id.value);
     })
     .catch((error) => {
       isLoading.value = false;
@@ -289,7 +286,7 @@ const deletePurchase = async () => {
           // console.log(response.data);
           selected.value = [];
           selectAll.value = false;
-          getPurchase();
+          getPurchaseSingle(id.value);
         })
         .catch((error) => {
           isLoading.value = false;
@@ -302,24 +299,9 @@ const deletePurchase = async () => {
   );
 };
 
-const getAllBanks = async () => {
-  banksLoading.value = true;
-
-  await axiosUrl
-    .get("/allbanks")
-    .then((response) => {
-      banks.value = response.data;
-      banksLoading.value = false;
-    })
-    .catch((error) => {
-      banksLoading.value = false;
-      swalErrorHandle(error);
-    });
-};
-
 onMounted(() => {
-  getPurchase();
-  getAllBanks();
+  id.value = route.params?.id;
+  getPurchaseSingle(id.value);
 });
 </script>
 
