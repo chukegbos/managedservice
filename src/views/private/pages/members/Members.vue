@@ -17,6 +17,7 @@
 
           <div>
             <button
+               v-if="canDelete()"
               @click="onSubmit('delete-m')"
               class="btn btn-danger m-1">
               <i class="fa-solid fa-minus"></i> Delete
@@ -33,7 +34,7 @@
         </div>
       </div>
 
-      <div class="mt-4">
+      <div class="mt-4" v-if="canRead">
         <div v-if="items.length > 0">
           <DataTable
             class="shadow"
@@ -145,7 +146,7 @@ import { axiosUrl } from "@/env";
 import { ref, reactive, onMounted } from "vue";
 import { FilterMatchMode } from "primevue/api";
 import { useAuthStore } from "@/store/authStore";
-import { formatDate, swalErrorHandle, canCreate, canUpdate, canDelete, canRead} from "@/components/myHelperFunction";
+import { formatDate, swalErrorHandle, canCreate, canUpdate, canDelete, canRead, canApprove, canReject} from "@/components/myHelperFunction";
 import router from "@/router";
 
 const isLoading = ref(false);

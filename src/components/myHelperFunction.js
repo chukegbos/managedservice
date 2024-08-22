@@ -46,6 +46,26 @@ export const canDelete = () => {
     return createPermission ? true : false;
 };
 
+export const canApprove = () => {
+    const permissions = allRoles[loggedInUser.role_id]['permissions'];
+
+    // Find the permission object with the name 'Create'
+    const createPermission = permissions.find(permission => permission.name === 'Approve');
+
+    // Return true if 'Create' is found, otherwise false
+    return createPermission ? true : false;
+};
+
+export const canReject = () => {
+    const permissions = allRoles[loggedInUser.role_id]['permissions'];
+
+    // Find the permission object with the name 'Create'
+    const createPermission = permissions.find(permission => permission.name === 'Reject');
+
+    // Return true if 'Create' is found, otherwise false
+    return createPermission ? true : false;
+};
+
 export const findEmptyKeys = (obj) => {
 	return Object.keys(obj).find(
 		(key) => obj[key] === null || obj[key] === "" || obj[key] === undefined
