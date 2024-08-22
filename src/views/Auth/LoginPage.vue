@@ -171,6 +171,7 @@ const onSubmit = async () => {
         localStorage.setItem("token", response.data.data.access_token);
         authStore.getCurrentUser(response.data.data.user);
         authStore.getCurrentClub(response.data.data.club);
+        authStore.getRoles(response.data.data.roles);
         authStore.getUserToken(response.data.data.access_token);
         // authStore.getUserTokenExpiresAt(user.value.token_expires_at);
         let path = "/";

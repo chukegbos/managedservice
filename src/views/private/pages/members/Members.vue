@@ -18,14 +18,13 @@
           <div>
             <button
               @click="onSubmit('delete-m')"
-              class="btn btn-danger m-1"
-            >
+              class="btn btn-danger m-1">
               <i class="fa-solid fa-minus"></i> Delete
             </button>
-            <router-link class="btn btn-info m-1" to="/members/create"
-              >Add</router-link
+            <router-link class="btn btn-info m-1" to="/members/create"  v-if="canCreate()">Add</router-link
             >
             <button
+              v-if="canCreate()"
               @click="onSynch()"
               class="btn btn-primary m-1">
               Synchronize
@@ -146,7 +145,7 @@ import { axiosUrl } from "@/env";
 import { ref, reactive, onMounted } from "vue";
 import { FilterMatchMode } from "primevue/api";
 import { useAuthStore } from "@/store/authStore";
-import { formatDate, swalErrorHandle } from "@/components/myHelperFunction";
+import { formatDate, swalErrorHandle, canCreate, canUpdate, canDelete, canRead} from "@/components/myHelperFunction";
 import router from "@/router";
 
 const isLoading = ref(false);
@@ -273,6 +272,8 @@ const getMembers = async () => {
 
 onMounted(() => {
   getMembers();
+  const set = canCreate();
+  console.log(set)
 });
 </script>
 

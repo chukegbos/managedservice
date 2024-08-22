@@ -6,6 +6,7 @@ export const useAuthStore = defineStore("auth", {
 		// tokenExpiration: null,
 		loggedInUser: {},
 		currentClub: {},
+		allRoles: {},
 	}),
 	actions: {
 		getUserToken(token) {
@@ -20,6 +21,11 @@ export const useAuthStore = defineStore("auth", {
 		getCurrentClub(currentClub) {
 			this.currentClub = currentClub;
 		},
+
+		getRoles(allRoles) {
+			this.allRoles = allRoles;
+		},
+
 		clearToken() {
 			this.token = null;
 			// this.tokenExpiration = null;
