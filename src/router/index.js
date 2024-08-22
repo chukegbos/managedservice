@@ -181,7 +181,7 @@ const routes = [
 			},
 
 			{
-				path: "/bars/allrequests",
+				path: "/bars/all-requests",
 				name: "All Request",
 				component: () =>
 					import("@/views/private/pages/bars/AllRequest.vue"),

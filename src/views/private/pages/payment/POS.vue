@@ -4,8 +4,8 @@
 
     <div class="container">
       <div class="">
-        <div class="d-flex justify-content-between align-items-center">
-          <h2>POS Payments</h2>
+        <div class="d-flex justify-content-between align-items-center mt-3">
+          <h2 class="mb-0">POS Payments</h2>
 
           <div class="d-flex">
             <div class="me-3">
@@ -18,13 +18,17 @@
 
             <div>
               <button
-                v-if="selected.length > 0"
+                v-if="canDelete()"
                 @click="onSubmit('delete')"
-                class="btn add-btn px-4"
+                class="btn add-btn btn-danger mr-2 px-4"
               >
                 <i class="fa-solid fa-minus"></i> Delete POS
               </button>
-              <button @click="openModal('add')" class="btn add-btn me-2 px-4">
+              <button
+                v-if="canCreate()"
+                @click="openModal('add')"
+                class="btn add-btn btn-success me-2 px-4"
+              >
                 <i class="fa-solid fa-plus"></i> Add POS
               </button>
             </div>
@@ -33,7 +37,7 @@
       </div>
 
       <div class="mt-4">
-        <div v-if="items.length > 0">
+        <div v-if="items.length > 0 && canRead()">
           <DataTable
             class="shadow"
             v-model:filters="filters"
@@ -75,6 +79,7 @@
             <Column header="Action" style="width: 20%">
               <template #body="slotProps">
                 <button
+                  v-if="canUpdate()"
                   @click="
                     openModal('edit', slotProps.data.id, slotProps.data.name)
                   "
@@ -128,6 +133,14 @@ import { FilterMatchMode } from "primevue/api";
 import { useAuthStore } from "@/store/authStore";
 import { formatDate, swalErrorHandle } from "@/components/myHelperFunction";
 import { Modal, ModalContent, open, close } from "@dimsog/vue-modal";
+import {
+  canCreate,
+  canUpdate,
+  canDelete,
+  canRead,
+  canApprove,
+  canReject,
+} from "@/components/permission_restriction.js";
 
 const isLoading = ref(false);
 const authStore = useAuthStore();

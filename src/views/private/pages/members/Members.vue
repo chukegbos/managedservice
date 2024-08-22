@@ -3,39 +3,45 @@
     <loading :active="isLoading" />
 
     <div class="container">
-      <div class="d-flex justify-content-between align-items-center">
-        <h2>All Members</h2>
+      <div class="d-flex justify-content-between align-items-center mt-3">
+        <h2 class="mb-0">All Members</h2>
 
-        <div class="d-flex">
+        <div class="d-flex align-items-end">
           <div class="me-3">
             <input
               v-model="filters['global'].value"
               placeholder="Keyword Member"
-              class="form-control my-input"
+              class="form-control my-input py-2"
             />
           </div>
 
           <div>
             <button
-               v-if="canDelete()"
+              v-if="canDelete()"
               @click="onSubmit('delete-m')"
-              class="btn btn-danger m-1">
+              class="btn btn-danger mr-1"
+            >
               <i class="fa-solid fa-minus"></i> Delete
             </button>
-            <router-link class="btn btn-info m-1" to="/members/create"  v-if="canCreate()">Add</router-link
+            <router-link
+              class="btn btn-info text-white m-1"
+              to="/members/create"
+              v-if="canCreate()"
+              >Add</router-link
             >
             <button
               v-if="canCreate()"
               @click="onSynch()"
-              class="btn btn-primary m-1">
+              class="btn btn-primary m-1"
+            >
               Synchronize
             </button>
           </div>
         </div>
       </div>
 
-      <div class="mt-4" v-if="canRead">
-        <div v-if="items.length > 0">
+      <div class="mt-4">
+        <div v-if="items.length > 0 && canRead()">
           <DataTable
             class="shadow"
             v-model:filters="filters"
@@ -92,16 +98,21 @@
 
             <Column header="Gender">
               <template #body="slotProps">
-                <span v-if="(slotProps.data.gender == 'male' || slotProps.data.gender == 'm'  || slotProps.data.gender == null)">Male</span>
+                <span
+                  v-if="
+                    slotProps.data.gender == 'male' ||
+                    slotProps.data.gender == 'm' ||
+                    slotProps.data.gender == null
+                  "
+                  >Male</span
+                >
                 <span v-else class="text-danger">Female</span>
               </template>
             </Column>
 
             <Column header="Door Access">
               <template #body="slotProps">
-                <span
-                  v-if="slotProps.data.status == 1"
-                  class="text-success"
+                <span v-if="slotProps.data.status == 1" class="text-success"
                   >Access</span
                 >
                 <span v-else class="text-danger">No Access</span>
@@ -121,7 +132,7 @@
                   v-model="selectedAction[slotProps.data.id]"
                   optionLabel="label"
                   optionValue="id"
-                  :options="actions"
+                  :options="dynamicOptions()"
                   placeholder="Action"
                 />
               </template>
@@ -146,7 +157,15 @@ import { axiosUrl } from "@/env";
 import { ref, reactive, onMounted } from "vue";
 import { FilterMatchMode } from "primevue/api";
 import { useAuthStore } from "@/store/authStore";
-import { formatDate, swalErrorHandle, canCreate, canUpdate, canDelete, canRead, canApprove, canReject} from "@/components/myHelperFunction";
+import { formatDate, swalErrorHandle } from "@/components/myHelperFunction";
+import {
+  canCreate,
+  canUpdate,
+  canDelete,
+  canRead,
+  canApprove,
+  canReject,
+} from "@/components/permission_restriction.js";
 import router from "@/router";
 
 const isLoading = ref(false);
@@ -160,12 +179,21 @@ const filters = ref({
   global: { value: null, matchMode: FilterMatchMode.CONTAINS },
 });
 const selectedAction = ref([]);
-const actions = ref([
-  { label: "Edit", id: 1 },
-  { label: "View", id: 2 },
+const dynamicOptions = () => {
+  console.log(canUpdate());
+  let arr = [];
+  if (canUpdate()) {
+    arr.push({ label: "Edit", id: 1 });
+  }
+  if (canRead()) {
+    arr.push({ label: "View", id: 2 });
+  }
+  if (canDelete()) {
+    arr.push({ label: "Delete", id: 3 });
+  }
+  return arr;
   // { label: "Activate/Deactivate", id: 4 },
-  { label: "Delete", id: 3 },
-]);
+};
 
 const checkSelectedAction = (id, data) => {
   if (id === 1) {
@@ -181,23 +209,21 @@ const checkSelectedAction = (id, data) => {
     // router.push({ path: "/members/view/" + data });
   } else if (id === 3) {
     onSubmit("delete", id);
-  }
-  else if (id === 4) {
+  } else if (id === 4) {
     activate(data);
   }
-  
 };
 
 const activate = async (data) => {
   isLoading.value = true;
   await axiosUrl
-    .get('members/status/?membership_id=' + data)
+    .get("members/status/?membership_id=" + data)
     .then(() => {
       isLoading.value = false;
-      getMembers()
+      getMembers();
     })
     .catch((error) => {
-      console.log(error)
+      console.log(error);
       isLoading.value = false;
       swalErrorHandle(error);
     });
@@ -208,10 +234,10 @@ const onSynch = async () => {
   await axiosUrl
     .get("synch")
     .then((response) => {
-      console.log(response)
+      console.log(response);
       isLoading.value = false;
       swalSuccessHandle("Done Successful.");
-      getMembers()
+      getMembers();
     })
     .catch((error) => {
       isLoading.value = false;
@@ -238,7 +264,7 @@ const onSubmit = async (type, id) => {
       isLoading.value = false;
       selected.value = [];
       selectAll.value = false;
-      getMembers()
+      getMembers();
     })
     .catch((error) => {
       isLoading.value = false;
@@ -273,8 +299,6 @@ const getMembers = async () => {
 
 onMounted(() => {
   getMembers();
-  const set = canCreate();
-  console.log(set)
 });
 </script>
 

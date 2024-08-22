@@ -5,11 +5,12 @@
     <div class="container">
       <h2 class="mt-3">Items Purchase</h2>
       <div class="d-flex mb-3">
-        <p class="mb-0 btn btn-sm btn-outline-success">
+        <p class="mb-0 btn btn-sm btn-outline-success" v-if="canCreate()">
           <font-awesome-icon :icon="['fas', 'plus']" class="me-2" />Add New
           Product
         </p>
         <p
+          v-if="canCreate()"
           class="mb-0 ms-3 btn btn-sm btn-outline-success"
           @click="isToggled = true"
         >
@@ -18,7 +19,7 @@
         </p>
       </div>
 
-      <div class="shadow p-4 rounded">
+      <div class="shadow p-4 rounded" v-if="canCreate() && canRead()">
         <div class="d-flex justify-content-between border-bottom pb-3">
           <div class="w-25">
             <label class="form-label fs-6">Select Supplier</label>
@@ -67,16 +68,20 @@
                 <th scope="col" style="width: 8%">Pack</th>
                 <th scope="col" style="width: 8%">Quantity</th>
                 <th scope="col" style="width: 17%">
-                  Unit Cost Price <br> (₦/Crate)
+                  Unit Cost Price <br />
+                  (₦/Crate)
                 </th>
                 <th scope="col" style="width: 17%">
-                  Unit Cost Price <br> (₦/Bottle)
+                  Unit Cost Price <br />
+                  (₦/Bottle)
                 </th>
                 <th scope="col" style="width: 17%">
-                  Unit Selling Price <br> (₦/Bottle)
+                  Unit Selling Price <br />
+                  (₦/Bottle)
                 </th>
                 <th scope="col" style="width: 17%">
-                  Total Cost Price <br> (₦/Crate)
+                  Total Cost Price <br />
+                  (₦/Crate)
                 </th>
                 <th scope="col" style="width: 2%"></th>
               </tr>
@@ -324,6 +329,14 @@ import {
   formatPayloadErrorKey,
   isObjectEmpty,
 } from "@/components/myHelperFunction";
+import {
+  canCreate,
+  canUpdate,
+  canDelete,
+  canRead,
+  canApprove,
+  canReject,
+} from "@/components/permission_restriction.js";
 
 const isToggled = ref(false);
 const isLoading = ref(false);

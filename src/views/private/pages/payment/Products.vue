@@ -4,8 +4,8 @@
 
     <div class="container">
       <div class="">
-        <div class="d-flex justify-content-between align-items-center">
-          <h2>Payments Products</h2>
+        <div class="d-flex justify-content-between align-items-center mt-4">
+          <h2 class="mb-0">Payments Products</h2>
 
           <div class="d-flex">
             <div class="me-3">
@@ -18,9 +18,9 @@
 
             <div>
               <button
-                v-if="selected.length > 0"
+                v-if="canDelete()"
                 @click="onSubmit('delete-m')"
-                class="btn add-btn px-4"
+                class="btn add-btn btn-danger mr-2 px-4"
               >
                 <i class="fa-solid fa-minus"></i> Delete
               </button>
@@ -30,7 +30,10 @@
               <!-- <button @click="visible = true" class="btn add-btn me-2 px-4">
                 < Add
               </button> -->
-              <button @click="openModal('add')" class="btn add-btn me-2 px-4">
+              <button
+                @click="openModal('add')"
+                class="btn add-btn btn-success me-2 px-4"
+              >
                 <i class="fa-solid fa-plus"></i> Add
               </button>
             </div>
@@ -114,7 +117,7 @@
                     Every 6 Months
                   </span>
                   <span v-else-if="slotProps.data.type == 5"> Annualy </span>
-                  <span v-else-if="slotProps.data.type == 5"> Biannualy </span>
+                  <span v-else-if="slotProps.data.type == 6"> Biannualy </span>
                   <span v-else> One Off </span>
                 </span>
                 <br />
@@ -150,7 +153,7 @@
                   v-model="actionValue[slotProps.data.id]"
                   optionLabel="name"
                   optionValue="id"
-                  :options="options"
+                  :options="dynamicOptions()"
                   placeholder="Action"
                 />
               </template>
@@ -351,6 +354,14 @@ import {
   swalErrorHandle,
   swalSuccessHandle,
 } from "@/components/myHelperFunction";
+import {
+  canCreate,
+  canUpdate,
+  canDelete,
+  canRead,
+  canApprove,
+  canReject,
+} from "@/components/permission_restriction.js";
 import { Modal, ModalContent, open, close } from "@dimsog/vue-modal";
 
 const isLoading = ref(false);
@@ -381,25 +392,35 @@ const singleDebit = reactive({
   membership_id: "",
 });
 
-const options = [
-  {
-    id: "1",
-    name: "Edit",
-  },
-  {
-    id: "2",
-    name: "Delete",
-  },
-  {
-    id: "3",
-    name: "Individual Debit",
-  },
+const dynamicOptions = () => {
+  let arr = [];
+  if (canUpdate()) {
+    arr.push({
+      id: "1",
+      name: "Edit",
+    });
+  }
+  if (canDelete()) {
+    arr.push({
+      id: "2",
+      name: "Delete",
+    });
+  }
+  if (canUpdate()) {
+    arr.push({
+      id: "3",
+      name: "Individual Debit",
+    });
+  }
+  if (canUpdate()) {
+    arr.push({
+      id: "4",
+      name: "Group Debit",
+    });
+  }
+  return arr;
+};
 
-  {
-    id: "4",
-    name: "Group Debit",
-  },
-];
 const filters = ref({
   global: { value: null, matchMode: FilterMatchMode.CONTAINS },
 });
@@ -506,7 +527,7 @@ const getMembers = async () => {
     .then((response) => {
       members.value = response.data.data;
       if (Array.isArray(members.value) && members.value.length > 0) {
-        console.log("in")
+        console.log("in");
         for (let i = 0; i < members.value.length; i++) {
           members.value[i][
             "display_name"
@@ -514,7 +535,7 @@ const getMembers = async () => {
         }
       }
 
-      console.log(members.value)
+      console.log(members.value);
     })
     .catch(() => {});
 };

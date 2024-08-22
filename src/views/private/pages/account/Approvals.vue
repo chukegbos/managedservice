@@ -4,8 +4,8 @@
 
     <div class="container">
       <div class="">
-        <div class="d-flex justify-content-between align-items-center">
-          <h2>Pending Approvals</h2>
+        <div class="d-flex justify-content-between align-items-center mt-3">
+          <h2 class="mb-0">Pending Approvals</h2>
 
           <div class="d-flex">
             <div class="me-3">
@@ -20,7 +20,7 @@
       </div>
 
       <div class="mt-4">
-        <div v-if="items.length > 0">
+        <div v-if="items.length > 0 && canRead()">
           <DataTable
             class="shadow"
             v-model:filters="filters"
@@ -34,7 +34,7 @@
           >
             <Column header="Tranx ID" style="width: 10%">
               <template #body="slotProps">
-                #{{ slotProps.data.trans_id}}
+                #{{ slotProps.data.trans_id }}
               </template>
             </Column>
 
@@ -46,21 +46,29 @@
 
             <Column header="Amount" style="width: 20%">
               <template #body="slotProps">
-                 <span v-html="nairaSign" />{{formatPrice(slotProps.data.amount)}}
+                <span v-html="nairaSign" />{{
+                  formatPrice(slotProps.data.amount)
+                }}
               </template>
             </Column>
 
             <Column header="Status" style="width: 10%">
-                <template #body="slotProps">
-                    <span v-if="slotProps.data.statusValue=='Cr'" class="text-info">{{ slotProps.data.statusValue }}</span>
-                    <span v-else class="text-danger">{{ slotProps.data.statusValue }}</span>
-                </template>
+              <template #body="slotProps">
+                <span
+                  v-if="slotProps.data.statusValue == 'Cr'"
+                  class="text-info"
+                  >{{ slotProps.data.statusValue }}</span
+                >
+                <span v-else class="text-danger">{{
+                  slotProps.data.statusValue
+                }}</span>
+              </template>
             </Column>
 
             <Column header="Payment Method" style="width: 15%">
-                <template #body="slotProps">
-                    {{ slotProps.data.theChannel }}<br />
-                    {{ slotProps.data.channelMethod }}
+              <template #body="slotProps">
+                {{ slotProps.data.theChannel }}<br />
+                {{ slotProps.data.channelMethod }}
               </template>
             </Column>
             <Column header="Creator" style="width: 20%">
@@ -72,9 +80,15 @@
             </Column>
 
             <Column header="Action" style="width: 10%">
-                <template #body="slotProps">
-                    <a href="#" @click="approve(slotProps.data.trans_id)" class="btn btn-info btn-sm text-white">Approve</a>
-                </template>
+              <template #body="slotProps">
+                <a
+                  v-if="canApprove()"
+                  href="#"
+                  @click="approve(slotProps.data.trans_id)"
+                  class="btn btn-info btn-sm text-white"
+                  >Approve</a
+                >
+              </template>
             </Column>
           </DataTable>
         </div>
@@ -102,7 +116,14 @@ import {
   swalErrorHandle,
   swalSuccessHandle,
 } from "@/components/myHelperFunction";
-
+import {
+  canCreate,
+  canUpdate,
+  canDelete,
+  canRead,
+  canApprove,
+  canReject,
+} from "@/components/permission_restriction.js";
 const isLoading = ref(false);
 const nairaSign = "&#x20A6;";
 const authStore = useAuthStore();
@@ -134,7 +155,7 @@ const approve = async (id) => {
     .get("/accounting/approvals/" + id)
     .then((response) => {
       isLoading.value = false;
-      swalSuccessHandle('Approved')
+      swalSuccessHandle("Approved");
       getHistory();
     })
     .catch((error) => {

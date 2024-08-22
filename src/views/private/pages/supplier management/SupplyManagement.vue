@@ -4,7 +4,7 @@
 
     <div class="container mt-3">
       <div class="">
-        <div class="d-flex justify-content-between align-items-center">
+        <div class="d-flex justify-content-between align-items-center mt-3">
           <h2 class="mb-0">Supply Management</h2>
 
           <div class="d-flex">
@@ -18,6 +18,7 @@
 
             <div class="d-flex align-items-end">
               <button
+                v-if="canDelete()"
                 @click="onSubmit('delete')"
                 class="btn btn-danger add-btn px-4 me-2"
                 :disabled="selected.length === 0"
@@ -25,6 +26,7 @@
                 <i class="fa-solid fa-minus"></i> Delete Supply
               </button>
               <button
+                v-if="canCreate()"
                 @click="openModal('add')"
                 class="btn btn-success add-btn px-4"
               >
@@ -36,7 +38,7 @@
       </div>
 
       <div class="mt-4">
-        <div v-if="items.length > 0">
+        <div v-if="items.length > 0 && canRead()">
           <DataTable
             class="shadow"
             v-model:filters="filters"
@@ -155,11 +157,13 @@
             <Column header="Action" style="width: 5%">
               <template #body="{ data }">
                 <button
+                  v-if="canUpdate()"
                   @click="openModal('edit', data)"
                   class="btn btn-warning btn-sm m-1 text-white px-4"
                 >
                   Edit
                 </button>
+                <span v-else>N/A</span>
               </template>
             </Column>
           </DataTable>
@@ -306,7 +310,14 @@ import {
   isObjectEmpty,
   swalConfirmDelete,
 } from "@/components/myHelperFunction";
-
+import {
+  canCreate,
+  canUpdate,
+  canDelete,
+  canRead,
+  canApprove,
+  canReject,
+} from "@/components/permission_restriction.js";
 const isToggled = ref(false);
 const isLoading = ref(false);
 const bankVerifyLoading = ref(false);
@@ -544,7 +555,7 @@ const onSubmit = async (type, id) => {
         modalForm.account_name = "";
 
         getSupplyManagement();
-        isToggled.value = false
+        isToggled.value = false;
       })
       .catch((error) => {
         isLoading.value = false;
