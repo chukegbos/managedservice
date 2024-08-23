@@ -1,5 +1,6 @@
 <template>
   <div class="page-wrapper mx-3 pt-3">
+    <loading :active="isLoading" />
     <div class="content container-fluid pb-0">
       <div class="page-header mb-sm-0">
         <div class="row">
@@ -289,8 +290,10 @@ import { ref, reactive, onMounted } from "vue";
 import { useAuthStore } from "@/store/authStore";
 import { axiosUrl } from "@/env";
 import Swal from "sweetalert2";
-// import { formatDate, swalErrorHandle } from "@/components/myHelperFunction";
+import { formatDate, swalErrorHandle } from "@/components/myHelperFunction";
 
+
+const isLoading = ref(false);
 const loading = ref(false);
 const items = ref([]);
 const resp = ref("");
@@ -319,11 +322,16 @@ onMounted(() => {
 });
 
 const getData = async () => {
-  loading.value = true;
+  isLoading.value = true;
 
   await axiosUrl
     .get("/dashboard")
     .then((response) => {
+      // if (response.data.message=='Attempt to read property "club_code" on null') {
+      //   isLoading.value = false;
+      //   localStorage.clear();
+      //   window.location.href = "/";
+      // }
       totalMember.value = response.data.data.total_members;
       totalPayment.value = response.data.data.total_payments;
       totalPaymentProduct.value = response.data.data.total_payment_products;
@@ -335,7 +343,7 @@ const getData = async () => {
       admins.value = response.data.data.admins;
       totalDebt.value = response.data.data.totalDebt;
 
-      loading.value = false;
+      isLoading.value = false;
     })
     .catch((error) => {
       console.log(error.message);
@@ -343,7 +351,8 @@ const getData = async () => {
         localStorage.clear();
         window.location.href = "/";
       }
-      loading.value = false;
+     
+      isLoading.value = false;
       swalErrorHandle(error);
     });
 };

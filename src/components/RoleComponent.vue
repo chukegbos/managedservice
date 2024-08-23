@@ -76,20 +76,16 @@
                 {{ slotProps.data.title ? slotProps.data.title : "N/A" }}
               </template>
             </Column>
-            <Column header="Permission" style="width: 20%">
+            <Column header="Permission" style="width: 50%">
               <template #body="slotProps">
-                <ul
-                  v-if="slotProps.data?.permissions?.length > 0"
-                  style="list-style: none"
-                >
-                  <li class="me-1"
+                <span v-if="slotProps.data?.permissions?.length > 0">
+                  <span class="me-1"
                     v-for="permission in slotProps.data?.permissions"
-                    :key="permission"
-                  >
-                    {{ permission.name ? permission.name : "N/A" }}
-                  </li>
-                </ul>
-                <span v-else>N/A</span>
+                    :key="permission">
+                    {{ permission.name ? permission.name : "N/A" }}, 
+                  </span>
+                </span>
+              
               </template>
             </Column>
             <!-- <Column header="Date Created  " style="width: 15%">
@@ -101,7 +97,7 @@
                 }}
               </template>
             </Column> -->
-            <Column header="Action" style="width: 15%">
+            <Column header="Action" style="width: 30%">
               <template #body="slotProps">
                 <Dropdown
                   @change="

@@ -47,7 +47,7 @@
               type="submit"
               :disabled="loading"
             >
-              login
+              Login
               <div
                 v-if="loading"
                 class="spinner-border ms-2"

@@ -18,13 +18,12 @@
   
               <div>
                 <button
-                  v-if="selected.length > 0"
                   @click="onSubmit('delete')"
-                  class="btn add-btn btn-danger px-4"
-                >
+                  class="btn add-btn btn-danger px-4 mx-1">
                   <i class="fa-solid fa-minus"></i> Delete Admin
                 </button>
-                <button @click="openModal('add')" class="btn add-btn btn-success me-2 px-4">
+
+                <button @click="openModal('add')" class="btn add-btn btn-success mx-1 px-4">
                   <i class="fa-solid fa-plus"></i> Add Admin
                 </button>
               </div>
@@ -62,18 +61,21 @@
                   />
                 </template>
               </Column>
-              <Column field="username" header="Username" style="width: 40%">
+              <Column field="username" header="Username" style="width: 25%">
                 <template #body="slotProps">
                   {{ slotProps.data.username ? slotProps.data.username : "N/A" }}
                 </template>
               </Column>
-              <Column field="email" header="Email" style="width: 40%">
+
+              <Column field="roleName" header="Role" style="width: 25%"></Column>
+
+              <Column field="email" header="Email" style="width: 25%">
                 <template #body="slotProps">
                   {{ slotProps.data.email ? slotProps.data.email : "N/A" }}
                 </template>
               </Column>
               
-              <Column header="Date Created" style="width: 35%">
+              <Column header="Date Created" style="width: 25%">
                 <template #body="slotProps">
                   {{ formatDate(slotProps.data.created_at) }}
                 </template>
@@ -82,7 +84,7 @@
                 <template #body="slotProps">
                   <button
                     @click="
-                      openModal('edit', slotProps.data.id, slotProps.data.username, slotProps.data.email)
+                      openModal('edit', slotProps.data.id, slotProps.data.username, slotProps.data.email, slotProps.data.role_id)
                     "
                     class="btn btn-warning btn-sm m-1 text-white px-4"
                   >
@@ -148,7 +150,6 @@
                 class="form-control"
                 type="password"
                 v-model="modalForm.password"
-                required
               />
             </div>
   
@@ -170,7 +171,8 @@
   import { useAuthStore } from "@/store/authStore";
   import { formatDate, swalErrorHandle } from "@/components/myHelperFunction";
   import { Modal, ModalContent, open, close } from "@dimsog/vue-modal";
-  
+  import Swal from "sweetalert2";
+
   const isLoading = ref(false);
   const authStore = useAuthStore();
   const loggedInUser = authStore.loggedInUser;
@@ -195,14 +197,14 @@
     role: ""
   });
   
-  const openModal = (type, id, username, email) => {
+  const openModal = (type, id, username, email, role) => {
     if (type === "add") modalParams.title = "Add Admin";
     else if (type === "edit") {
         modalParams.title = "Edit Admin";
         modalParams.edit = true;
       modalForm.username = username;
       modalForm.email = email;
-    //   modalForm.roles = roles;
+      modalForm.role = role;
       currentEditID.value = id;
     }
 
@@ -244,9 +246,6 @@
         swalErrorHandle(error);
       });
   };
-
-
-  
   
   const onSubmit = async (type, id) => {
     let url = "";
@@ -254,21 +253,41 @@
     if (type === "Add Admin") {
       url = "/admin";
       payload = modalForm;
-    } else if (type === "delete") {
+    } 
+    else if (type === "delete") {
       url = "/admin";
       payload = {
         ids: selected.value,
       };
-    } else if (type === "Edit Section") {
-      url = "/edit/" + id;
-      payload = modalForm;
-    } else return;
   
+    } 
+    else if (type === "Edit Admin") {
+      url = "/admin/" + id;
+      payload = modalForm;
+    } 
+    else return;
+
     close("admin-modal");
 
     isLoading.value = true;
 
     if (type === "delete" || type === "delete-m") {
+      console.log(payload.ids.length)
+      if (payload.ids.length == 0) {
+        isLoading.value = false;
+        Swal.fire({
+          title: 'Easy!',
+          text: 'Please select at least one admin.',
+          icon: 'warning',
+          confirmButtonColor: 'pink',
+          confirmButtonText: "Ok!",
+          allowOutsideClick: false,
+          allowEscapeKey: false,
+          allowEnterKey: false,
+        });
+        
+        return;
+      }
       await axiosUrl
         .delete(url, { data: payload })
         .then(() => {
@@ -282,7 +301,23 @@
           isLoading.value = false;
           swalErrorHandle(error);
         });
-    } else {
+    } 
+    else if (type === "Edit Admin") {
+      await axiosUrl
+        .put(url, payload)
+        .then(() => {
+          isLoading.value = false;
+          modalForm.title = "";
+          modalParams.title = "";
+          getAdmins();
+          getRoles();
+        })
+        .catch((error) => {
+          isLoading.value = false;
+          swalErrorHandle(error);
+        });
+    }
+    else {
       await axiosUrl
         .post(url, payload)
         .then(() => {
