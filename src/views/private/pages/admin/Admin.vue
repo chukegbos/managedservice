@@ -1,4 +1,5 @@
 <template>
+<<<<<<< HEAD
   <div class="content-wrapper">
     <loading :active="isLoading" />
 
@@ -14,6 +15,37 @@
                 placeholder="Keyword Search"
                 class="form-control my-input"
               />
+=======
+    <div class="content-wrapper">
+      <loading :active="isLoading" />
+  
+      <div class="container">
+        <div class="mt-3">
+          <div class="d-flex justify-content-between align-items-center">
+            <h2>Administrators</h2>
+  
+            <div class="d-flex">
+              <div class="me-3">
+                <input
+                  v-model="filters['global'].value"
+                  placeholder="Keyword Search"
+                  class="form-control my-input"
+                />
+              </div>
+  
+              <div>
+                <button
+                  v-if="selected.length > 0"
+                  @click="onSubmit('delete')"
+                  class="btn add-btn px-4"
+                >
+                  <i class="fa-solid fa-minus"></i> Delete Admin
+                </button>
+                <button @click="openModal('add')" class="btn add-btn me-2 px-4">
+                  <i class="fa-solid fa-plus"></i> Add Admin
+                </button>
+              </div>
+>>>>>>> remotes/origin/victor-roles
             </div>
 
             <div>

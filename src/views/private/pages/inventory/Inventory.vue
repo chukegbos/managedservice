@@ -170,7 +170,7 @@
         <div v-else>
           <div class="card card-body">
             <div class="alert alert-warning" role="alert">
-              <p class="text-center">No Product available</p>
+              <p class="text-center">No Inventory available</p>
             </div>
           </div>
         </div>
