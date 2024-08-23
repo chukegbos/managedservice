@@ -4,8 +4,8 @@
 
     <div class="container">
       <div class="">
-        <div class="d-flex justify-content-between align-items-center">
-          <h2>Payments Debit</h2>
+        <div class="d-flex justify-content-between align-items-center mt-3">
+          <h2 class="mb-0">Payments Debit</h2>
 
           <div class="d-flex">
             <div class="me-3">
@@ -20,7 +20,7 @@
       </div>
 
       <div class="mt-4">
-        <div v-if="items.length > 0">
+        <div v-if="items.length > 0 && canRead()">
           <DataTable
             class="shadow"
             v-model:filters="filters"
@@ -34,7 +34,7 @@
           >
             <Column header="Debit ID" style="width: 10%">
               <template #body="slotProps">
-                #{{ slotProps.data.trans_id}}
+                #{{ slotProps.data.trans_id }}
               </template>
             </Column>
 
@@ -95,7 +95,7 @@
                   v-model="actionValue[slotProps.data.id]"
                   optionLabel="name"
                   optionValue="id"
-                  :options="options"
+                  :options="dynamicOptions"
                   placeholder="Action"
                 />
               </template>
@@ -106,7 +106,7 @@
         <div v-else>
           <div class="card card-body">
             <div class="alert alert-warning" role="alert">
-              <p class="text-center">No Product available</p>
+              <p class="text-center">No Debit available</p>
             </div>
           </div>
         </div>
@@ -183,6 +183,14 @@ import {
   swalErrorHandle,
   swalSuccessHandle,
 } from "@/components/myHelperFunction";
+import {
+  canCreate,
+  canUpdate,
+  canDelete,
+  canRead,
+  canApprove,
+  canReject,
+} from "@/components/permission_restriction.js";
 import { Modal, ModalContent, open, close } from "@dimsog/vue-modal";
 
 const isLoading = ref(false);
@@ -211,12 +219,16 @@ const groupDeptData = reactive({
   product_id: "",
 });
 
-const options = [
-  {
-    id: "1",
-    name: "Pay",
-  },
-];
+const dynamicOptions = () => {
+  let arr = [];
+  if (canUpdate()) {
+    arr.push({
+      id: "1",
+      name: "Pay",
+    });
+  }
+  return arr;
+};
 const filters = ref({
   global: { value: null, matchMode: FilterMatchMode.CONTAINS },
 });

@@ -2,8 +2,8 @@
   <div class="content-wrapper">
     <loading :active="isLoading" />
     <div class="container">
-      <div class="d-flex justify-content-between align-items-center">
-        <h2>Bars</h2>
+      <div class="d-flex justify-content-between align-items-center mt-3">
+        <h2 class="mb-0">Bars</h2>
 
         <div class="d-flex">
           <div class="me-3">
@@ -14,20 +14,25 @@
             />
           </div>
           <button
-            v-if="selected.length > 0"
+            v-if="canDelete()"
             @click="onSubmit('delete')"
-            class="btn add-btn btn-danger px-4 m-1"
+            :disabled="selected.length === 0"
+            class="btn add-btn btn-danger px-4 mr-2"
           >
             <i class="fa-solid fa-minus"></i> Delete Bar
           </button>
-          <button @click="openModal('add')" class="btn btn-success add-btn px-4">
+          <button
+            v-if="canCreate()"
+            @click="openModal('add')"
+            class="btn btn-success add-btn px-4"
+          >
             <i class="fa-solid fa-plus"></i> Add Bar
           </button>
         </div>
       </div>
 
       <div class="mt-4">
-        <div v-if="items.length > 0">
+        <div v-if="items.length > 0 && canRead()">
           <DataTable
             class="shadow"
             v-model:filters="filters"
@@ -93,7 +98,7 @@
                   v-model="selectedAction[slotProps.data.id]"
                   optionLabel="label"
                   optionValue="id"
-                  :options="actions"
+                  :options="dynamicActions()"
                   placeholder="Action"
                 />
               </template>
@@ -156,6 +161,14 @@ import { FilterMatchMode } from "primevue/api";
 import { useAuthStore } from "@/store/authStore";
 import { formatDate } from "@/components/myHelperFunction";
 import { Modal, ModalContent, open, close } from "@dimsog/vue-modal";
+import {
+  canCreate,
+  canUpdate,
+  canDelete,
+  canRead,
+  canApprove,
+  canReject,
+} from "@/components/permission_restriction.js";
 import router from "@/router";
 const isLoading = ref(false);
 const authStore = useAuthStore();
@@ -166,11 +179,19 @@ const selected = ref([]);
 const selectAll = ref("");
 const currentEditID = ref();
 const selectedAction = ref([]);
-const actions = ref([
-  { label: "Edit", id: 1 },
-  { label: "View", id: 2 },
-  { label: "Delete", id: 3 },
-]);
+const dynamicActions = () => {
+  let arr = [];
+  if (canUpdate()) {
+    arr.push({ label: "Edit", id: 1 });
+  }
+  if (canRead()) {
+    arr.push({ label: "View", id: 2 });
+  }
+  if (canDelete()) {
+    arr.push({ label: "Delete", id: 3 });
+  }
+  return arr;
+};
 
 const checkSelectedAction = (id, data) => {
   if (id === 1) {

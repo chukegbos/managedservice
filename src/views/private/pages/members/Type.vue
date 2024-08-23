@@ -4,8 +4,8 @@
 
     <div class="container">
       <div class="">
-        <div class="d-flex justify-content-between align-items-center">
-          <h2>Member Type</h2>
+        <div class="d-flex justify-content-between align-items-center mt-3">
+          <h2 class="mb-0">Member Type</h2>
 
           <div class="d-flex">
             <div class="me-3">
@@ -18,12 +18,14 @@
 
             <div>
               <button
+                v-if="canDelete()"
                 @click="onSubmit('delete')"
                 class="btn btn-danger me-3 add-btn px-4"
               >
                 <i class="fa-solid fa-minus"></i> Delete Type
               </button>
               <button
+                v-if="canCreate()"
                 @click="openModal('add')"
                 class="btn btn-primary add-btn me-2 px-4"
               >
@@ -35,7 +37,7 @@
       </div>
 
       <div class="mt-4">
-        <div v-if="items.length > 0">
+        <div v-if="items.length > 0 && canRead()">
           <DataTable
             class="shadow"
             v-model:filters="filters"
@@ -77,6 +79,7 @@
             <Column header="Action" style="width: 20%">
               <template #body="slotProps">
                 <button
+                  v-if="canDelete()"
                   @click="
                     openModal('edit', slotProps.data.id, slotProps.data.title)
                   "
@@ -84,6 +87,7 @@
                 >
                   Edit
                 </button>
+                <span v-else>N/A</span>
               </template>
             </Column>
           </DataTable>
@@ -136,6 +140,14 @@ import {
   swalErrorHandle,
   swalConfirmDelete,
 } from "@/components/myHelperFunction";
+import {
+  canCreate,
+  canUpdate,
+  canDelete,
+  canRead,
+  canApprove,
+  canReject,
+} from "@/components/permission_restriction.js";
 import { Modal, ModalContent, open, close } from "@dimsog/vue-modal";
 
 const isLoading = ref(false);

@@ -4,8 +4,8 @@
 
     <div class="container">
       <div class="">
-        <div class="d-flex justify-content-between align-items-center">
-          <h2>Accounts</h2>
+        <div class="d-flex justify-content-between align-items-center mt-3">
+          <h2 class="mb-0">Accounts</h2>
 
           <div class="d-flex">
             <div class="me-3">
@@ -20,7 +20,7 @@
       </div>
 
       <div class="mt-4">
-        <div v-if="items.length > 0">
+        <div v-if="items.length > 0 && canRead()">
           <DataTable
             class="shadow"
             v-model:filters="filters"
@@ -32,22 +32,26 @@
             :rowsPerPageOptions="[5, 10, 20, 50]"
             tableStyle="min-width: 50rem"
           >
-            <Column header="Account Name" style="width: 20%">
+            <Column header="Account Name" style="width: 35%">
+              <template #body="slotProps">
+                {{ slotProps.data.name ? slotProps.data.name : "N/A" }}
+              </template>
+            </Column>
+            <Column header="Account Type" style="width: 35%">
               <template #body="slotProps">
                 {{
-                  slotProps.data.name
+                  slotProps.data.account_type
+                    ? slotProps.data.account_type
+                    : "N/A"
                 }}
               </template>
             </Column>
-            <Column header="Account Type" style="width: 20%">
-                <template #body="slotProps">
-                    {{ slotProps.data.account_type }}
-                </template>
-            </Column>
-            <Column header="Account Type" style="width: 20%">
-                <template #body="slotProps">
-                    <span v-html="nairaSign" />{{ formatPrice(slotProps.data.amount) }}
-                </template>
+            <Column header="Account Type" style="width: 35%">
+              <template #body="slotProps">
+                <span v-html="nairaSign" />{{
+                  formatPrice(slotProps.data.amount)
+                }}
+              </template>
             </Column>
           </DataTable>
         </div>
@@ -75,7 +79,14 @@ import {
   swalErrorHandle,
   swalSuccessHandle,
 } from "@/components/myHelperFunction";
-
+import {
+  canCreate,
+  canUpdate,
+  canDelete,
+  canRead,
+  canApprove,
+  canReject,
+} from "@/components/permission_restriction.js";
 const isLoading = ref(false);
 const nairaSign = "&#x20A6;";
 const authStore = useAuthStore();

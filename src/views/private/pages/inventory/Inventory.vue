@@ -4,8 +4,8 @@
 
     <div class="container">
       <div class="">
-        <div class="d-flex justify-content-between align-items-center">
-          <h2>Product Inventories</h2>
+        <div class="d-flex justify-content-between align-items-center mt-3">
+          <h2 class="mb-0">Product Inventories</h2>
 
           <div class="d-flex">
             <div class="me-3">
@@ -18,7 +18,7 @@
 
             <div>
               <button
-                v-if="selected.length > 0"
+                v-if="canDelete()"
                 @click="onSubmit('delete-m')"
                 class="btn btn-danger add-btn px-4 mr-2"
               >
@@ -31,6 +31,7 @@
                   < Add
                 </button> -->
               <button
+                v-if="canCreate()"
                 @click="openModal('add')"
                 class="btn btn-success add-btn me-2 px-4 ml-2s"
               >
@@ -42,7 +43,7 @@
       </div>
 
       <div class="mt-4">
-        <div v-if="items.length > 0">
+        <div v-if="items.length > 0 && canRead()">
           <DataTable
             class="shadow"
             v-model:filters="filters"
@@ -158,7 +159,7 @@
                   v-model="actionValue[slotProps.data.id]"
                   optionLabel="name"
                   optionValue="id"
-                  :options="options"
+                  :options="dynamicOptions"
                   placeholder="Action"
                 />
               </template>
@@ -261,6 +262,14 @@ import {
   swalSuccessHandle,
 } from "@/components/myHelperFunction";
 import { Modal, ModalContent, open, close } from "@dimsog/vue-modal";
+import {
+  canCreate,
+  canUpdate,
+  canDelete,
+  canRead,
+  canApprove,
+  canReject,
+} from "@/components/permission_restriction.js";
 
 const categoryLoading = ref(false);
 const isLoading = ref(false);
@@ -282,16 +291,23 @@ const inventoryData = reactive({
   threshold: "",
 });
 
-const options = [
-  {
-    id: "1",
-    name: "Edit",
-  },
-  {
-    id: "2",
-    name: "Delete",
-  },
-];
+const dynamicOptions = () => {
+  let arr = [];
+  if (canUpdate()) {
+    arr.push({
+      id: "1",
+      name: "Edit",
+    });
+  }
+  if (canDelete()) {
+    arr.push({
+      id: "2",
+      name: "Delete",
+    });
+  }
+
+  return arr;
+};
 
 const filters = ref({
   global: { value: null, matchMode: FilterMatchMode.CONTAINS },
@@ -424,7 +440,7 @@ const onSubmit = async (type, id) => {
       .put(url, payload)
       .then(() => {
         isLoading.value = false;
-        isToggled = false;
+        isToggled.value = false;
         loadFun(type);
         swalSuccessHandle("Inventory Updated Successfully");
         getInventoryProducts();
@@ -438,7 +454,7 @@ const onSubmit = async (type, id) => {
       .delete(url, { data: payload })
       .then(() => {
         isLoading.value = false;
-        isToggled = false;
+        isToggled.value = false;
         loadFun(type);
         swalSuccessHandle("Inventory Deleted Successfully");
         getInventoryProducts();

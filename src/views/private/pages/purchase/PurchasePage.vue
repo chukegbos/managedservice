@@ -16,6 +16,7 @@
           </div>
 
           <button
+            v-if="canDelete()"
             @click="deletePurchase()"
             class="btn btn-danger"
             :disabled="selected.length === 0"
@@ -23,6 +24,7 @@
             <i class="fa-solid fa-minus"></i> Delete
           </button>
           <router-link
+            v-if="canCreate()"
             to="/create-purchase"
             class="btn btn-success add-btn mx-1 px-4"
             >Create Purchase</router-link
@@ -31,7 +33,7 @@
       </div>
 
       <div class="mt-4">
-        <div v-if="items.length > 0">
+        <div v-if="items.length > 0 && canRead()">
           <DataTable
             class="shadow"
             v-model:filters="filters"
@@ -166,6 +168,14 @@ import {
   swalConfirmDelete,
 } from "@/components/myHelperFunction";
 import { useRouter } from "vue-router";
+import {
+  canCreate,
+  canUpdate,
+  canDelete,
+  canRead,
+  canApprove,
+  canReject,
+} from "@/components/permission_restriction.js";
 
 const router = useRouter();
 const isLoading = ref(false);
@@ -190,19 +200,28 @@ const formatCurrency = (value) => {
 };
 
 const dynamicOptions = (data) => {
+  let arr = [];
   if (data["status"] === "0" || data["status"] === 0) {
-    return [
-      { label: "Approve", id: 1 },
-      { label: "Reject", id: 2 },
-      { label: "View", id: 3 },
-    ];
+    if (canApprove()) {
+      arr.push({ label: "Approve", id: 1 });
+    }
+    if (canReject()) {
+      arr.push({ label: "Reject", id: 2 });
+    }
+    if (canRead()) {
+      arr.push({ label: "View", id: 3 });
+    }
+    return arr;
   } else if (
     data["status"] === "1" ||
     data["status"] === 1 ||
     data["status"] === "2" ||
     data["status"] === 2
   ) {
-    return [{ label: "View", id: 3 }];
+    if (canRead()) {
+      arr.push({ label: "View", id: 3 });
+    }
+    return arr;
   }
 };
 
