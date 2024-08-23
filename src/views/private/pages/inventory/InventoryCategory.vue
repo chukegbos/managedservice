@@ -30,7 +30,6 @@
               <!-- <button @click="visible = true" class="btn add-btn me-2 px-4">
                   < Add
                 </button> -->
-<<<<<<< HEAD
               <button
                 @click="openModal('add')"
                 v-if="canCreate()"
@@ -38,86 +37,6 @@
               >
                 <i class="fa-solid fa-plus"></i> Add
               </button>
-=======
-                <button @click="openModal('add')" class="btn btn-success add-btn me-2 px-4 ml-2s">
-                  <i class="fa-solid fa-plus"></i> Add
-                </button>
-              </div>
-            </div>
-          </div>
-        </div>
-  
-        <div class="mt-4">
-          <div v-if="items.length > 0">
-            <DataTable
-              class="shadow"
-              v-model:filters="filters"
-              :value="items"
-              :sortField="'created_at'"
-              showGridlines
-              paginator
-              :rows="10"
-              :rowsPerPageOptions="[5, 10, 20, 50]"
-              tableStyle="min-width: 50rem"
-            >
-              <Column style="width: 5%">
-                <template #header="">
-                  <input
-                    type="checkbox"
-                    v-model="selectAll"
-                    @change="toggleAll()"
-                  />
-                </template>
-                <template #body="slotProps">
-                  <input
-                    type="checkbox"
-                    v-model="selected"
-                    :value="slotProps.data.id"
-                    number
-                  />
-                </template>
-              </Column>
-              <Column header="Name" style="width: 20%">
-                <template #body="slotProps">
-                  {{
-                    slotProps.data.name
-                      ? slotProps.data.name
-                      : ""
-                  }}
-                </template>
-              </Column>
-              <Column header="Date Created  " style="width: 15%">
-                <template #body="slotProps">
-                  {{ formatDate(slotProps.data.created_at) }}
-                </template>
-              </Column>
-              <Column header="Action" style="width: 15%">
-                <template #body="slotProps">
-                  <Dropdown
-                    @change="
-                      checkSelectedAction(
-                        actionValue[slotProps.data.id],
-                        slotProps.data
-                      )
-                    "
-                    class="w-100"
-                    v-model="actionValue[slotProps.data.id]"
-                    optionLabel="name"
-                    optionValue="id"
-                    :options="options"
-                    placeholder="Action"
-                  />
-                </template>
-              </Column>
-            </DataTable>
-          </div>
-  
-          <div v-else>
-            <div class="card card-body">
-              <div class="alert alert-warning" role="alert">
-                <p class="text-center">No Category available</p>
-              </div>
->>>>>>> remotes/origin/victor-roles
             </div>
           </div>
         </div>

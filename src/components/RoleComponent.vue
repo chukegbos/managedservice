@@ -77,7 +77,7 @@
                 }}
               </template>
             </Column>
-            <Column header="Date Created  " style="width: 15%">
+            <!-- <Column header="Date Created  " style="width: 15%">
               <template #body="slotProps">
                 {{ 
                 slotProps.data.created_at
@@ -86,7 +86,7 @@
                    
                   }}
               </template>
-            </Column>
+            </Column> -->
             <Column header="Action" style="width: 15%">
               <template #body="slotProps">
                 <Dropdown

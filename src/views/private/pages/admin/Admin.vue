@@ -1,21 +1,4 @@
 <template>
-<<<<<<< HEAD
-  <div class="content-wrapper">
-    <loading :active="isLoading" />
-
-    <div class="container">
-      <div class="">
-        <div class="d-flex justify-content-between align-items-center mt-3">
-          <h2 class="mb-0">Administrators</h2>
-
-          <div class="d-flex">
-            <div class="me-3">
-              <input
-                v-model="filters['global'].value"
-                placeholder="Keyword Search"
-                class="form-control my-input"
-              />
-=======
     <div class="content-wrapper">
       <loading :active="isLoading" />
   
@@ -45,7 +28,6 @@
                   <i class="fa-solid fa-plus"></i> Add Admin
                 </button>
               </div>
->>>>>>> remotes/origin/victor-roles
             </div>
 
             <div>
