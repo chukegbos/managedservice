@@ -5,7 +5,7 @@
       <div class="container">
         <div class="">
           <div class="d-flex justify-content-between align-items-center">
-            <h2>Product Categories</h2>
+            <h2>Role Management</h2>
   
             <div class="d-flex">
               <div class="me-3">
@@ -68,18 +68,23 @@
                   />
                 </template>
               </Column>
-              <Column header="Name" style="width: 20%">
+              <Column header="Role Title" style="width: 20%">
                 <template #body="slotProps">
                   {{
-                    slotProps.data.name
-                      ? slotProps.data.name
+                    slotProps.data.title
+                      ? slotProps.data.title
                       : ""
                   }}
                 </template>
               </Column>
               <Column header="Date Created  " style="width: 15%">
                 <template #body="slotProps">
-                  {{ formatDate(slotProps.data.created_at) }}
+                  {{ 
+                  slotProps.data.created_at
+                      ? formatDate(slotProps.data.created_at)
+                      : "N/A"
+                     
+                    }}
                 </template>
               </Column>
               <Column header="Action" style="width: 15%">
@@ -106,7 +111,7 @@
           <div v-else>
             <div class="card card-body">
               <div class="alert alert-warning" role="alert">
-                <p class="text-center">No Category available</p>
+                <p class="text-center">No Role available</p>
               </div>
             </div>
           </div>
@@ -114,28 +119,45 @@
       </div>
   
       <!-- Modal -->
-      <Modal name="category-modal" :title="modalParams.title">
+      <Modal name="role-modal" :title="modalParams.title">
         <ModalContent>
           <form
             @submit.prevent="onSubmit(modalParams.title, currentEditID)"
             style="width: 95%; margin: 0 auto"
           >
             <div class="row">
-              <div class="col-12 mb-3">
-                <label class="col-form-label fs-6">Product Name</label>
+              <div class="col-12 mb-2">
+                <label class="col-form-label fs-6">Role Title</label>
                 <input
                   class="form-control"
                   type="text"
-                  v-model="categoryData.name"
+                  v-model="roleData.title"
                   required
                 />
               </div>
-             
+            </div>
+
+            <div class="col-12 mb-3">
+            <label class="col-form-label fs-6">Add Permissions</label>
+            <div>
+                <label :for="permission.id" v-for="permission in permissions" :key="permission.id"
+                class="d-block my-2">
+                    <input
+                    :id="permission.name"
+                        type="checkbox"
+                        :value="permission.id"
+                        class="form-check-input"
+                        v-model="roleData.permissions"
+                        
+                    />
+                    {{ permission.name }}
+                </label>
+            </div>
             </div>
   
             <div class="mt-1">
               <button class="btn btn-primary account-btn w-100" type="submit">
-                Submit
+                {{ modalParams.btnLabel }}
               </button>
             </div>
           </form>
@@ -169,9 +191,12 @@
   const currentEditID = ref();
   const isToggled = ref(false);
   const addVisible = ref(false);
-  const categoryData = reactive({
-    name: ""
+  const roleData = reactive({
+    title: "",
+    permissions: []
   });
+
+  const permissions = ref([]);
 
   
   const options = [
@@ -190,6 +215,7 @@
   });
   const modalParams = reactive({
     title: "",
+    btnLabel: ""
   });
   
   const checkSelectedAction = (id, data) => {
@@ -202,17 +228,24 @@
   
   const openModal = (type, data) => {
     if (type === "add") {
-        modalParams.title = "Add Category";
-        categoryData.name = "";
+        modalParams.title = "Add Role";
+        modalParams.btnLabel = 'Update';
+        roleData.title = "";
+        roleData.permissions = [];
 
     }
     else if (type === "edit") {
-      modalParams.title = "Edit Category";
-      categoryData.name = data.name;
-        currentEditID.value = data.id;
+      modalParams.title = "Edit Role";
+      modalParams.btnLabel = 'Update';
+      roleData.title = data.title;
+      data.permissions.forEach(element => {
+        roleData.permissions.push(element.id);
+      });
+      currentEditID.value = data.id;
+
     }
   
-    open("category-modal");
+    open("role-modal");
   };
   
  
@@ -225,15 +258,28 @@
   };
 
   
-  const getProductCategories = async () => {
+  const getRoles = async () => {
     isLoading.value = true;
   
     await axiosUrl
-      .get("/product/groups")
+      .get("/roles")
       .then((response) => {
         items.value = response.data.data;
-        // console.log(items.value)
-        // debugger;
+        isLoading.value = false;
+      })
+      .catch((error) => {
+        isLoading.value = false;
+        swalErrorHandle(error);
+      });
+  };
+
+  const getPermissions = async () => {
+    isLoading.value = true;
+  
+    await axiosUrl
+      .get("/roles/permissions")
+      .then((response) => {
+        permissions.value = response.data.data;
         isLoading.value = false;
       })
       .catch((error) => {
@@ -244,8 +290,9 @@
   
   
   const loadFun = (type) => {
-    if (type === "Add Category" || type === "Edit Category") {
-      categoryData.name = "";
+    if (type === "Add Role" || type === "Edit Role") {
+      roleData.title = "";
+      roleData.permissions = [];
     } else if (type === "delete" || type === "delete-m") {
       selected.value = [];
       selectAll.value = false;
@@ -255,35 +302,37 @@
   const onSubmit = async (type, id) => {
     let url = "";
     let payload = {};
-    if (type === "Add Category") {
-      url = "product/groups";
-      payload.name = categoryData.name;
+    if (type === "Add Role") {
+      url = "/roles";
+      payload.title = roleData.title;
+      payload.permissions = roleData.permissions;
     } else if (type === "delete") {
-      url = "/product/groups";
+      url = "/roles";
       payload = {
         ids: [id],
       };
     } else if (type === "delete-m") {
-      url = "/product/groups";
+      url = "/roles";
       payload = {
         ids: selected.value,
       };
-    } else if (type === "Edit Category") {
-      url = "product/groups/" + id;
-      payload.name = categoryData.name;
+    } else if (type === "Edit Role") {
+      url = "/roles/" + id;
+      payload.title = roleData.title;
+      payload.permissions = roleData.permissions;
     } else return;
   
-    close("category-modal");
+    close("role-modal");
     isLoading.value = true;
   
-    if (type === "Edit Category") {
+    if (type === "Edit Role") {
       await axiosUrl
         .put(url, payload)
         .then(() => {
           isLoading.value = false;
           loadFun(type);
-          swalSuccessHandle("Category Updated Successfully");
-          getProductCategories();
+          swalSuccessHandle("Role Updated Successfully");
+          getRoles();
         })
         .catch((error) => {
           isLoading.value = false;
@@ -295,8 +344,8 @@
         .then(() => {
           isLoading.value = false;
           loadFun(type);
-          swalSuccessHandle("Category Deleted Successfully");
-          getProductCategories();
+          swalSuccessHandle("Role Deleted Successfully");
+          getRoles();
         })
         .catch((error) => {
           isLoading.value = false;
@@ -308,7 +357,7 @@
         .then(() => {
           isLoading.value = false;
           loadFun(type);
-          getProductCategories();
+          getRoles();
         })
         .catch((error) => {
           isLoading.value = false;
@@ -318,7 +367,8 @@
   };
   
   onMounted(() => {
-    getProductCategories();
+    getRoles();
+    getPermissions();
   });
   </script>
   

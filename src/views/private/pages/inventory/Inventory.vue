@@ -169,7 +169,7 @@
         <div v-else>
           <div class="card card-body">
             <div class="alert alert-warning" role="alert">
-              <p class="text-center">No Product available</p>
+              <p class="text-center">No Inventory available</p>
             </div>
           </div>
         </div>
@@ -424,7 +424,7 @@ const onSubmit = async (type, id) => {
       .put(url, payload)
       .then(() => {
         isLoading.value = false;
-        isToggled = false;
+        isToggled.value = false;
         loadFun(type);
         swalSuccessHandle("Inventory Updated Successfully");
         getInventoryProducts();
@@ -438,7 +438,7 @@ const onSubmit = async (type, id) => {
       .delete(url, { data: payload })
       .then(() => {
         isLoading.value = false;
-        isToggled = false;
+        isToggled.value = false;
         loadFun(type);
         swalSuccessHandle("Inventory Deleted Successfully");
         getInventoryProducts();

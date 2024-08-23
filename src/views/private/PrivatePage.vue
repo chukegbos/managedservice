@@ -42,15 +42,16 @@
                   </a>
                   <ul class="dropdown-menu">
                     <li>
-                      <router-link to="/admins" class="dropdown-item"
+                      <router-link to="/admins/settings" class="dropdown-item"
                         >Admin</router-link
                       >
                     </li>
                     <li>
-                      <a class="dropdown-item" href="#">Club Settings</a>
+                      <router-link to="/admins/settings" class="dropdown-item"
+                        >Club Settings</router-link>
                     </li>
                     <li>
-                      <router-link to="" class="dropdown-item"
+                      <router-link to="/change-password" class="dropdown-item"
                         >Change Password</router-link
                       >
                     </li>

@@ -501,6 +501,41 @@
                 </ul>
               </li>
             </ul>
+            <ul class="list-none p-3 m-0">
+              <li>
+                <div
+                  @click="checkToggle('M2')"
+                  v-ripple
+                  v-styleclass="{
+                    selector: '@next',
+                    enterClass: 'hidden',
+                    enterActiveClass: 'slidedown',
+                    leaveToClass: 'hidden',
+                    leaveActiveClass: 'slideup',
+                  }"
+                  class="p-3 flex align-items-center justify-content-between text-600 cursor-pointer p-ripple"
+                >
+                  <span class="font-medium">App Setting</span>
+                  <i class="pi pi-chevron-down" v-if="checkMainDD2"></i>
+                  <i class="pi pi-chevron-up" v-else></i>
+                </div>
+                <ul class="main-toggle list-none p-0 m-0 overflow-hidden">
+                  <li>
+                  
+                      <router-link
+                          to="/admins/settings"
+                          v-ripple
+                          class="text-decoration-none flex align-items-center cursor-pointer p-3 border-round text-700 hover:surface-100 transition-duration-150 transition-colors p-ripple"
+                        >
+                          <i class="pi pi-gear mr-2"></i>
+                          <span class="font-medium">Manage Settings</span>
+                        </router-link>
+                  
+                  </li>
+                 
+                </ul>
+              </li>
+            </ul>
           </div>
           <div class="mt-auto">
             <hr class="mb-3 mx-3 border-top-1 border-none surface-border" />

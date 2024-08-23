@@ -246,6 +246,19 @@ const routes = [
 				component: () =>
 					import("@/views/private/pages/inventory/Inventory.vue"),
 			},
+
+			{
+				path: "/admins/roles",
+				name: "Roles",
+				component: () =>
+					import("@/views/private/pages/roles/Roles.vue"),
+			},
+			{
+				path: "/admins/settings",
+				name: "Roles",
+				component: () =>
+					import("@/views/private/pages/settings/Settings.vue"),
+			},
 		],
 	},
 ];
