@@ -181,17 +181,17 @@ const routes = [
 			},
 
 			{
-				path: "/bars/all-requests",
-				name: "All Request",
-				component: () =>
-					import("@/views/private/pages/bars/AllRequest.vue"),
-			},
-
-			{
 				path: "/bars/:bar_code",
 				name: "BarView",
 				component: () =>
 					import("@/views/private/pages/bars/BarView.vue"),
+			},
+
+			{
+				path: "/bars/inventory-requests",
+				name: "Inventory Request",
+				component: () =>
+					import("@/views/private/pages/bars/InventoryRequest.vue"),
 			},
 
 			{

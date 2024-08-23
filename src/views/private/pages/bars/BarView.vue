@@ -9,13 +9,12 @@
             <b>{{ bar.name }} ({{ bar_code }})</b>
           </h4>
           <b>Current Manager: </b>{{ bar.manager }}<br />
-          <b>Daily Sales: </b> <span v-html="nairaSign"></span
-          >
+          <b>Daily Sales: </b> <span v-html="nairaSign"></span>
           <!-- {{ formatPrice(totalDebt) }} -->
         </div>
       </div>
 
-      <TabView>
+      <TabView v-if="canRead()">
         <TabPanel header="Drinks">
           <div v-if="drinks.length > 0">
             <div class="row mb-3">
@@ -28,6 +27,7 @@
               </div>
               <div class="col-md-6 mb-3">
                 <button
+                  v-if="canCreate()"
                   @click="onRequest()"
                   class="btn btn-primary text-center float-end"
                 >
@@ -218,8 +218,12 @@
 
                   <Column field="quantity" header="Quantity/Available">
                     <template #body="slotProps">
-                      {{ slotProps.data.quantity }}/{{
-                        slotProps.data.myItem.number
+                      {{
+                        slotProps.data?.quantity ? slotProps.data?.quantity : 0
+                      }}/{{
+                        slotProps.data?.myItem?.number
+                          ? slotProps.data?.myItem?.number
+                          : 0
                       }}
                     </template>
                   </Column>
@@ -242,6 +246,7 @@
                       >
                         Pending <br />
                         <button
+                          v-if="canApprove()"
                           @click="
                             onApprove(
                               slotProps.data.id,
@@ -254,6 +259,7 @@
                           Approve
                         </button>
                         <button
+                          v-if="canReject() || canDelete()"
                           @click="onReject(slotProps.data.id)"
                           class="btn btn-danger btn-sm"
                         >
@@ -319,6 +325,14 @@ import {
   swalHandler,
 } from "@/components/myHelperFunction";
 import { useRoute, useRouter } from "vue-router";
+import {
+  canCreate,
+  canUpdate,
+  canDelete,
+  canRead,
+  canApprove,
+  canReject,
+} from "@/components/permission_restriction.js";
 
 const route = useRoute();
 const router = useRouter();

@@ -30,7 +30,10 @@
               <!-- <button @click="visible = true" class="btn add-btn me-2 px-4">
                 < Add
               </button> -->
-              <button @click="openModal('add')" class="btn btn-success add-btn me-2 px-4 ml-2s">
+              <button
+                @click="openModal('add')"
+                class="btn btn-success add-btn me-2 px-4 ml-2s"
+              >
                 <i class="fa-solid fa-plus"></i> Add
               </button>
             </div>
@@ -39,7 +42,7 @@
       </div>
 
       <div class="mt-4">
-        <div v-if="items.length > 0">
+        <div v-if="items?.length > 0">
           <DataTable
             class="shadow"
             v-model:filters="filters"
@@ -68,23 +71,34 @@
                 />
               </template>
             </Column>
-            <Column header="Role Title" style="width: 20%">
+            <Column header="Role" style="width: 20%">
               <template #body="slotProps">
-                {{
-                  slotProps.data.title
-                    ? slotProps.data.title
-                    : ""
-                }}
+                {{ slotProps.data.title ? slotProps.data.title : "N/A" }}
+              </template>
+            </Column>
+            <Column header="Permission" style="width: 20%">
+              <template #body="slotProps">
+                <ul
+                  v-if="slotProps.data?.permissions?.length > 0"
+                  style="list-style: none"
+                >
+                  <li class="me-1"
+                    v-for="permission in slotProps.data?.permissions"
+                    :key="permission"
+                  >
+                    {{ permission.name ? permission.name : "N/A" }}
+                  </li>
+                </ul>
+                <span v-else>N/A</span>
               </template>
             </Column>
             <!-- <Column header="Date Created  " style="width: 15%">
               <template #body="slotProps">
-                {{ 
-                slotProps.data.created_at
+                {{
+                  slotProps.data.created_at
                     ? formatDate(slotProps.data.created_at)
                     : "N/A"
-                   
-                  }}
+                }}
               </template>
             </Column> -->
             <Column header="Action" style="width: 15%">
@@ -123,7 +137,7 @@
       <ModalContent>
         <form
           @submit.prevent="onSubmit(modalParams.title, currentEditID)"
-          style="width: 95%; margin: 0 auto"
+          style="width: 95%; margin: 0 auto 20px"
         >
           <div class="row">
             <div class="col-12 mb-2">
@@ -138,21 +152,24 @@
           </div>
 
           <div class="col-12 mb-3">
-          <label class="col-form-label fs-6">Add Permissions</label>
-          <div>
-              <label :for="permission.id" v-for="permission in permissions" :key="permission.id"
-              class="d-block my-2">
-                  <input
+            <label class="col-form-label fs-6">Add Permissions</label>
+            <div>
+              <label
+                :for="permission.id"
+                v-for="permission in permissions"
+                :key="permission.id"
+                class="d-block my-2"
+              >
+                <input
                   :id="permission.name"
-                      type="checkbox"
-                      :value="permission.id"
-                      class="form-check-input"
-                      v-model="roleData.permissions"
-                      
-                  />
-                  {{ permission.name }}
+                  type="checkbox"
+                  :value="permission.id"
+                  class="form-check-input"
+                  v-model="roleData.permissions"
+                />
+                {{ permission.name }}
               </label>
-          </div>
+            </div>
           </div>
 
           <div class="mt-1">
@@ -163,8 +180,6 @@
         </form>
       </ModalContent>
     </Modal>
-
- 
   </div>
 </template>
 
@@ -193,11 +208,10 @@ const isToggled = ref(false);
 const addVisible = ref(false);
 const roleData = reactive({
   title: "",
-  permissions: []
+  permissions: [],
 });
 
 const permissions = ref([]);
-
 
 const options = [
   {
@@ -215,7 +229,7 @@ const filters = ref({
 });
 const modalParams = reactive({
   title: "",
-  btnLabel: ""
+  btnLabel: "",
 });
 
 const checkSelectedAction = (id, data) => {
@@ -228,27 +242,22 @@ const checkSelectedAction = (id, data) => {
 
 const openModal = (type, data) => {
   if (type === "add") {
-      modalParams.title = "Add Role";
-      modalParams.btnLabel = 'Update';
-      roleData.title = "";
-      roleData.permissions = [];
-
-  }
-  else if (type === "edit") {
+    modalParams.title = "Add Role";
+    modalParams.btnLabel = "Update";
+    roleData.title = "";
+    roleData.permissions = [];
+  } else if (type === "edit") {
     modalParams.title = "Edit Role";
-    modalParams.btnLabel = 'Update';
+    modalParams.btnLabel = "Update";
     roleData.title = data.title;
-    data.permissions.forEach(element => {
+    data.permissions.forEach((element) => {
       roleData.permissions.push(element.id);
     });
     currentEditID.value = data.id;
-
   }
 
   open("role-modal");
 };
-
-
 
 const toggleAll = () => {
   if (selectAll.value)
@@ -257,14 +266,13 @@ const toggleAll = () => {
   else selected.value = [];
 };
 
-
 const getRoles = async () => {
   isLoading.value = true;
 
   await axiosUrl
     .get("/roles")
     .then((response) => {
-      items.value = response.data.data;
+      items.value = response.data?.data;
       isLoading.value = false;
     })
     .catch((error) => {
@@ -287,7 +295,6 @@ const getPermissions = async () => {
       swalErrorHandle(error);
     });
 };
-
 
 const loadFun = (type) => {
   if (type === "Add Role" || type === "Edit Role") {

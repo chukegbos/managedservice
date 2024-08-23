@@ -4,8 +4,8 @@
   
       <div class="container">
         <div class="">
-          <div class="d-flex justify-content-between align-items-center">
-            <h2>Administrators</h2>
+          <div class="d-flex justify-content-between align-items-center mt-3">
+            <h2 class="mb-0">Administrators</h2>
   
             <div class="d-flex">
               <div class="me-3">
@@ -20,11 +20,11 @@
                 <button
                   v-if="selected.length > 0"
                   @click="onSubmit('delete')"
-                  class="btn add-btn px-4"
+                  class="btn add-btn btn-danger px-4"
                 >
                   <i class="fa-solid fa-minus"></i> Delete Admin
                 </button>
-                <button @click="openModal('add')" class="btn add-btn me-2 px-4">
+                <button @click="openModal('add')" class="btn add-btn btn-success me-2 px-4">
                   <i class="fa-solid fa-plus"></i> Add Admin
                 </button>
               </div>
