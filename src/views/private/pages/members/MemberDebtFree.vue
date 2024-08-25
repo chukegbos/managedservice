@@ -151,7 +151,7 @@ const getDebt = async () => {
 
     await axiosUrl
       .get(
-        "/report/membership/debtFree/?startDate=" +
+        "/report/membership/debtFree?startDate=" +
           startDate.value +
           "&endDate=" +
           endDate.value

@@ -168,6 +168,7 @@ const onSubmit = async () => {
         password: form.password,
       })
       .then((response) => {
+        console.log(response.data.data.roles)
         localStorage.setItem("token", response.data.data.access_token);
         authStore.getCurrentUser(response.data.data.user);
         authStore.getCurrentClub(response.data.data.club);

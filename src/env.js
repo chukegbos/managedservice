@@ -7,7 +7,7 @@ const axiosUrl = axios.create({
 	headers: {
 		Authorization: `Bearer ${localStorage.getItem("token")}`,
 		accept: "application/json",
-		"Access-Control-Allow-Origin": "*",
+		// "Access-Control-Allow-Origin": "*",
 	},
 });
 

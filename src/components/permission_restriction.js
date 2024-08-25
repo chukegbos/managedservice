@@ -5,8 +5,9 @@ const allRoles = authStore.allRoles;
 const loggedInUser = authStore.loggedInUser;
 
 export const canCreate = () => {
-	const permissions = allRoles[loggedInUser.role_id]["permissions"];
-
+	const role = allRoles.find(role => role.id == loggedInUser.role_id);
+	const permissions = role["permissions"];
+	
 	// Find the permission object with the name 'Create'
 	const createPermission = permissions.find(
 		(permission) => permission.name === "Create"
@@ -17,7 +18,8 @@ export const canCreate = () => {
 };
 
 export const canRead = () => {
-	const permissions = allRoles[loggedInUser.role_id]["permissions"];
+	const role = allRoles.find(role => role.id == loggedInUser.role_id);
+	const permissions = role["permissions"];
 
 	// Find the permission object with the name 'Create'
 	const createPermission = permissions.find(
@@ -29,7 +31,8 @@ export const canRead = () => {
 };
 
 export const canUpdate = () => {
-	const permissions = allRoles[loggedInUser.role_id]["permissions"];
+	const role = allRoles.find(role => role.id == loggedInUser.role_id);
+	const permissions = role["permissions"];
 
 	// Find the permission object with the name 'Create'
 	const createPermission = permissions.find(
@@ -41,7 +44,8 @@ export const canUpdate = () => {
 };
 
 export const canDelete = () => {
-	const permissions = allRoles[loggedInUser.role_id]["permissions"];
+	const role = allRoles.find(role => role.id == loggedInUser.role_id);
+	const permissions = role["permissions"];
 
 	// Find the permission object with the name 'Create'
 	const createPermission = permissions.find(
@@ -53,7 +57,8 @@ export const canDelete = () => {
 };
 
 export const canApprove = () => {
-	const permissions = allRoles[loggedInUser.role_id]["permissions"];
+	const role = allRoles.find(role => role.id == loggedInUser.role_id);
+	const permissions = role["permissions"];
 
 	// Find the permission object with the name 'Create'
 	const createPermission = permissions.find(
@@ -65,7 +70,8 @@ export const canApprove = () => {
 };
 
 export const canReject = () => {
-	const permissions = allRoles[loggedInUser.role_id]["permissions"];
+	const role = allRoles.find(role => role.id == loggedInUser.role_id);
+	const permissions = role["permissions"];
 
 	// Find the permission object with the name 'Create'
 	const createPermission = permissions.find(
