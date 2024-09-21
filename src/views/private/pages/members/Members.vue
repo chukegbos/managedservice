@@ -154,10 +154,10 @@
 
 <script setup>
 import { axiosUrl } from "@/env";
-import { ref, reactive, onMounted } from "vue";
+import { ref, onMounted } from "vue";
 import { FilterMatchMode } from "primevue/api";
 import { useAuthStore } from "@/store/authStore";
-import { formatDate, swalErrorHandle } from "@/components/myHelperFunction";
+import { swalErrorHandle } from "@/components/myHelperFunction";
 import {
   canCreate,
   canUpdate,
@@ -180,7 +180,6 @@ const filters = ref({
 });
 const selectedAction = ref([]);
 const dynamicOptions = () => {
-  console.log(canUpdate());
   let arr = [];
   if (canUpdate()) {
     arr.push({ label: "Edit", id: 1 });

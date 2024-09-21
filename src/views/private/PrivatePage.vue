@@ -41,7 +41,7 @@
                     }}
                   </a>
                   <ul class="dropdown-menu">
-                    <li>
+                    <!-- <li>
                       <a
                         href='https://mclubapi.abasportsclub1926.org/public/mclub.apk'
                         class="dropdown-item"
@@ -49,7 +49,7 @@
                         style="cursor: pointer"
                         >Download App</a
                       >
-                    </li>
+                    </li> -->
 
                     <li>
                       <router-link to="/admins/settings" class="dropdown-item"

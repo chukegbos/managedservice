@@ -202,6 +202,20 @@ const routes = [
 			},
 
 			{
+				path: "/sales/invoices",
+				name: "Invoices",
+				component: () =>
+					import("@/views/private/pages/sales/Invoices.vue"),
+			},
+
+			{
+				path: "/sales/dockers",
+				name: "Dockers",
+				component: () =>
+					import("@/views/private/pages/sales/Dockers.vue"),
+			},
+
+			{
 				path: "/receipt/:code",
 				name: "Receipt",
 				component: () =>

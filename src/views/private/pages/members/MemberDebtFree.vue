@@ -25,7 +25,7 @@
         </div>
 
         <div class="col-md-4">
-          <label for="">Password</label>
+          <label for="">End Date</label>
           <input
             type="date"
             id="endDate"

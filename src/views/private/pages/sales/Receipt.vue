@@ -1,52 +1,62 @@
 <template>
-    <div class="receipt-container" v-if="items.club">
-        <div class="text-center">
-            <h2>{{ items.club.name }}</h2>
-            <p>{{ items.club.address }} <br> {{ items.club.email }} <br> {{ items.club.phone }}</p>
-        </div>
-        <hr>
-        <div class="receipt-header">
-            <div><strong>Sale Code:</strong> {{ items.sale_code }}</div>
-            <div><strong>Bar Code:</strong>{{ items.bar.name }} ({{ items.bar.bar_code }})</div>
-            <div><strong>Membership ID:</strong> {{ items.membership_id }}</div>
-            <div><strong>MOP:</strong>{{ items.mode_of_payment }} ({{ items.channel.name }})</div>
-            <div><strong>Date:</strong> {{ formatDate(items.created_at) }}</div>
-        </div>
-        <hr>
-        <hr>
-        <div class="receipt-items">
-            <h4 class="text-center">ITEMS</h4>
-            <div class="item">
-                <div class="item-total">Drinks</div>
-                <div class="item-total">Qty X Unit price</div>
-                <div class="item-total">Total Price</div>
+    <div class="content-wrapper">
+        <loading :active="isLoading || isLoading2" />
+        <div class="receipt-container" v-if="items.club">
+            <div class="text-center">
+                <h2>{{ items.club.name }}</h2>
+                <p>{{ items.club.address }} <br> {{ items.club.email }} <br> {{ items.club.phone }}</p>
             </div>
             <hr>
-            <div v-for="item in items.items" :key="item.id" class="item">
-                <div class="text-center">{{ item.name }}</div>
-                <div class="text-center">{{ item.quantity }} x {{ formatCurrency(item.unit_price) }}</div>
-                <div class="item-total">{{ formatCurrency(item.total_price) }}</div>
+            <div class="receipt-header">
+                <div><strong>Sale Code:</strong> {{ items.sale_code }}</div>
+                <div><strong>Bar Code:</strong>{{ items.bar.name }} ({{ items.bar.bar_code }})</div>
+                <div><strong>Membership ID:</strong> {{ items.membership_id }}</div>
+                <div v-if="items.paid==1"><strong>MOP:</strong>{{ items.mode_of_payment }} ({{ items.channel.name }})</div>
+                <div><strong>Date:</strong> {{ formatDate(items.created_at) }}</div>
             </div>
-        </div>
-        <hr>
-        <div class="receipt-total">
-            <strong>Total:</strong> {{ formatCurrency(items.total) }}
+            <hr>
+            <hr>
+            <div class="receipt-items">
+                <h4 class="text-center">ITEMS</h4>
+                <div class="item">
+                    <div class="item-total">Drinks</div>
+                    <div class="item-total">Qty X Unit price</div>
+                    <div class="item-total">Total Price</div>
+                </div>
+                <hr>
+                <div v-for="item in items.items" :key="item.id" class="item">
+                    <div class="text-center">{{ item.name }}</div>
+                    <div class="text-center">{{ item.quantity }} x {{ formatCurrency(item.unit_price) }}</div>
+                    <div class="item-total">{{ formatCurrency(item.total_price) }}</div>
+                </div>
+            </div>
+            <hr>
+            <div class="receipt-total">
+                <strong>Total:</strong> {{ formatCurrency(items.total) }}
+            </div>
+
+            <div  class="d-flex justify-content-center">
+                <!-- <button type="button" class="btn btn-primary mx-1" v-if="items.paid==0 && items.is_dock==0">Edit</button> -->
+                <button type="button" class="btn btn-secondary mx-1" v-if="items.paid==0 && items.is_dock==0" @click="dock()">Dock</button>
+                <button type="button" class="btn btn-success mx-1">Print</button>
+            </div>
         </div>
     </div>
 </template>
 
 <script setup>
     import { ref, reactive, onMounted } from "vue";
-    import { FilterMatchMode } from 'primevue/api';
     import { axiosUrl } from "@/env";
     import { useRoute } from "vue-router";
-    import { storeToRefs } from "pinia";
-    import { computed } from 'vue';
-    import { swalErrorHandle, swalSuccessHandle } from "@/components/myHelperFunction";
+    import {
+        swalHandler,
+        swalErrorHandle,
+        swalSuccessHandle
+    } from "@/components/myHelperFunction";
 
     const code = ref();
     const items = ref([]);
-    const loading = ref(false);
+    const isLoading = ref(false);
     const route = useRoute();
     const formatDate = (dateString) => {
         const date = new Date(dateString);
@@ -73,15 +83,35 @@
     }
 
     const getData = async () => {
-        loading.value = true;
+        isLoading.value = true;
         await axiosUrl
         .get('/sale/' + code.value)
         .then((response) => {
             items.value = response.data.data;
-            loading.value = false;
+            isLoading.value = false;
         })
         .catch((error) => {
-            loading.value = false;
+            isLoading.value = false;
+            swalErrorHandle(error);
+        });
+    };
+
+    const dock = async () => {
+        isLoading.value = true;
+        await axiosUrl
+        .get('/sale/dock/' + code.value)
+        .then(() => {
+            swalHandler(
+                "Success !!",
+                "Docker Posted Successfully",
+                "success",
+                "green"
+            );
+            getData();
+            isLoading.value = false;
+        })
+        .catch((error) => {
+            isLoading.value = false;
             swalErrorHandle(error);
         });
     };

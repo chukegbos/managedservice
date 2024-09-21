@@ -454,6 +454,29 @@
                           <span class="font-medium">Sales Order</span>
                         </router-link>
                       </li>
+
+                      <li>
+                        <router-link
+                          to="/sales/invoices"
+                          v-ripple
+                          class="text-decoration-none flex align-items-center cursor-pointer p-3 border-round text-700 hover:surface-100 transition-duration-150 transition-colors p-ripple"
+                        >
+                          <i class="pi pi-chart-line mr-2"></i>
+                          <span class="font-medium">Invoices</span>
+                        </router-link>
+                      </li>
+
+                      <li>
+                        <router-link
+                          to="/sales/dockers"
+                          v-ripple
+                          class="text-decoration-none flex align-items-center cursor-pointer p-3 border-round text-700 hover:surface-100 transition-duration-150 transition-colors p-ripple"
+                        >
+                          <i class="pi pi-chart-line mr-2"></i>
+                          <span class="font-medium">Dockers</span>
+                        </router-link>
+                      </li>
+
                     </ul>
                   </li>
 

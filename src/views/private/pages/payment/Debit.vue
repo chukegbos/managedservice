@@ -95,7 +95,7 @@
                   v-model="actionValue[slotProps.data.id]"
                   optionLabel="name"
                   optionValue="id"
-                  :options="dynamicOptions"
+                  :options="dynamicOptions()"
                   placeholder="Action"
                 />
               </template>
@@ -247,7 +247,6 @@ const checkSelectedAction = (id, data) => {
 
 const getDebits = async () => {
   isLoading.value = true;
-
   await axiosUrl
     .get("/payments/debit")
     .then((response) => {

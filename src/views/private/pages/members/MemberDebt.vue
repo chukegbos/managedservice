@@ -92,7 +92,6 @@ import { ref, reactive, onMounted } from "vue";
 import { FilterMatchMode } from "primevue/api";
 import { useAuthStore } from "@/store/authStore";
 import { formatDate, swalErrorHandle } from "@/components/myHelperFunction";
-import router from "@/router";
 import {
   canCreate,
   canUpdate,

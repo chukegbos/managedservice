@@ -33,7 +33,7 @@ export const canRead = () => {
 export const canUpdate = () => {
 	const role = allRoles.find(role => role.id == loggedInUser.role_id);
 	const permissions = role["permissions"];
-
+	console.log(permissions)
 	// Find the permission object with the name 'Create'
 	const createPermission = permissions.find(
 		(permission) => permission.name === "Update"
