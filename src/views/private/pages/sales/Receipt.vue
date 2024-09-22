@@ -1,16 +1,28 @@
 <template>
     <div class="content-wrapper">
-        <loading :active="isLoading || isLoading2" />
+        <loading :active="isLoading" />
         <div class="receipt-container" v-if="items.club">
             <div class="text-center">
-                <h2>{{ items.club.name }}</h2>
-                <p>{{ items.club.address }} <br> {{ items.club.email }} <br> {{ items.club.phone }}</p>
+              <p v-if="items.paid==1" class="text-center mb-0 fs-4 font-medium">RECEIPT</p>
+              <p v-if="items.paid==0" class="text-center mb-0 fs-4 font-medium">INVOICE</p>
+              <p class="text-center mb-0 fs-1 font-bold">
+                {{ items?.club?.name }}
+              </p>
+              <p class="text-center text-secondary" style="font-size: 12px">
+                {{ items?.club?.address }} <br />
+                {{ items?.club?.email }}<br />
+                {{ items?.club?.phone }} 
+              </p>
             </div>
             <hr>
             <div class="receipt-header">
                 <div><strong>Sale Code:</strong> {{ items.sale_code }}</div>
                 <div><strong>Bar Code:</strong>{{ items.bar.name }} ({{ items.bar.bar_code }})</div>
-                <div><strong>Membership ID:</strong> {{ items.membership_id }}</div>
+                <div><strong>Member Name:</strong>
+                  {{ items.member.first_name ? items.member.first_name : "" }}
+                  {{ items.member.last_name ? items.member.last_name : "" }}
+                  {{ items.member.middle_name ? items.member.middle_name : "" }}
+                </div>
                 <div v-if="items.paid==1"><strong>MOP:</strong>{{ items.mode_of_payment }} ({{ items.channel.name }})</div>
                 <div><strong>Date:</strong> {{ formatDate(items.created_at) }}</div>
             </div>
