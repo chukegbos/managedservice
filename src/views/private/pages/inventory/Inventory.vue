@@ -76,7 +76,13 @@
               <template #body="slotProps">
                 {{
                   slotProps.data.product_code ? slotProps.data.product_code : ""
+                }} <br/>
+                <span style="font-size: 14px;" class="text-primary">
+                  {{
+                  formatDate(slotProps.data.created_at)
                 }}
+                </span>
+                
               </template>
             </Column>
             <Column header="Product" style="width: 20%">
@@ -141,11 +147,11 @@
                 }}
               </template>
             </Column>
-            <Column header="Date Created" style="width: 15%">
+            <!-- <Column header="Date Created" style="width: 15%">
               <template #body="slotProps">
                 {{ formatDate(slotProps.data.created_at) }}
               </template>
-            </Column>
+            </Column> -->
             <Column header="Action" style="width: 15%">
               <template #body="slotProps">
                 <Dropdown
@@ -159,9 +165,9 @@
                   v-model="actionValue[slotProps.data.id]"
                   optionLabel="name"
                   optionValue="id"
-                  :options="dynamicOptions"
+                  :options="dynamicOptions()"
                   placeholder="Action"
-                />
+                /> 
               </template>
             </Column>
           </DataTable>
@@ -305,7 +311,7 @@ const dynamicOptions = () => {
       name: "Delete",
     });
   }
-
+  
   return arr;
 };
 
@@ -372,8 +378,8 @@ const getInventoryProducts = async () => {
   await axiosUrl
     .get("/inventories")
     .then((response) => {
+      // console.log(response.data.data);
       items.value = response.data.data;
-      console.log(items.value);
       // debugger;
       isLoading.value = false;
     })
