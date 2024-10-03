@@ -3,7 +3,7 @@
     <loading :active="isLoading" />
     <div class="receipt-container mt-4 shadow-sm">
       <div class="text-center">
-        <p class="text-center mb-0 fs-4 font-medium">INVOICE</p>
+        <p class="text-center mb-0 fs-4 font-medium">RECEIPT</p>
         <!-- <p class="text-center mb-0 fs-1 font-bold">
           {{ items?.club?.name }}
         </p>
