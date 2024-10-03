@@ -1,194 +1,95 @@
 <template>
   <div class="content-wrapper">
     <loading :active="isLoading" />
-
-    <div class="container mt-3">
-      <div class="d-flex justify-content-between align-items-center">
-        <h2 class="mb-0">Purchase</h2>
-
-        <div class="d-flex align-items-end">
-          <div class="me-3">
-            <input
-              v-model="filters['global'].value"
-              placeholder="Keyword Member"
-              class="form-control my-input"
-            />
+    <div class="receipt-container mt-4 shadow-sm">
+      <div class="text-center">
+        <p class="text-center mb-0 fs-4 font-medium">INVOICE</p>
+        <!-- <p class="text-center mb-0 fs-1 font-bold">
+          {{ items?.club?.name }}
+        </p>
+        <p class="text-center text-secondary" style="font-size: 12px">
+          {{ items?.club?.address }} <br />
+          {{ items?.club?.email }}<br />
+          {{ items?.club?.phone }}
+        </p> -->
+      </div>
+      <!-- <hr />
+      <div class="receipt-header">
+        <div><strong>Sale Code:</strong> {{ items.sale_code }}</div>
+        <div>
+          <strong>Bar Code:</strong>{{ items.bar.name }} ({{
+            items.bar.bar_code
+          }})
+        </div>
+        <div>
+          <strong>Member Name:</strong>
+          {{ items.member.first_name ? items.member.first_name : "" }}
+          {{ items.member.last_name ? items.member.last_name : "" }}
+          {{ items.member.middle_name ? items.member.middle_name : "" }}
+        </div>
+        <div v-if="items.paid == 1">
+          <strong>MOP:</strong>{{ items.mode_of_payment }} ({{
+            items.channel.name
+          }})
+        </div>
+        <div><strong>Date:</strong> {{ formatDate(items.created_at) }}</div>
+      </div>
+      <hr /> -->
+      <hr />
+      <div class="receipt-items" v-if="items.length > 0">
+        <h4 class="text-center">ITEMS</h4>
+        <div class="item">
+          <div class="item-total">Drinks</div>
+          <div class="item-total">Qty X Unit price</div>
+          <div class="item-total">Total Price</div>
+        </div>
+        <hr />
+        <div v-for="item in items" :key="item.id" class="item">
+          <div class="text-center">
+            {{ item.product.product_name ? item.product.product_name : "N/A" }}
           </div>
-
-          <button
-            v-if="canDelete()"
-            @click="deletePurchase()"
-            class="btn btn-danger"
-            :disabled="selected.length === 0"
-          >
-            <i class="fa-solid fa-minus"></i> Delete
-          </button>
-          <router-link
-            v-if="canCreate()"
-            to="/create-purchase"
-            class="btn btn-success add-btn mx-1 px-4"
-            >Create Purchase</router-link
-          >
+          <div class="text-center">
+            {{ item.quantity ? item.quantity : "0" }} x
+            {{ formatCurrency(item.unit_cost_price) }}
+          </div>
+          <div class="item-total">
+            {{ formatCurrency(item.total_cost_price) }}
+          </div>
         </div>
       </div>
-
-      <div class="mt-4">
-        <div v-if="items.length > 0 && canRead()">
-          <DataTable
-            class="shadow"
-            v-model:filters="filters"
-            :value="items"
-            :sortField="'created_At'"
-            showGridlines
-            paginator
-            :sortOrder="-1"
-            :rows="10"
-            :rowsPerPageOptions="[5, 10, 20, 50]"
-            tableStyle="min-width: 800px; text-transform: capitalize;"
-          >
-            <Column style="width: 5%">
-              <template #header="">
-                <input
-                  type="checkbox"
-                  v-model="selectAll"
-                  @change="toggleAll()"
-                />
-              </template>
-              <template #body="{ data }">
-                <input
-                  type="checkbox"
-                  v-model="selected"
-                  :value="data.id"
-                  number
-                />
-              </template>
-            </Column>
-            <Column
-              field="supplier"
-              header="Supplier"
-              :sortable="true"
-              style="width: 20%"
-            >
-              <template #body="{ data }">
-                {{ data.supplier ? data.supplier : "N/A" }}
-              </template>
-            </Column>
-            <Column
-              field="initiated_by"
-              header="Initiator"
-              :sortable="true"
-              style="width: 15%"
-            >
-              <template #body="{ data }">
-                {{ data.initiated_by ? data.initiated_by : "N/A" }} <br />
-                {{ formatDate(data.purchase_date) }}
-              </template>
-            </Column>
-            <Column
-              field="total_amount"
-              header="Total Amount"
-              :sortable="true"
-              style="width: 15%"
-            >
-              <template #body="{ data }">
-                {{
-                  data.total_amount ? formatCurrency(data.total_amount) : "N/A"
-                }}
-              </template>
-            </Column>
-            <Column
-              field="statusCode"
-              header="Status"
-              :sortable="true"
-              style="width: 10%"
-            >
-              <template #body="{ data }">
-                {{ data.statusCode ? data.statusCode : "N/A" }}
-              </template>
-            </Column>
-            <Column
-              field="approved_date"
-              header="A/R"
-              :sortable="true"
-              style="width: 15%"
-            >
-              <template #body="{ data }">
-                <span v-if="data.status === 0"> N/A</span>
-                <span v-else>
-                  {{ data.approved_by ? data.approved_by : "N/A" }} <br />
-                  {{ formatDate(data.approved_date) }}</span
-                >
-              </template>
-            </Column>
-            <Column
-              field="created_At"
-              header="Date Created"
-              :sortable="true"
-              style="width: 15%"
-            >
-              <template #body="{ data }">
-                {{ formatDate(data.created_at) }}
-              </template>
-            </Column>
-            <Column header="Action" style="width: 5%">
-              <template #body="{ data }">
-                <Dropdown
-                  @change="checkSelectedAction(selectedAction[data.id], data)"
-                  v-model="selectedAction[data.id]"
-                  optionLabel="label"
-                  optionValue="id"
-                  :options="dynamicOptions(data)"
-                  placeholder="Action"
-                />
-              </template>
-            </Column>
-          </DataTable>
-        </div>
-
-        <div v-else>
-          <div class="card card-body">
-            <div class="alert alert-warning" role="alert">
-              <p class="text-center">No supply available</p>
-            </div>
-          </div>
-        </div>
+      <hr />
+      <div class="receipt-total">
+        <strong>Total:</strong> {{ formatCurrency(items.total) }}
       </div>
     </div>
   </div>
 </template>
 
 <script setup>
-import { axiosUrl } from "@/env";
 import { ref, onMounted } from "vue";
-import { FilterMatchMode } from "primevue/api";
-import Swal from "sweetalert2";
-import {
-  formatDate,
-  swalErrorHandle,
-  swalConfirmDelete,
-} from "@/components/myHelperFunction";
+import { axiosUrl } from "@/env";
 import { useRoute } from "vue-router";
-import {
-  canCreate,
-  canUpdate,
-  canDelete,
-  canRead,
-  canApprove,
-  canReject,
-} from "@/components/permission_restriction.js";
+import { swalErrorHandle } from "@/components/myHelperFunction";
 
-const route = useRoute();
-const isLoading = ref(false);
-const banksLoading = ref(false);
+const code = ref();
 const items = ref([]);
-const banks = ref([]);
-const selected = ref([]);
-const selectAll = ref();
-const id = ref("");
-const filters = ref({
-  global: { value: null, matchMode: FilterMatchMode.CONTAINS },
-});
+const isLoading = ref(false);
+const route = useRoute();
+const formatDate = (dateString) => {
+  const date = new Date(dateString);
 
+  const day = date.getDate();
+  const month = date.toLocaleString("default", { month: "long" });
+  const year = date.getFullYear();
+
+  const ordinalSuffix = (n) => {
+    const s = ["th", "st", "nd", "rd"];
+    const v = n % 100;
+    return s[(v - 20) % 10] || s[v] || s[0];
+  };
+
+  return `${day}${ordinalSuffix(day)} ${month}, ${year}`;
+};
 const formatCurrency = (value) => {
   return new Intl.NumberFormat("en-NG", {
     style: "currency",
@@ -200,135 +101,65 @@ const formatCurrency = (value) => {
     .replace("NGN", "");
 };
 
-const dynamicOptions = (data) => {
-  let arr = [];
-  if (data["status"] === "0" || data["status"] === 0) {
-    if (canApprove()) {
-      arr.push({ label: "Approve", id: 1 });
-    }
-    if (canReject()) {
-      arr.push({ label: "Reject", id: 2 });
-    }
-    if (canRead()) {
-      arr.push({ label: "View", id: 3 });
-    }
-    return arr;
-  } else if (
-    data["status"] === "1" ||
-    data["status"] === 1 ||
-    data["status"] === "2" ||
-    data["status"] === 2
-  ) {
-    if (canRead()) {
-      arr.push({ label: "View", id: 3 });
-    }
-    return arr;
-  }
-};
-
-const selectedAction = ref([]);
-
-const checkSelectedAction = (id, data) => {
-  if (id === 1 || id === 2) {
-    approve_reject(id, data?.purchase_code);
-  } else if (id === 3) {
-  } else {
-    Swal.fire({
-      title: "Failed!",
-      text: "Invalid Purchase Code",
-      icon: "warning",
-      confirmButtonColor: "#FACEA8",
-    });
-  }
-};
-
-const toggleAll = () => {
-  if (selectAll.value)
-    for (let i = 0; i < items.value.length; i++)
-      selected.value.push(items.value[i].id);
-  else selected.value = [];
-};
-
 const getPurchaseSingle = async (id) => {
   isLoading.value = true;
 
   await axiosUrl
-    .get("/purchase/single/" + id)
+    .get(`/purchase/items/${id}/all`)
     .then((response) => {
-      items.value.push(response.data?.data);
+      items.value = response.data?.data;
+      items.value.total = 0;
+      for (let i = 0; i < items.value.length; i++) {
+        items.value.total =
+          items.value.total + parseFloat(items.value[i]?.total_cost_price);
+      }
       isLoading.value = false;
     })
     .catch((error) => {
       isLoading.value = false;
       swalErrorHandle(error);
     });
-};
-
-const approve_reject = async (id, purchaseCode) => {
-  isLoading.value = true;
-
-  let url = "";
-  switch (id) {
-    case 1:
-      url = `purchase/approve/${purchaseCode}`;
-      break;
-    case 2:
-      url = `purchase/reject/${purchaseCode}`;
-      break;
-    default:
-      return;
-  }
-  await axiosUrl
-    .post(url)
-    .then((response) => {
-      console.log(response.data);
-      getPurchaseSingle(id.value);
-    })
-    .catch((error) => {
-      isLoading.value = false;
-      swalErrorHandle(error);
-    });
-};
-
-const deletePurchase = async () => {
-  if (selected.value.length <= 0) return;
-  swalConfirmDelete(
-    async () => {
-      isLoading.value = true;
-      await axiosUrl
-        .delete("/purchase", {
-          data: {
-            purchase_ids: selected.value,
-          },
-        })
-        .then((response) => {
-          // console.log(response.data);
-          selected.value = [];
-          selectAll.value = false;
-          getPurchaseSingle(id.value);
-        })
-        .catch((error) => {
-          isLoading.value = false;
-          swalErrorHandle(error);
-        });
-    },
-    () => {
-      return;
-    }
-  );
 };
 
 onMounted(() => {
-  id.value = route.params?.id;
-  getPurchaseSingle(id.value);
+  code.value = route.params.id;
+  getPurchaseSingle(code.value);
 });
 </script>
 
 <style scoped>
-</style>
+.receipt-container {
+  padding: 16px;
+  background-color: #f9f9f9;
+  border-radius: 8px;
+  max-width: 400px;
+  margin: auto;
+  font-family: Arial, sans-serif;
+}
 
-<style>
-.p-inputtext {
-  padding: 6px 12px !important;
+.receipt-header,
+.receipt-items,
+.receipt-total {
+  margin-bottom: 16px;
+}
+
+.receipt-header div,
+.receipt-items .item {
+  margin-bottom: 8px;
+}
+
+.item {
+  display: flex;
+  justify-content: space-between;
+}
+
+.item-total {
+  font-weight: bold;
+}
+
+.receipt-total {
+  font-size: 18px;
+  font-weight: bold;
+  text-align: right;
 }
 </style>

@@ -21,33 +21,34 @@
 
       <div class="shadow p-4 rounded" v-if="canCreate() && canRead()">
         <div class="d-flex justify-content-between border-bottom pb-3">
-          <div class="w-25">
-            <label class="form-label fs-6">Select Supplier</label>
-            <Dropdown
-              class="w-100"
-              v-model="createPayload.supplier_id"
-              optionLabel="supplier_name"
-              optionValue="id"
-              :options="suppliers"
-              :disabled="isLoading || suppliers.length === 0"
-              filter
-              placeholder=""
-            />
+          <div class="w-50 d-flex">
+            <div class="me-3">
+              <label class="form-label fs-6">Select Supplier</label>
+              <Dropdown
+                class="w-100"
+                v-model="createPayload.supplier_id"
+                optionLabel="supplier_name"
+                optionValue="id"
+                :options="suppliers"
+                :disabled="isLoading || suppliers.length === 0"
+                filter
+                placeholder=""
+              />
+            </div>
+            <div>
+              <label class="form-label fs-6">Mode of Payment</label>
+              <Dropdown
+                class="w-100"
+                v-model="createPayload.mode_of_payment_id"
+                optionLabel="name"
+                optionValue="id"
+                :options="payment_channels"
+                :disabled="isLoading || payment_channels.length === 0"
+                filter
+                placeholder=""
+              />
+            </div>
           </div>
-
-          <!-- <div class="w-25">
-            <label class="form-label fs-6">Type of Purchase </label>
-            <Dropdown
-              class="w-100"
-              v-model="createPayload.mode_of_payment_id"
-              optionLabel="name"
-              optionValue="id"
-              :options="payment_channels"
-              :disabled="isLoading || payment_channels.length === 0"
-              filter
-              placeholder=""
-            />
-          </div> -->
 
           <div class="w-25">
             <label class="form-label fs-6">Date of Purchase</label>
@@ -178,8 +179,8 @@
             {{
               createPayload.supplier_id === null ||
               createPayload.supplier_id === "" ||
-              // createPayload.mode_of_payment_id === null ||
-              // createPayload.mode_of_payment_id === "" ||
+              createPayload.mode_of_payment_id === null ||
+              createPayload.mode_of_payment_id === "" ||
               createPayload.date_of_purchase === null ||
               createPayload.date_of_purchase === "" ||
               createPayload.items.length === 0
@@ -190,8 +191,8 @@
             :disabled="
               createPayload.supplier_id === null ||
               createPayload.supplier_id === '' ||
-              // createPayload.mode_of_payment_id === null ||
-              // createPayload.mode_of_payment_id === '' ||
+              createPayload.mode_of_payment_id === null ||
+              createPayload.mode_of_payment_id === '' ||
               createPayload.date_of_purchase === null ||
               createPayload.date_of_purchase === '' ||
               createPayload.items.length === 0
@@ -337,7 +338,9 @@ import {
   canApprove,
   canReject,
 } from "@/components/permission_restriction.js";
+import { useRouter } from "vue-router";
 
+const router = useRouter();
 const isToggled = ref(false);
 const isLoading = ref(false);
 const bankVerifyLoading = ref(false);
@@ -350,7 +353,7 @@ const banks = ref([]);
 const bankDetails = ref([]);
 const createPayload = ref({
   supplier_id: null,
-  // mode_of_payment_id: null, //Cash Payment or Credit Payment
+  mode_of_payment_id: null, //Cash Payment or Credit Payment
   date_of_purchase: "",
   amount_paid: null,
   items: [
@@ -574,18 +577,18 @@ const createPurchase = async () => {
     });
     return;
   }
-  // if (
-  //   createPayload.value.mode_of_payment_id === null ||
-  //   createPayload.value.mode_of_payment_id === ""
-  // ) {
-  //   Swal.fire({
-  //     title: "Failed!",
-  //     text: `Please fill up Mode of Payment`,
-  //     icon: "warning",
-  //     confirmButtonColor: "#FACEA8",
-  //   });
-  //   return;
-  // }
+  if (
+    createPayload.value.mode_of_payment_id === null ||
+    createPayload.value.mode_of_payment_id === ""
+  ) {
+    Swal.fire({
+      title: "Failed!",
+      text: `Please fill up Mode of Payment`,
+      icon: "warning",
+      confirmButtonColor: "#FACEA8",
+    });
+    return;
+  }
   if (
     createPayload.value.date_of_purchase === null ||
     createPayload.value.date_of_purchase === ""
@@ -658,7 +661,7 @@ const createPurchase = async () => {
       isLoading.value = false;
       // console.log(response.data);
       createPayload.value.supplier_id = null;
-      // createPayload.value.mode_of_payment_id = null;
+      createPayload.value.mode_of_payment_id = null;
       createPayload.value.date_of_purchase = "";
       createPayload.value.amount_paid = null;
       createPayload.value.items = [
@@ -673,6 +676,13 @@ const createPurchase = async () => {
           total_cost_price: null,
         },
       ];
+      // router.push({
+      //   name: "PurchaseSingle",
+      //   params: { id: response.data.purchase_code },
+      // });
+      router.push({
+        name: "PurchasePage",
+      });
     })
     .catch((error) => {
       isLoading.value = false;
