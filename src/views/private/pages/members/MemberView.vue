@@ -477,8 +477,8 @@
                   header="Action"
                   style="width: 20%"
                 >
-                  <template #body="{}">
-                    <span class="bg-danger btn btn-sm text-white">X</span>
+                  <template #body="{ data }">
+                    <span class="bg-danger btn btn-sm text-white" @click="onRemoveCard(data.id)">X</span>
                   </template>
                 </Column>
               </DataTable>
