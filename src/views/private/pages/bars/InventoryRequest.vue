@@ -236,7 +236,9 @@ const getInventoryRequest = async () => {
 };
 
 const onApprove = async (id, quantity, number) => {
-  if (quantity > number) {
+  if (parseInt(quantity, 10) > parseInt(number, 10)) {
+    console.log(quantity)
+    console.log(number)
     swalHandler(
       "Warning !!",
       "You do not have upto that number of drinks.",

@@ -112,14 +112,14 @@
                   <span v-if="item.accepted === null" class="text-info">
                     Pending <br />
                     <button
-                      @click="onViewRequest(item.id)"
+                      @click="onAccept(item.id)"
                       class="btn btn-primary m-1"
                       v-if="item.approved !== null && canApprove()"
                     >
                       Accept
                     </button>
                     <button
-                      @click="onViewRequest(item.id) && canReject()"
+                      @click="onReject(item.id) && canReject()"
                       class="btn btn-danger m-1"
                       v-if="item.approved !== null"
                     >
@@ -179,6 +179,46 @@ const getRequest = async () => {
       bars.value = response.data.data.bars;
       theBar.value = response.data.data.bar;
       isLoading.value = false;
+    })
+    .catch((error) => {
+      isLoading.value = false;
+    });
+};
+
+const onAccept = async (id) => {
+  isLoading.value = true;
+  await axiosUrl
+    .get("/bars/requests/accept/" + id)
+    .then(() => {
+
+      isLoading.value = false;
+      Swal.fire({
+        title: "Success!",
+        text: "Drink Accepted",
+        icon: "success",
+        confirmButtonText: "OK",
+      });
+      getRequest();
+    })
+    .catch((error) => {
+      isLoading.value = false;
+    });
+};
+
+const onReject = async (id) => {
+  isLoading.value = true;
+  await axiosUrl
+    .get("/bars/requests/reject/" + id)
+    .then(() => {
+
+      isLoading.value = false;
+      Swal.fire({
+        title: "Success!",
+        text: "Drink Rejected",
+        icon: "success",
+        confirmButtonText: "OK",
+      });
+      getRequest();
     })
     .catch((error) => {
       isLoading.value = false;
