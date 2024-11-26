@@ -76,13 +76,11 @@
               <template #body="slotProps">
                 {{
                   slotProps.data.product_code ? slotProps.data.product_code : ""
-                }} <br/>
-                <span style="font-size: 14px;" class="text-primary">
-                  {{
-                  formatDate(slotProps.data.created_at)
                 }}
+                <br />
+                <span style="font-size: 14px" class="text-primary">
+                  {{ formatDate(slotProps.data.created_at) }}
                 </span>
-                
               </template>
             </Column>
             <Column header="Product" style="width: 20%">
@@ -167,7 +165,7 @@
                   optionValue="id"
                   :options="dynamicOptions()"
                   placeholder="Action"
-                /> 
+                />
               </template>
             </Column>
           </DataTable>
@@ -244,8 +242,26 @@
               required
             />
           </div>
+          <div class="input-block col-12 col-md-6">
+            <label class="col-form-label fs-6">Sell Price</label>
+            <input
+              class="form-control"
+              type="number"
+              v-model="inventoryData.sell_price"
+              required
+            />
+          </div>
+          <div class="input-block col-12 col-md-6">
+            <label class="col-form-label fs-6">cost_price</label>
+            <input
+              class="form-control"
+              type="number"
+              v-model="inventoryData.cost_price"
+              required
+            />
+          </div>
 
-          <div class="mt-1">
+          <div class="mt-2">
             <button class="btn btn-primary account-btn w-100" type="submit">
               Submit
             </button>
@@ -295,6 +311,8 @@ const inventoryData = reactive({
   number_per_pack: "",
   unit: "",
   threshold: "",
+  sell_price: "",
+  cost_price: "",
 });
 
 const dynamicOptions = () => {
@@ -311,7 +329,7 @@ const dynamicOptions = () => {
       name: "Delete",
     });
   }
-  
+
   return arr;
 };
 
@@ -347,6 +365,8 @@ const openModal = (type, data) => {
     inventoryData.category_id = data.category.id;
     inventoryData.unit = data.unit;
     inventoryData.threshold = data.threshold;
+    inventoryData.sell_price = data.sell_price;
+    inventoryData.cost_price = data.cost_price;
   }
 
   isToggled.value = true;

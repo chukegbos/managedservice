@@ -211,6 +211,9 @@ const dynamicOptions = (data) => {
     if (canRead()) {
       arr.push({ label: "View", id: 3 });
     }
+    if (canUpdate()) {
+      arr.push({ label: "Edit", id: 4 });
+    }
     return arr;
   } else if (
     data["status"] === "1" ||
@@ -234,6 +237,11 @@ const checkSelectedAction = (id, data) => {
     router.push({
       name: "PurchaseSingle",
       params: { id: data.purchase_code },
+    });
+  } else if (id === 4) {
+    router.push({
+      name: "CreatePurchasePage",
+      query: { id: data.id, purchase_code: data.purchase_code },
     });
   } else {
     Swal.fire({

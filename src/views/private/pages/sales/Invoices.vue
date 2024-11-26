@@ -39,7 +39,6 @@
               >
             </template>
           </Column>
-
           <Column field="bar" :sortable="false" header="Sale Code">
             <template #body="{ data }">
               <span class="text-success"
@@ -48,11 +47,10 @@
               {{ data["bar"].bar_code }}
             </template>
           </Column>
-
           <Column field="channel" :sortable="false" header="Mode of payment">
             <template #body="{ data }">
               <span class="text-success"
-                ><b>{{ data["channel"].name }}</b></span
+                ><b>{{ data["channel"]?.name }}</b></span
               ><br />
               {{ data["mode_of_payment"] }}
             </template>
@@ -77,6 +75,12 @@
               >
                 View
               </router-link>
+              <button
+                class="btn btn-danger btn-sm ms-2"
+                @click="deleteInvoice(data.sale_code)"
+              >
+                Delete
+              </button>
             </template>
           </Column>
         </DataTable>
@@ -98,7 +102,10 @@ import { axiosUrl } from "@/env";
 import { ref, reactive, onMounted } from "vue";
 import { FilterMatchMode } from "primevue/api";
 import { useAuthStore } from "@/store/authStore";
-import { swalErrorHandle } from "@/components/myHelperFunction";
+import {
+  swalErrorHandle,
+  swalConfirmDelete,
+} from "@/components/myHelperFunction";
 import {
   canCreate,
   canUpdate,
@@ -131,6 +138,25 @@ const getSales = async () => {
       isLoading.value = false;
       swalErrorHandle(error);
     });
+};
+
+const deleteInvoice = async (id) => {
+  if (id === null || id === undefined) return;
+
+  swalConfirmDelete(async () => {
+    isLoading.value = true;
+
+    await axiosUrl
+      .get("/sale/invoice/delete/" + id)
+      .then((response) => {
+        sales.value = response.data.data;
+        isLoading.value = false;
+      })
+      .catch((error) => {
+        isLoading.value = false;
+        swalErrorHandle(error);
+      });
+  });
 };
 
 const formatCurrency = (value) => {

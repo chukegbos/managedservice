@@ -1,6 +1,6 @@
 <template>
   <div class="content-wrapper">
-    <loading :active="isLoading" />
+    <loading :active="isLoading || isLoading2 || isLoading3" />
 
     <div class="container">
       <h2 class="mt-3">Items Purchase</h2>
@@ -197,9 +197,15 @@
               createPayload.date_of_purchase === '' ||
               createPayload.items.length === 0
             "
-            @click="createPurchase()"
+            @click="
+              createPurchase(
+                route.query.id || route.query.purchase_code ? true : false
+              )
+            "
           >
-            Save
+            {{
+              route.query.id || route.query.purchase_code ? "Update" : "Save"
+            }}
           </button>
         </div>
       </div>
@@ -338,11 +344,14 @@ import {
   canApprove,
   canReject,
 } from "@/components/permission_restriction.js";
-import { useRouter } from "vue-router";
+import { useRouter, useRoute } from "vue-router";
 
 const router = useRouter();
+const route = useRoute();
 const isToggled = ref(false);
 const isLoading = ref(false);
+const isLoading2 = ref(false);
+const isLoading3 = ref(false);
 const bankVerifyLoading = ref(false);
 const banksLoading = ref(false);
 const payment_channels = ref([]);
@@ -350,6 +359,8 @@ const products = ref([]);
 const suppliers = ref([]);
 const items = ref([]);
 const banks = ref([]);
+const purchaseData = ref([]);
+const purchaseTopData = ref([]);
 const bankDetails = ref([]);
 const createPayload = ref({
   supplier_id: null,
@@ -430,7 +441,7 @@ const productInput = (id, type) => {
   switch (type) {
     case "pack":
       createPayload.value.items[id].quantity =
-        filteredItems[id].number_per_pack * createPayload.value.items[id].pack;
+        filteredItems[0].number_per_pack * createPayload.value.items[id].pack;
       createPayload.value.items[id].total_cost_price =
         createPayload.value.items[id].unit_cost_price_crate *
         createPayload.value.items[id].pack;
@@ -564,87 +575,50 @@ const createSupplier = async () => {
     });
 };
 
-const createPurchase = async () => {
-  if (
-    createPayload.value.supplier_id === null ||
-    createPayload.value.supplier_id === ""
-  ) {
-    Swal.fire({
-      title: "Failed!",
-      text: `Please fill up Supplier"`,
-      icon: "warning",
-      confirmButtonColor: "#FACEA8",
-    });
-    return;
-  }
-  if (
-    createPayload.value.mode_of_payment_id === null ||
-    createPayload.value.mode_of_payment_id === ""
-  ) {
-    Swal.fire({
-      title: "Failed!",
-      text: `Please fill up Mode of Payment`,
-      icon: "warning",
-      confirmButtonColor: "#FACEA8",
-    });
-    return;
-  }
-  if (
-    createPayload.value.date_of_purchase === null ||
-    createPayload.value.date_of_purchase === ""
-  ) {
-    Swal.fire({
-      title: "Failed!",
-      text: `Please fill up Date of Purchase`,
-      icon: "warning",
-      confirmButtonColor: "#FACEA8",
-    });
-    return;
+const createPurchase = async (check = false) => {
+  // Validate required fields in `createPayload.value`
+  const validations = [
+    { field: "supplier_id", message: "Supplier" },
+    { field: "mode_of_payment_id", message: "Mode of Payment" },
+    { field: "date_of_purchase", message: "Date of Purchase" },
+  ];
+
+  for (const { field, message } of validations) {
+    if (!createPayload.value[field]) {
+      Swal.fire({
+        title: "Failed!",
+        text: `Please fill up ${message}`,
+        icon: "warning",
+        confirmButtonColor: "#FACEA8",
+      });
+      return;
+    }
   }
 
-  for (let i = 0; i < createPayload.value.items.length; i++) {
-    const item = createPayload.value.items[i];
-
-    for (let key in item) {
-      if (item.hasOwnProperty(key)) {
-        if (
-          key === "pack" ||
-          key === "unit_cost_price_crate" ||
-          key === "product_name"
-        ) {
+  // Validate each item in `createPayload.value.items`
+  if (!check) {
+    for (let i = 0; i < createPayload.value.items.length; i++) {
+      const item = createPayload.value.items[i];
+      for (const key in item) {
+        if (["pack", "unit_cost_price_crate", "product_name"].includes(key)) {
           continue;
         }
 
-        let title = "";
-        switch (key) {
-          case "product_code":
-            title = "Product";
-            break;
-          case "quantity":
-            title = "Quantity";
-            break;
-          case "unit_cost_price":
-            title = "Unit Cost Price (₦/Bottle)";
-            break;
-          case "unit_sell_price":
-            title = "Unit Selling Price (₦/Bottle)";
-            break;
-          case "total_cost_price":
-            title = "Total Cost Price (₦/Crate)";
-            break;
-          default:
-            break;
-        }
+        const titles = {
+          product_code: "Product",
+          quantity: "Quantity",
+          unit_cost_price: "Unit Cost Price (₦/Bottle)",
+          unit_sell_price: "Unit Selling Price (₦/Bottle)",
+          total_cost_price: "Total Cost Price (₦/Crate)",
+        };
 
-        let y = "th";
-        if (i + 1 == 1) y = "st";
-        else if (i + 1 == 2) y = "nd";
-        else if (i + 1 == 3) y = "rd";
+        const title = titles[key] || key;
+        const suffix = ["st", "nd", "rd"][((i + 1) % 10) - 1] || "th";
 
-        if (item[key] === "" || item[key] === null || item[key] === undefined) {
+        if (!item[key]) {
           Swal.fire({
             title: "Failed!",
-            text: `Please fill up ${i + 1 + y} Product - "${title}"`,
+            text: `Please fill up ${i + 1}${suffix} Product - "${title}"`,
             icon: "warning",
             confirmButtonColor: "#FACEA8",
           });
@@ -654,17 +628,23 @@ const createPurchase = async () => {
     }
   }
 
+  // Set URL and HTTP method dynamically
+  const url = check ? "/purchase/update/" + route.query?.id : "/purchase";
+  const method = check ? "put" : "post";
+
+  // Send the request
   isLoading.value = true;
-  await axiosUrl
-    .post("/purchase", createPayload.value)
-    .then((response) => {
-      isLoading.value = false;
-      // console.log(response.data);
-      createPayload.value.supplier_id = null;
-      createPayload.value.mode_of_payment_id = null;
-      createPayload.value.date_of_purchase = "";
-      createPayload.value.amount_paid = null;
-      createPayload.value.items = [
+  try {
+    const response = await axiosUrl[method](url, createPayload.value);
+    isLoading.value = false;
+
+    // Reset form data
+    createPayload.value = {
+      supplier_id: null,
+      mode_of_payment_id: null,
+      date_of_purchase: "",
+      amount_paid: null,
+      items: [
         {
           product_code: "",
           product_name: "",
@@ -675,19 +655,15 @@ const createPurchase = async () => {
           unit_sell_price: null,
           total_cost_price: null,
         },
-      ];
-      // router.push({
-      //   name: "PurchaseSingle",
-      //   params: { id: response.data.purchase_code },
-      // });
-      router.push({
-        name: "PurchasePage",
-      });
-    })
-    .catch((error) => {
-      isLoading.value = false;
-      swalErrorHandle(error);
-    });
+      ],
+    };
+
+    // Navigate to the appropriate page
+    router.push({ name: "PurchasePage" });
+  } catch (error) {
+    isLoading.value = false;
+    swalErrorHandle(error);
+  }
 };
 
 const getSupplyManagement = async () => {
@@ -696,11 +672,25 @@ const getSupplyManagement = async () => {
   await axiosUrl
     .get("/purchase/list")
     .then((response) => {
-      items.value = response.data.data;
+      items.value = response.data?.data;
 
-      payment_channels.value = response.data.data.payment_channels;
-      products.value = response.data.data.products;
-      suppliers.value = response.data.data.suppliers;
+      payment_channels.value = response.data?.data?.payment_channels;
+      products.value = response.data?.data?.products;
+      suppliers.value = response.data?.data?.suppliers;
+
+      if (
+        route.query?.purchase_code !== null &&
+        route.query?.purchase_code !== null &&
+        route.query?.purchase_code !== undefined
+      )
+        getPurchase(route.query?.purchase_code);
+
+      if (
+        route.query?.id !== null &&
+        route.query?.id !== null &&
+        route.query?.id !== undefined
+      )
+        getPurchaseById(route.query?.id);
       isLoading.value = false;
     })
     .catch((error) => {
@@ -724,14 +714,98 @@ const getAllBanks = async () => {
     });
 };
 
+const getPurchaseById = async (id) => {
+  isLoading3.value = true;
+
+  await axiosUrl
+    .get(`/purchase/single/${id}`)
+    .then((response) => {
+      purchaseTopData.value = response.data.data;
+      createPayload.value.supplier_id = suppliers.value.filter(
+        (supplier) => supplier.supplier_name === purchaseTopData.value?.supplier
+      )[0]?.id;
+      createPayload.value.mode_of_payment_id = payment_channels.value.filter(
+        (payment_channels) =>
+          payment_channels.name === purchaseTopData.value?.mop
+      )[0]?.id;
+      createPayload.value.date_of_purchase = new Date(
+        purchaseTopData.value?.purchase_date
+      );
+      createPayload.value.amount_paid = null;
+      isLoading3.value = false;
+    })
+    .catch((error) => {
+      isLoading3.value = false;
+      swalErrorHandle(error);
+    });
+};
+
+const getPurchase = async (purchase_code) => {
+  isLoading2.value = true;
+
+  await axiosUrl
+    .get(`/purchase/items/${purchase_code}/all`)
+    .then((response) => {
+      purchaseData.value = response.data?.data;
+      purchaseData.value.total = 0;
+      for (let i = 0; i < purchaseData.value.length; i++) {
+        purchaseData.value.total =
+          purchaseData.value.total +
+          parseFloat(purchaseData.value[i]?.total_cost_price);
+      }
+
+      for (let i = 0; i < purchaseData.value.length; i++) {
+        if (i >= 1) {
+          createPayload.value.items.push({
+            product_code: "",
+            product_name: "",
+            quantity: null,
+            pack: null,
+            unit_cost_price: null,
+            unit_cost_price_crate: null,
+            unit_sell_price: null,
+            total_cost_price: null,
+          });
+        }
+
+        createPayload.value.items[i].product_code =
+          purchaseData.value[i].product.product_code;
+        createPayload.value.items[i].product_name =
+          purchaseData.value[i].product.product_name;
+        createPayload.value.items[i].quantity = purchaseData.value[i].quantity;
+        createPayload.value.items[i].pack =
+          purchaseData.value[i].quantity /
+          products.value.filter(
+            (product) =>
+              product.product_code ===
+              purchaseData.value[i].product.product_code
+          )[0]?.number_per_pack;
+        createPayload.value.items[i].unit_cost_price =
+          purchaseData.value[i].unit_cost_price;
+        createPayload.value.items[i].unit_cost_price_crate =
+          purchaseData.value[i].total_cost_price *
+          createPayload.value.items[i].pack;
+        createPayload.value.items[i].unit_sell_price =
+          purchaseData.value[i].unit_sell_price;
+        createPayload.value.items[i].total_cost_price =
+          purchaseData.value[i].total_cost_price;
+      }
+
+      isLoading2.value = false;
+    })
+    .catch((error) => {
+      isLoading2.value = false;
+      swalErrorHandle(error);
+    });
+};
+
 onMounted(() => {
   getSupplyManagement();
   getAllBanks();
 });
 </script>
 
-<style scoped>
-</style>
+<style scoped></style>
 
 <style>
 .p-inputtext {
