@@ -1,12 +1,12 @@
 <template>
   <div class="content-wrapper">
     <loading :active="isLoading" />
-    <div class="receipt-container" v-if="items.club">
+    <div class="receipt-container" v-if="items?.club">
       <div class="text-center">
-        <p v-if="items.paid == 1" class="text-center mb-0 fs-4 font-medium">
+        <p v-if="items?.paid == 1" class="text-center mb-0 fs-4 font-medium">
           RECEIPT
         </p>
-        <p v-if="items.paid == 0" class="text-center mb-0 fs-4 font-medium">
+        <p v-if="items?.paid == 0" class="text-center mb-0 fs-4 font-medium">
           INVOICE
         </p>
         <p class="text-center mb-0 fs-1 font-bold">
@@ -20,10 +20,10 @@
       </div>
       <hr />
       <div class="receipt-header">
-        <div><strong>Sale Code:</strong> {{ items.sale_code }}</div>
+        <div><strong>Sale Code:</strong> {{ items?.sale_code }}</div>
         <div>
-          <strong>Bar Code:</strong>{{ items.bar.name }} ({{
-            items.bar.bar_code
+          <strong>Bar Code:</strong>{{ items?.bar.name }} ({{
+            items?.bar.bar_code
           }})
         </div>
         <div v-if="items?.memberType === '1'">
@@ -33,12 +33,12 @@
           {{ items?.member?.middle_name ? items?.member?.middle_name : "" }}
         </div>
         <div v-else><strong>Member Type:</strong> Guest</div>
-        <div v-if="items.paid == 1">
-          <strong>MOP:</strong>{{ items.mode_of_payment }} ({{
-            items.channel.name
+        <div v-if="items?.paid == 1">
+          <strong>MOP:</strong>{{ items?.mode_of_payment }} ({{
+            items?.channel.name
           }})
         </div>
-        <div><strong>Date:</strong> {{ formatDate(items.created_at) }}</div>
+        <div><strong>Date:</strong> {{ formatDate(items?.created_at) }}</div>
       </div>
       <hr />
       <hr />
@@ -50,7 +50,7 @@
           <div class="item-total">Total Price</div>
         </div>
         <hr />
-        <div v-for="item in items.items" :key="item.id" class="item">
+        <div v-for="item in items?.items" :key="item.id" class="item">
           <div class="text-center">{{ item.name }}</div>
           <div class="text-center">
             {{ item.quantity }} x {{ formatCurrency(item.unit_price) }}
@@ -60,15 +60,15 @@
       </div>
       <hr />
       <div class="receipt-total">
-        <strong>Total:</strong> {{ formatCurrency(items.total) }}
+        <strong>Total:</strong> {{ formatCurrency(items?.total) }}
       </div>
 
       <div class="d-flex justify-content-center">
-        <!-- <button type="button" class="btn btn-primary mx-1" v-if="items.paid==0 && items.is_dock==0">Edit</button> -->
+        <!-- <button type="button" class="btn btn-primary mx-1" v-if="items?.paid==0 && items?.is_dock==0">Edit</button> -->
         <button
           type="button"
           class="btn btn-secondary mx-1"
-          v-if="items.paid == 0 && items.is_dock == 0"
+          v-if="items?.paid == 0 && items?.is_dock == 0"
           @click="dock()"
         >
           Dock
