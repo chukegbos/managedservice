@@ -79,7 +79,7 @@
                 class="btn btn-danger btn-sm ms-2"
                 @click="deleteInvoice(data.sale_code)"
               >
-                Delete
+                Cancel
               </button>
             </template>
           </Column>
