@@ -282,6 +282,17 @@
                           <span class="font-medium">Debt-Free Members</span>
                         </router-link>
                       </li>
+
+                      <li>
+                        <router-link
+                          to="/reports"
+                          v-ripple
+                          class="text-decoration-none flex align-items-center cursor-pointer p-3 border-round text-700 hover:surface-100 transition-duration-150 transition-colors p-ripple"
+                        >
+                          <i class="pi pi-chart-line mr-2"></i>
+                          <span class="font-medium">Reports</span>
+                        </router-link>
+                      </li>
                     </ul>
                   </li>
                   <!-- <li>

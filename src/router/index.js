@@ -155,6 +155,12 @@ const routes = [
 				component: () =>
 					import("@/views/private/pages/account/Ledger.vue"),
 			},
+			{
+				path: "/reports",
+				name: "Reports",
+				component: () =>
+					import("@/views/private/pages/ReportsPage.vue"),
+			},
 
 			//bars
 			{
