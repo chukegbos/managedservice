@@ -69,6 +69,19 @@ export const canApprove = () => {
 	return createPermission ? true : false;
 };
 
+export const canAccept = () => {
+	const role = allRoles.find(role => role.id == loggedInUser.role_id);
+	const permissions = role["permissions"];
+
+	// Find the permission object with the name 'Create'
+	const createPermission = permissions.find(
+		(permission) => permission.name === "Accept"
+	);
+
+	// Return true if 'Create' is found, otherwise false
+	return createPermission ? true : false;
+};
+
 export const canReject = () => {
 	const role = allRoles.find(role => role.id == loggedInUser.role_id);
 	const permissions = role["permissions"];

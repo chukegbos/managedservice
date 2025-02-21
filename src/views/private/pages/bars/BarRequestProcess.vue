@@ -114,7 +114,7 @@
                     <button
                       @click="onAccept(item.id)"
                       class="btn btn-primary m-1"
-                      v-if="item.approved !== null && canApprove()"
+                      v-if="item.approved !== null && canAccept()"
                     >
                       Accept
                     </button>
@@ -156,7 +156,7 @@ import {
   canUpdate,
   canDelete,
   canRead,
-  canApprove,
+  canAccept,
   canReject,
 } from "@/components/permission_restriction.js";
 
