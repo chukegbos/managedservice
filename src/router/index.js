@@ -156,10 +156,10 @@ const routes = [
 					import("@/views/private/pages/account/Ledger.vue"),
 			},
 			{
-				path: "/reports",
-				name: "Reports",
+				path: "/sales-report",
+				name: "Sales Report",
 				component: () =>
-					import("@/views/private/pages/ReportsPage.vue"),
+					import("@/views/private/pages/Report/SaleReportPage.vue"),
 			},
 
 			//bars

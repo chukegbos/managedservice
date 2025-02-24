@@ -285,12 +285,12 @@
 
                       <li>
                         <router-link
-                          to="/reports"
+                          to="/sales-report"
                           v-ripple
                           class="text-decoration-none flex align-items-center cursor-pointer p-3 border-round text-700 hover:surface-100 transition-duration-150 transition-colors p-ripple"
                         >
                           <i class="pi pi-chart-line mr-2"></i>
-                          <span class="font-medium">Reports</span>
+                          <span class="font-medium">Sales Report</span>
                         </router-link>
                       </li>
                     </ul>
